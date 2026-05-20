@@ -6,14 +6,6 @@ const { issueAccess } = require('../utils/invite');
 const logger = require('../utils/logger');
 
 async function registerWebhooks(app, bot) {
-  // Сохраняем raw body для проверки подписи
-  app.addContentTypeParser('application/json', { parseAs: 'buffer' }, (req, body, done) => {
-    try {
-      req.rawBody = body;
-      done(null, body.length ? JSON.parse(body.toString('utf8')) : {});
-    } catch (e) { done(e); }
-  });
-
   app.post('/webhook/platega', async (req, reply) => {
     const sig = req.headers['x-signature'] || req.headers['x-sign'];
     if (!verifyPlategaSignature(req.rawBody, sig)) {

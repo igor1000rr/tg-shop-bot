@@ -7,6 +7,17 @@ const { registerLegal } = require('./legal');
 async function startServer(bot) {
   const app = Fastify({ logger: false, bodyLimit: 5 * 1024 * 1024 });
 
+  // Переопределяем JSON-парсер, чтобы сохранить req.rawBody для проверки
+  // HMAC-подписи webhook'ов. Без removeContentTypeParser Fastify бросит
+  // FST_ERR_CTP_ALREADY_PRESENT, т.к. application/json уже зарегистрирован по умолчанию.
+  app.removeContentTypeParser('application/json');
+  app.addContentTypeParser('application/json', { parseAs: 'buffer' }, (req, body, done) => {
+    try {
+      req.rawBody = body;
+      done(null, body.length ? JSON.parse(body.toString('utf8')) : {});
+    } catch (e) { done(e); }
+  });
+
   await app.register(require('@fastify/formbody'));
   await app.register(require('@fastify/view'), {
     engine: { ejs: require('ejs') },
@@ -15,8 +26,8 @@ async function startServer(bot) {
   });
 
   app.get('/',               async (_, reply) => reply.redirect('/admin'));
-  app.get('/return/success', async (_, reply) => reply.type('text/html').send('<h1>Оплата получена</h1><p>Вернитесь в Telegram-бот — доступ уже отправлен.</p>'));
-  app.get('/return/fail',    async (_, reply) => reply.type('text/html').send('<h1>Оплата не прошла</h1><p>Попробуйте ещё раз в боте.</p>'));
+  app.get('/return/success', async (_, reply) => reply.type('text/html; charset=utf-8').send('<h1>Оплата получена</h1><p>Вернитесь в Telegram-бот — доступ отправлен автоматически.</p>'));
+  app.get('/return/fail',    async (_, reply) => reply.type('text/html; charset=utf-8').send('<h1>Оплата не прошла</h1><p>Попробуйте ещё раз в боте.</p>'));
 
   await registerWebhooks(app, bot);
   await registerLegal(app);

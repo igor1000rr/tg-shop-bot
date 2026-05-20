@@ -1,9 +1,13 @@
 const cron = require('node-cron');
-const { getBalance, withdraw } = require('../payments/cryptobot');
+const { getBalance, buildWithdrawNotice } = require('../payments/cryptobot');
 const logger = require('../utils/logger');
 
 function startWithdrawCron(bot) {
   const schedule = process.env.WITHDRAW_CRON || '0 3 * * *';
+  if (!cron.validate(schedule)) {
+    logger.warn(`Cron: невалидный WITHDRAW_CRON "${schedule}", cron выключен`);
+    return;
+  }
   cron.schedule(schedule, async () => {
     try {
       const wallet = process.env.WITHDRAW_WALLET;
@@ -19,18 +23,19 @@ function startWithdrawCron(bot) {
       const amount = Number(bal.available);
       if (amount < threshold) return logger.info(`Cron: баланс ${amount} ${asset} < порога ${threshold}`);
 
-      const result = await withdraw({ asset, amount, address: wallet, network });
-      logger.info(`Cron: вывод ${amount} ${asset} → ${wallet}`, result);
-
+      const text = buildWithdrawNotice({ asset, amount, wallet, network });
       const logChat = process.env.LOG_CHAT_ID;
       if (logChat) {
-        await bot.api.sendMessage(logChat, `💸 Авто-вывод ${amount} ${asset} (${network}) → ${wallet}`);
+        await bot.api.sendMessage(logChat, text, { parse_mode: 'HTML' });
+      } else {
+        logger.warn('Cron: LOG_CHAT_ID не задан, уведомление некуда отправить');
       }
+      logger.info(`Cron: уведомление о выводе отправлено (${amount} ${asset})`);
     } catch (e) {
-      logger.error('Cron вывод — ошибка:', e?.response?.data || e.message);
+      logger.error('Cron withdraw error:', e?.response?.data || e.message);
       const logChat = process.env.LOG_CHAT_ID;
       if (logChat) {
-        try { await bot.api.sendMessage(logChat, `⚠️ Cron вывод не удался: ${e.message}`); } catch {}
+        try { await bot.api.sendMessage(logChat, `⚠️ Cron ошибка: ${e.message}`); } catch {}
       }
     }
   });

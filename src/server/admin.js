@@ -1,7 +1,7 @@
 const basicAuth = require('@fastify/basic-auth');
 const { getDb } = require('../db');
 const { getAllSettings, setSetting, DEFAULTS } = require('../config');
-const { getBalance, withdraw } = require('../payments/cryptobot');
+const { getBalance, buildWithdrawNotice } = require('../payments/cryptobot');
 const logger = require('../utils/logger');
 
 async function registerAdmin(app, bot) {
@@ -66,15 +66,21 @@ async function registerAdmin(app, bot) {
           if (!bal) throw new Error(`Нет баланса по ${asset}`);
           const amount = Number(bal.available);
 
-          const result = await withdraw({ asset, amount, address: wallet, network });
-          logger.info('Ручной вывод выполнен:', result);
-
+          const text = buildWithdrawNotice({ asset, amount, wallet, network });
           const logChat = process.env.LOG_CHAT_ID;
-          if (logChat) await bot.api.sendMessage(logChat, `💸 Ручной вывод ${amount} ${asset} (${network}) → ${wallet}`);
-          return reply.type('text/html').send(`<h1>Вывод запущен</h1><pre>${JSON.stringify(result, null, 2)}</pre><a href='/admin'>← назад</a>`);
+          if (logChat) await bot.api.sendMessage(logChat, text, { parse_mode: 'HTML' });
+
+          return reply.type('text/html; charset=utf-8').send(
+            `<h1>Уведомление отправлено</h1>` +
+            `<pre>${text.replace(/<[^>]+>/g,'')}</pre>` +
+            `<p>Выведи вручную через @CryptoBot → My Apps.</p>` +
+            `<p><a href='/admin'>← назад</a></p>`
+          );
         } catch (e) {
-          logger.error('Сбой вывода:', e?.response?.data || e.message);
-          return reply.code(500).type('text/html').send(`<h1>Ошибка вывода</h1><pre>${e.message}</pre><a href='/admin'>← назад</a>`);
+          logger.error('Withdraw notify error:', e?.response?.data || e.message);
+          return reply.code(500).type('text/html; charset=utf-8').send(
+            `<h1>Ошибка</h1><pre>${e.message}</pre><p><a href='/admin'>← назад</a></p>`
+          );
         }
       }
     });

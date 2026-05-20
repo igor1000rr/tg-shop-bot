@@ -35,17 +35,17 @@ async function getBalance() {
   return data.result;
 }
 
-// Внимание: метод требует расширенных прав у приложения CryptoBot.
-// Если withdraw API недоступен — отправлять уведомление и выводить вручную.
-async function withdraw({ asset, amount, address, network }) {
-  const { data } = await client().post('/transfer', {
-    asset,
-    amount:   String(amount),
-    address,
-    network,
-    spend_id: `wd_${Date.now()}`
-  });
-  return data;
+// ВАЖНО: публичный API CryptoBot НЕ поддерживает прямой вывод на внешний
+// blockchain-адрес. Метод /transfer работает только между юзерами CryptoBot.
+// Поэтому cron и admin-кнопка формируют уведомление в LOG_CHAT_ID,
+// а владелец выводит вручную через интерфейс @CryptoBot.
+function buildWithdrawNotice({ asset, amount, wallet, network }) {
+  return [
+    `💸 Накопилось <b>${amount} ${asset}</b> в CryptoBot.`,
+    `Адрес: <code>${wallet}</code> (${network})`,
+    ``,
+    `Выведи вручную: @CryptoBot → My Apps → выбери приложение → Withdraw.`
+  ].join('\n');
 }
 
 function verifyCryptobotSignature(rawBody, signatureHeader) {
@@ -56,4 +56,9 @@ function verifyCryptobotSignature(rawBody, signatureHeader) {
   return calc === signatureHeader;
 }
 
-module.exports = { createCryptobotInvoice, getBalance, withdraw, verifyCryptobotSignature };
+module.exports = {
+  createCryptobotInvoice,
+  getBalance,
+  buildWithdrawNotice,
+  verifyCryptobotSignature
+};

@@ -1,6 +1,6 @@
 const { getDb } = require('../db');
 const { getSetting } = require('../config');
-const { mainKeyboard } = require('./keyboards');
+const { mainKeyboard, publicUrl } = require('./keyboards');
 const { createPlategaInvoice } = require('../payments/platega');
 const { createCryptobotInvoice } = require('../payments/cryptobot');
 const logger = require('../utils/logger');
@@ -22,16 +22,22 @@ function registerHandlers(bot) {
     const priceRub    = getSetting('price_rub');
     const priceUsdt   = getSetting('price_usdt');
     const image       = getSetting('offer_image_url');
+    const base        = publicUrl();
+
+    const legalLine = base
+      ? `\n\nНажимая «Оплатить», вы соглашаетесь с <a href="${base}/terms">офертой</a> и <a href="${base}/privacy">политикой конфиденциальности</a>.`
+      : '';
 
     const text =
       `<b>${title}</b>\n\n${description}\n\n` +
-      `💳 Карта: ${priceRub} ₽\n🪙 Крипто: ${priceUsdt} USDT\n\n` +
-      `Нажимая «Оплатить», вы соглашаетесь с <a href="${process.env.PUBLIC_URL}/terms">офертой</a> и <a href="${process.env.PUBLIC_URL}/privacy">политикой конфиденциальности</a>.`;
+      `💳 Карта: ${priceRub} ₽\n🪙 Крипто: ${priceUsdt} USDT` +
+      legalLine;
 
+    const opts = { parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: mainKeyboard() };
     if (image) {
-      await ctx.replyWithPhoto(image, { caption: text, parse_mode: 'HTML', reply_markup: mainKeyboard() });
+      await ctx.replyWithPhoto(image, { caption: text, ...opts });
     } else {
-      await ctx.reply(text, { parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: mainKeyboard() });
+      await ctx.reply(text, opts);
     }
   });
 
