@@ -19,14 +19,17 @@ function client() {
 
 // POST /transaction/process — создание транзакции.
 // ВАЖНО: ID генерируется системой, свой не передаём.
-// payload сохраняется в ЛК Platega, но НЕ приходит в callback —
-// идентификация выполняется только по transactionId.
+// payload сохраняется в ЛК Platega, но НЕ приходит в callback — идентификация по transactionId.
 async function createPlategaInvoice({ tgId, amountRub, description }) {
+  const base = process.env.PUBLIC_URL;
+  if (!base || !/^https:\/\//.test(base)) {
+    throw new Error('PUBLIC_URL должен быть HTTPS-адресом для Platega');
+  }
   const body = {
     paymentDetails: { amount: Number(amountRub), currency: 'RUB' },
     description: description || 'Покупка',
-    return:    `${process.env.PUBLIC_URL}/return/success`,
-    failedUrl: `${process.env.PUBLIC_URL}/return/fail`,
+    return:    `${base.replace(/\/$/, '')}/return/success`,
+    failedUrl: `${base.replace(/\/$/, '')}/return/fail`,
     payload: `tg_${tgId}`
   };
   const pm = process.env.PLATEGA_PAYMENT_METHOD;
@@ -43,14 +46,14 @@ async function createPlategaInvoice({ tgId, amountRub, description }) {
   };
 }
 
-// GET /transaction/:id — проверка статуса (используется poll-cron'ом).
+// GET /transaction/{id} — используется poll-cron'ом как fallback.
 async function getPlategaStatus(transactionId) {
   const { data } = await client().get(`/transaction/${transactionId}`);
   return data;
 }
 
-// Platega НЕ использует HMAC в webhook'ах. В заголовках приходят
-// X-MerchantId и X-Secret — сверяем их с нашими.
+// Platega НЕ использует HMAC. В callback приходят заголовки X-MerchantId + X-Secret
+// — сверяем их с нашими.
 function verifyPlategaCallback(headers) {
   const m = headers['x-merchantid'];
   const s = headers['x-secret'];

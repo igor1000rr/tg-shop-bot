@@ -5,6 +5,7 @@ const { createPlategaInvoice } = require('../payments/platega');
 const { createCryptobotInvoice } = require('../payments/cryptobot');
 const { issueAccess } = require('../utils/invite');
 const { checkRateLimit } = require('../utils/rateLimit');
+const { escapeHtml } = require('../utils/html');
 const logger = require('../utils/logger');
 
 function saveUser(ctx) {
@@ -19,10 +20,12 @@ function saveUser(ctx) {
 function registerHandlers(bot) {
   bot.command('start', async (ctx) => {
     saveUser(ctx);
-    const title       = getSetting('offer_title');
-    const description = getSetting('offer_description');
-    const priceRub    = getSetting('price_rub');
-    const priceUsdt   = getSetting('price_usdt');
+    // Экранируем всё что приходит из настроек админки — иначе Telegram
+    // отклонит HTML сообщение на любом < или &.
+    const title       = escapeHtml(getSetting('offer_title'));
+    const description = escapeHtml(getSetting('offer_description'));
+    const priceRub    = escapeHtml(getSetting('price_rub'));
+    const priceUsdt   = escapeHtml(getSetting('price_usdt'));
     const image       = getSetting('offer_image_url');
     const base        = publicUrl();
 
@@ -36,10 +39,16 @@ function registerHandlers(bot) {
       legalLine;
 
     const opts = { parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: mainKeyboard() };
-    if (image) {
-      await ctx.replyWithPhoto(image, { caption: text, ...opts });
-    } else {
-      await ctx.reply(text, opts);
+    try {
+      if (image) {
+        await ctx.replyWithPhoto(image, { caption: text, ...opts });
+      } else {
+        await ctx.reply(text, opts);
+      }
+    } catch (e) {
+      // Фолбэк на случай если image_url невалиден или Telegram отклонил HTML
+      logger.warn('/start рендер упал, фолбэк:', e?.message);
+      await ctx.reply(text.replace(/<[^>]+>/g, ''), { reply_markup: mainKeyboard() });
     }
   });
 

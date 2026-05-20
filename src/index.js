@@ -9,14 +9,27 @@ const logger = require('./utils/logger');
 
 let bot, app;
 
+function validateEnv() {
+  const required = ['BOT_TOKEN', 'CHANNEL_ID', 'PUBLIC_URL', 'ADMIN_LOGIN', 'ADMIN_PASSWORD'];
+  const missing = required.filter(k => !process.env[k]);
+  if (missing.length) {
+    throw new Error(`Не заданы обязательные env: ${missing.join(', ')}`);
+  }
+  if (!/^https:\/\//.test(process.env.PUBLIC_URL)) {
+    throw new Error(`PUBLIC_URL должен начинаться с https:// (Platega не принимает HTTP)`);
+  }
+  if (!process.env.PLATEGA_SHOP_ID && !process.env.CRYPTOBOT_TOKEN) {
+    logger.warn('Ни Platega, ни CryptoBot не настроены — платежи не работают');
+  }
+}
+
 async function main() {
-  if (!process.env.BOT_TOKEN) throw new Error('BOT_TOKEN не задан в .env');
+  validateEnv();
 
   initDb();
   logger.info('БД инициализирована');
 
   bot = await startBot();
-  logger.info('Бот запущен');
 
   app = await startServer(bot);
   logger.info(`HTTP сервер слушает порт ${process.env.PORT || 3000}`);
@@ -38,6 +51,6 @@ process.once('SIGINT',  () => shutdown('SIGINT'));
 process.once('SIGTERM', () => shutdown('SIGTERM'));
 
 main().catch(e => {
-  logger.error('Фатальная ошибка запуска:', e);
+  logger.error('Фатальная ошибка запуска:', e?.message);
   process.exit(1);
 });
