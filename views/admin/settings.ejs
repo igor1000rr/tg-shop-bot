@@ -2,70 +2,101 @@
 
   <div class="mb-6">
     <h1 class="text-3xl font-bold text-slate-900">Настройки</h1>
-    <p class="text-slate-500 text-sm mt-1">Изменения сразу применяются. Секреты оставьте пустыми чтобы не менять.</p>
+    <p class="text-slate-500 text-sm mt-1">Изменения применяются сразу после сохранения. Секреты оставьте пустыми, если не хотите менять.</p>
   </div>
 
   <% if (saved) { %>
     <div class="mb-5 px-4 py-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg text-sm flex items-center gap-2">
-      ✓ Настройки сохранены
+      <span>✓</span> <span>Настройки сохранены</span>
     </div>
   <% } %>
 
-  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-    <!-- Tabs -->
-    <div class="flex border-b border-slate-200 overflow-x-auto bg-slate-50">
+  <form method="POST" action="/admin/settings" class="grid grid-cols-1 lg:grid-cols-[240px,1fr] gap-6">
+    <input type="hidden" name="__tab" id="__tab" value="<%= activeTab %>">
+
+    <!-- Vertical sidebar with groups -->
+    <aside class="lg:sticky lg:top-6 lg:self-start">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <% groups.forEach(function(g){ %>
+          <button type="button" data-tab="<%= g.id %>"
+                  class="tab-btn w-full flex items-center gap-3 px-4 py-3 text-sm text-left border-l-4 transition <%= activeTab===g.id ? 'border-brand-600 bg-brand-50 text-brand-700 font-medium' : 'border-transparent text-slate-700 hover:bg-slate-50' %>">
+            <span class="text-base"><%= g.icon %></span>
+            <span class="flex-1"><%= g.label %></span>
+          </button>
+        <% }); %>
+      </div>
+    </aside>
+
+    <!-- Content area -->
+    <div>
       <% groups.forEach(function(g){ %>
-        <button type="button" data-tab="<%= g.id %>"
-                class="tab-btn px-5 py-3 text-sm font-medium whitespace-nowrap border-b-2 <%= activeTab===g.id ? 'border-brand-600 text-brand-700 bg-white' : 'border-transparent text-slate-600 hover:text-slate-900' %>">
-          <%= g.label %>
-        </button>
-      <% }); %>
-    </div>
-
-    <form method="POST" action="/admin/settings" class="p-6">
-      <input type="hidden" name="__tab" id="__tab" value="<%= activeTab %>">
-
-      <% groups.forEach(function(g){ %>
-        <div class="tab-panel space-y-5" data-panel="<%= g.id %>" <%= activeTab===g.id ? '' : 'style="display:none"' %>>
-          <% meta.filter(function(m){ return m.group === g.id }).forEach(function(m){ %>
-            <div>
-              <label for="<%= m.key %>" class="block text-sm font-medium text-slate-700 mb-1.5">
-                <%= m.label %>
-                <% if (secretKeys.has(m.key)) { %>
-                  <span class="text-slate-400 font-normal">· оставьте пустым чтобы не менять</span>
-                <% } %>
-              </label>
-
-              <% if (m.type === 'textarea') { %>
-                <textarea name="<%= m.key %>" id="<%= m.key %>" rows="3"
-                          class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm"><%= settings[m.key] || '' %></textarea>
-              <% } else if (m.type === 'password') { %>
-                <input type="password" name="<%= m.key %>" id="<%= m.key %>" value="" autocomplete="new-password"
-                       placeholder="<%= settings[m.key] ? '•••••••• (задано)' : 'не задано' %>"
-                       class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm font-mono">
-              <% } else if (m.type === 'checkbox') { %>
-                <input type="hidden" name="<%= m.key %>" value="0">
-                <label class="inline-flex items-center gap-2 text-sm">
-                  <input type="checkbox" name="<%= m.key %>" value="1" <%= settings[m.key]==='1'?'checked':'' %>
-                         class="w-4 h-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500">
-                  <span class="text-slate-700">включено</span>
-                </label>
-              <% } else { %>
-                <input type="text" name="<%= m.key %>" id="<%= m.key %>" value="<%= settings[m.key] || '' %>"
-                       class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm">
+        <div class="tab-panel" data-panel="<%= g.id %>" <%= activeTab===g.id ? '' : 'style="display:none"' %>>
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <!-- Group header -->
+            <div class="px-6 py-5 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-white">
+              <h2 class="text-lg font-semibold text-slate-900 flex items-center gap-2">
+                <span><%= g.icon %></span> <span><%= g.label %></span>
+              </h2>
+              <% if (g.hint) { %>
+                <p class="text-sm text-slate-500 mt-1"><%= g.hint %></p>
               <% } %>
             </div>
-          <% }); %>
+
+            <!-- Fields -->
+            <div class="px-6 py-6 space-y-6">
+              <% meta.filter(function(m){ return m.group === g.id }).forEach(function(m){ %>
+                <div>
+                  <label for="<%= m.key %>" class="flex items-center justify-between mb-1.5">
+                    <span class="text-sm font-medium text-slate-900"><%= m.label %></span>
+                    <% if (secretKeys.has(m.key)) { %>
+                      <% if (settings[m.key]) { %>
+                        <span class="text-[10px] uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">задано</span>
+                      <% } else { %>
+                        <span class="text-[10px] uppercase tracking-wider text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">не задано</span>
+                      <% } %>
+                    <% } %>
+                  </label>
+
+                  <% if (m.type === 'textarea') { %>
+                    <textarea name="<%= m.key %>" id="<%= m.key %>" rows="3"
+                              class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm"><%= settings[m.key] || '' %></textarea>
+                  <% } else if (m.type === 'password') { %>
+                    <input type="password" name="<%= m.key %>" id="<%= m.key %>" value="" autocomplete="new-password"
+                           placeholder="<%= settings[m.key] ? '•••••••••••• (оставьте пустым чтобы не менять)' : 'введите значение' %>"
+                           class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm font-mono">
+                  <% } else if (m.type === 'checkbox') { %>
+                    <input type="hidden" name="<%= m.key %>" value="0">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" name="<%= m.key %>" value="1" <%= settings[m.key]==='1'?'checked':'' %> class="sr-only peer">
+                      <div class="w-11 h-6 bg-slate-300 peer-focus:ring-2 peer-focus:ring-brand-300 rounded-full peer peer-checked:bg-brand-600 transition after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition peer-checked:after:translate-x-5"></div>
+                      <span class="ml-3 text-sm text-slate-700 peer-checked:text-slate-900">включено</span>
+                    </label>
+                  <% } else { %>
+                    <input type="text" name="<%= m.key %>" id="<%= m.key %>" value="<%= settings[m.key] || '' %>"
+                           class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm">
+                  <% } %>
+
+                  <% if (m.hint) { %>
+                    <p class="text-xs text-slate-500 mt-1.5 flex items-start gap-1.5">
+                      <span class="text-slate-400 mt-px">ℹ</span>
+                      <span><%= m.hint %></span>
+                    </p>
+                  <% } %>
+                </div>
+              <% }); %>
+            </div>
+
+            <!-- Save button (sticky-ish at bottom of card) -->
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-3">
+              <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-medium px-5 py-2.5 rounded-lg shadow-sm transition">
+                Сохранить
+              </button>
+            </div>
+          </div>
         </div>
       <% }); %>
-
-      <div class="mt-8 pt-5 border-t border-slate-200 flex items-center justify-end gap-3">
-        <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-medium px-5 py-2.5 rounded-lg">
-          Сохранить
-        </button>
-      </div>
-    </form>
-  </div>
+    </div>
+  </form>
 
 <script>
 (function() {
@@ -78,10 +109,11 @@
     buttons.forEach(b => {
       const active = b.dataset.tab === id;
       b.classList.toggle('border-brand-600', active);
-      b.classList.toggle('text-brand-700', active);
-      b.classList.toggle('bg-white', active);
+      b.classList.toggle('bg-brand-50',      active);
+      b.classList.toggle('text-brand-700',   active);
+      b.classList.toggle('font-medium',      active);
       b.classList.toggle('border-transparent', !active);
-      b.classList.toggle('text-slate-600', !active);
+      b.classList.toggle('text-slate-700',     !active);
     });
     panels.forEach(p => p.style.display = (p.dataset.panel === id ? '' : 'none'));
     tabInput.value = id;
