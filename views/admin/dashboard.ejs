@@ -1,6 +1,15 @@
 <%- include('../_header', { title: 'Дашборд' }) %>
 <h1>📊 Дашборд</h1>
 
+<h2>🤖 Статус бота</h2>
+<% if (botStatus.running) { %>
+  <p>✅ Бот запущен: <code>@<%= botStatus.username %></code></p>
+<% } else if (botStatus.tokenSet) { %>
+  <p>⚠️ Токен задан, но бот не запущен. Смотрите логи.</p>
+<% } else { %>
+  <p>⚠️ BOT_TOKEN не задан. <a href="/admin/settings">Открыть настройки</a> и введите токен от @BotFather.</p>
+<% } %>
+
 <h2>📈 Статистика оплат</h2>
 <table>
   <tr><th>Период</th><th>Кол-во</th><th>Сумма</th></tr>
@@ -11,14 +20,14 @@
 </table>
 
 <h2>🔗 Webhook URLs для платёжных систем</h2>
-<p class="muted">Скопируйте эти URL в ЛК соответствующих сервисов:</p>
+<p class="muted">Скопируйте эти URL в ЛК сервисов:</p>
 <table>
   <tr><th>Platega</th><td>ЛК → Настройки → Callback URLs</td><td><code><%= publicUrl %>/webhook/platega</code></td></tr>
   <tr><th>CryptoBot</th><td>@CryptoBot → My Apps → приложение → Webhook</td><td><code><%= publicUrl %>/webhook/cryptobot</code></td></tr>
 </table>
 
 <h2>💸 Автовывод крипты</h2>
-<p class="muted">Кнопка отправит уведомление в LOG_CHAT_ID с текущим балансом. Вывод на Trust Wallet делается вручную через @CryptoBot → My Apps.</p>
+<p class="muted">Кнопка отправит уведомление в LOG_CHAT_ID с текущим балансом. Вывод вручную через @CryptoBot → My Apps.</p>
 <form method="POST" action="/admin/withdraw">
   <button type="submit">Отправить уведомление о выводе</button>
 </form>

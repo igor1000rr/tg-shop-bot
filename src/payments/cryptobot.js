@@ -1,13 +1,16 @@
 const axios = require('axios');
 const crypto = require('crypto');
+const { getSetting } = require('../config');
 
-const BASE_URL = process.env.CRYPTOBOT_API_URL || 'https://pay.crypt.bot/api';
+function baseUrl() {
+  return process.env.CRYPTOBOT_API_URL || 'https://pay.crypt.bot/api';
+}
 
 function client() {
-  const token = process.env.CRYPTOBOT_TOKEN;
-  if (!token) throw new Error('CRYPTOBOT_TOKEN не задан');
+  const token = getSetting('cryptobot_token');
+  if (!token) throw new Error('CryptoBot: token не задан в админке');
   return axios.create({
-    baseURL: BASE_URL,
+    baseURL: baseUrl(),
     headers: { 'Crypto-Pay-API-Token': token },
     timeout: 15000
   });
@@ -16,7 +19,7 @@ function client() {
 async function createCryptobotInvoice({ tgId, amountUsdt, description }) {
   const { data } = await client().post('/createInvoice', {
     currency_type:   'crypto',
-    asset:           process.env.WITHDRAW_ASSET || 'USDT',
+    asset:           getSetting('withdraw_asset') || 'USDT',
     amount:          String(amountUsdt),
     description:     description || 'Покупка',
     payload:         String(tgId),
@@ -51,7 +54,7 @@ function buildWithdrawNotice({ asset, amount, wallet, network }) {
 }
 
 function verifyCryptobotSignature(rawBody, signatureHeader) {
-  const token = process.env.CRYPTOBOT_TOKEN;
+  const token = getSetting('cryptobot_token');
   if (!token || !signatureHeader) return false;
   const secret = crypto.createHash('sha256').update(token).digest();
   const calc = crypto.createHmac('sha256', secret).update(rawBody).digest('hex');

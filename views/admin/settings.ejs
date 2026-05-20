@@ -1,14 +1,27 @@
 <%- include('../_header', { title: 'Настройки' }) %>
 <h1>⚙️ Настройки</h1>
+<p class="muted">Изменение BOT_TOKEN и withdraw_cron применится сразу (без перезапуска). Секреты вводите только при изменении.</p>
+
 <form method="POST" action="/admin/settings">
-  <% keys.forEach(function(k){ %>
-    <label for="<%= k %>"><%= k %></label>
-    <% if (k.includes('description') || k.includes('text') || k === 'legal_address') { %>
-      <textarea name="<%= k %>" id="<%= k %>"><%= settings[k] || '' %></textarea>
-    <% } else { %>
-      <input type="text" name="<%= k %>" id="<%= k %>" value="<%= settings[k] || '' %>">
-    <% } %>
+  <% groups.forEach(function(g){ %>
+    <h2 style="margin-top:2rem;border-bottom:2px solid #0366d6;padding-bottom:6px"><%= g.label %></h2>
+    <% meta.filter(function(m){ return m.group === g.id }).forEach(function(m){ %>
+      <label for="<%= m.key %>"><%= m.label %><% if (secretKeys.has(m.key)) { %> <span class="muted">(оставьте пустым чтобы не менять)</span><% } %></label>
+      <% if (m.type === 'textarea') { %>
+        <textarea name="<%= m.key %>" id="<%= m.key %>"><%= settings[m.key] || '' %></textarea>
+      <% } else if (m.type === 'password') { %>
+        <input type="password" name="<%= m.key %>" id="<%= m.key %>" value="" autocomplete="new-password" placeholder="<%= settings[m.key] ? '•••••••• (задано)' : 'не задано' %>">
+      <% } else if (m.type === 'checkbox') { %>
+        <input type="hidden" name="<%= m.key %>" value="0">
+        <label style="display:inline-flex;align-items:center;gap:8px;font-weight:normal;margin-top:6px">
+          <input type="checkbox" name="<%= m.key %>" value="1" <%= settings[m.key] === '1' ? 'checked' : '' %>>
+          включено
+        </label>
+      <% } else { %>
+        <input type="text" name="<%= m.key %>" id="<%= m.key %>" value="<%= settings[m.key] || '' %>">
+      <% } %>
+    <% }); %>
   <% }); %>
-  <button type="submit">💾 Сохранить</button>
+  <button type="submit" style="margin-top:2rem">💾 Сохранить</button>
 </form>
 <%- include('../_footer') %>

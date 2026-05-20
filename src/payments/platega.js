@@ -1,13 +1,16 @@
 const axios = require('axios');
+const { getSetting } = require('../config');
 
-const BASE_URL = process.env.PLATEGA_API_URL || 'https://app.platega.io';
+function baseUrl() {
+  return process.env.PLATEGA_API_URL || 'https://app.platega.io';
+}
 
 function client() {
-  const shopId = process.env.PLATEGA_SHOP_ID;
-  const secret = process.env.PLATEGA_SECRET;
-  if (!shopId || !secret) throw new Error('PLATEGA_SHOP_ID / PLATEGA_SECRET не заданы');
+  const shopId = getSetting('platega_shop_id');
+  const secret = getSetting('platega_secret');
+  if (!shopId || !secret) throw new Error('Platega: shop_id / secret не заданы в админке');
   return axios.create({
-    baseURL: BASE_URL,
+    baseURL: baseUrl(),
     headers: {
       'X-MerchantId':  shopId,
       'X-Secret':      secret,
@@ -17,22 +20,20 @@ function client() {
   });
 }
 
-// POST /transaction/process — создание транзакции.
-// ВАЖНО: ID генерируется системой, свой не передаём.
-// payload сохраняется в ЛК Platega, но НЕ приходит в callback — идентификация по transactionId.
 async function createPlategaInvoice({ tgId, amountRub, description }) {
   const base = process.env.PUBLIC_URL;
   if (!base || !/^https:\/\//.test(base)) {
-    throw new Error('PUBLIC_URL должен быть HTTPS-адресом для Platega');
+    throw new Error('PUBLIC_URL должен быть HTTPS-адресом (требование Platega)');
   }
+  const cleanBase = base.replace(/\/$/, '');
   const body = {
     paymentDetails: { amount: Number(amountRub), currency: 'RUB' },
     description: description || 'Покупка',
-    return:    `${base.replace(/\/$/, '')}/return/success`,
-    failedUrl: `${base.replace(/\/$/, '')}/return/fail`,
-    payload: `tg_${tgId}`
+    return:    `${cleanBase}/return/success`,
+    failedUrl: `${cleanBase}/return/fail`,
+    payload:   `tg_${tgId}`
   };
-  const pm = process.env.PLATEGA_PAYMENT_METHOD;
+  const pm = getSetting('platega_payment_method');
   if (pm && !Number.isNaN(Number(pm))) body.paymentMethod = Number(pm);
 
   const { data } = await client().post('/transaction/process', body);
@@ -46,20 +47,18 @@ async function createPlategaInvoice({ tgId, amountRub, description }) {
   };
 }
 
-// GET /transaction/{id} — используется poll-cron'ом как fallback.
 async function getPlategaStatus(transactionId) {
   const { data } = await client().get(`/transaction/${transactionId}`);
   return data;
 }
 
-// Platega НЕ использует HMAC. В callback приходят заголовки X-MerchantId + X-Secret
-// — сверяем их с нашими.
 function verifyPlategaCallback(headers) {
   const m = headers['x-merchantid'];
   const s = headers['x-secret'];
-  return Boolean(m) && Boolean(s)
-    && m === process.env.PLATEGA_SHOP_ID
-    && s === process.env.PLATEGA_SECRET;
+  const shopId = getSetting('platega_shop_id');
+  const secret = getSetting('platega_secret');
+  return Boolean(m) && Boolean(s) && Boolean(shopId) && Boolean(secret)
+    && m === shopId && s === secret;
 }
 
 module.exports = { createPlategaInvoice, getPlategaStatus, verifyPlategaCallback };
