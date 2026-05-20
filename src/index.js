@@ -14,8 +14,11 @@ function validateEnv() {
   const required = ['PUBLIC_URL', 'ADMIN_LOGIN', 'ADMIN_PASSWORD'];
   const missing = required.filter(k => !process.env[k]);
   if (missing.length) throw new Error(`Не заданы обязательные env: ${missing.join(', ')}`);
+  if (!/^https?:\/\//.test(process.env.PUBLIC_URL)) {
+    throw new Error('PUBLIC_URL должен начинаться с http:// или https://');
+  }
   if (!/^https:\/\//.test(process.env.PUBLIC_URL)) {
-    throw new Error('PUBLIC_URL должен начинаться с https:// (требование Platega)');
+    logger.warn('⚠️  PUBLIC_URL не HTTPS — оплаты Platega работать не будут. Это допустимо только для предварительного теста.');
   }
 }
 
@@ -25,11 +28,9 @@ async function main() {
   initDb();
   logger.info('БД инициализирована');
 
-  // Сервер и админка стартуют всегда — чтобы клиент мог ввести настройки
   app = await startServer();
   logger.info(`HTTP сервер слушает порт ${process.env.PORT || 3000}`);
 
-  // Бот — опционально, если BOT_TOKEN задан в админке
   const token = getSetting('bot_token');
   if (token) {
     try {
