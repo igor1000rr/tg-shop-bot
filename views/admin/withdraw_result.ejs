@@ -1,0 +1,29 @@
+<%- include('../_layout_start', { title: success ? 'Уведомление отправлено' : 'Ошибка', page: page }) %>
+
+  <div class="max-w-2xl">
+    <% if (success) { %>
+      <div class="bg-white rounded-xl shadow-sm border border-emerald-200 p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-2xl">✓</div>
+          <div>
+            <h2 class="text-lg font-semibold text-slate-900">Уведомление отправлено</h2>
+            <p class="text-sm text-slate-500">Сообщение пришло в лог-чат</p>
+          </div>
+        </div>
+        <pre class="bg-slate-50 border border-slate-200 rounded-lg p-4 text-sm whitespace-pre-wrap"><%= message %></pre>
+      </div>
+    <% } else { %>
+      <div class="bg-white rounded-xl shadow-sm border border-red-200 p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-2xl">⚠️</div>
+          <h2 class="text-lg font-semibold text-slate-900">Ошибка</h2>
+        </div>
+        <pre class="bg-red-50 border border-red-200 rounded-lg p-4 text-sm whitespace-pre-wrap text-red-700"><%= message %></pre>
+      </div>
+    <% } %>
+    <div class="mt-4">
+      <a href="/admin" class="text-brand-600 hover:text-brand-700 text-sm">← На дашборд</a>
+    </div>
+  </div>
+
+<%- include('../_layout_end') %>

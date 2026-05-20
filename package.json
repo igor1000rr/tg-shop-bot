@@ -1,6 +1,6 @@
 {
   "name": "tg-shop-bot",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Telegram-бот для продажи цифровых продуктов",
   "main": "src/index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@fastify/basic-auth": "^5.1.1",
+    "@fastify/cookie": "^9.4.0",
     "@fastify/formbody": "^7.4.0",
     "@fastify/view": "^9.1.0",
     "axios": "^1.7.7",

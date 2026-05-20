@@ -1,34 +1,117 @@
-<%- include('../_header', { title: 'Дашборд' }) %>
-<h1>📊 Дашборд</h1>
+<%- include('../_layout_start', { title: 'Дашборд', page: page }) %>
 
-<h2>🤖 Статус бота</h2>
-<% if (botStatus.running) { %>
-  <p>✅ Бот запущен: <code>@<%= botStatus.username %></code></p>
-<% } else if (botStatus.tokenSet) { %>
-  <p>⚠️ Токен задан, но бот не запущен. Смотрите логи.</p>
-<% } else { %>
-  <p>⚠️ BOT_TOKEN не задан. <a href="/admin/settings">Открыть настройки</a> и введите токен от @BotFather.</p>
-<% } %>
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-900">Дашборд</h1>
+      <p class="text-slate-500 text-sm mt-1">Обзор платежей и статус бота</p>
+    </div>
+    <div>
+      <% if (botStatus.running) { %>
+        <span class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full text-sm font-medium border border-emerald-200">
+          <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+          Бот работает · @<%= botStatus.username %>
+        </span>
+      <% } else if (botStatus.tokenSet) { %>
+        <span class="inline-flex items-center gap-2 bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full text-sm font-medium border border-amber-200">
+          ⚠️ Токен задан, бот не запущен
+        </span>
+      <% } else { %>
+        <a href="/admin/settings?tab=bot" class="inline-flex items-center gap-2 bg-red-50 text-red-700 hover:bg-red-100 px-3 py-1.5 rounded-full text-sm font-medium border border-red-200">
+          ⚠️ BOT_TOKEN не задан → настроить
+        </a>
+      <% } %>
+    </div>
+  </div>
 
-<h2>📈 Статистика оплат</h2>
-<table>
-  <tr><th>Период</th><th>Кол-во</th><th>Сумма</th></tr>
-  <tr><td>Сегодня</td><td><%= stats.today.c %></td><td><%= stats.today.s.toFixed(2) %></td></tr>
-  <tr><td>7 дней</td><td><%= stats.week.c %></td><td><%= stats.week.s.toFixed(2) %></td></tr>
-  <tr><td>30 дней</td><td><%= stats.month.c %></td><td><%= stats.month.s.toFixed(2) %></td></tr>
-  <tr><td>Всего пользователей</td><td colspan="2"><%= stats.totalUsers %></td></tr>
-</table>
+  <!-- KPI cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+      <div class="text-sm text-slate-500">Сегодня</div>
+      <div class="flex items-baseline gap-2 mt-2">
+        <div class="text-3xl font-bold text-slate-900"><%= stats.today.s.toFixed(2) %></div>
+        <div class="text-sm text-slate-500">₽</div>
+      </div>
+      <div class="text-xs text-slate-400 mt-1"><%= stats.today.c %> оплат</div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+      <div class="text-sm text-slate-500">За 7 дней</div>
+      <div class="flex items-baseline gap-2 mt-2">
+        <div class="text-3xl font-bold text-slate-900"><%= stats.week.s.toFixed(2) %></div>
+        <div class="text-sm text-slate-500">₽</div>
+      </div>
+      <div class="text-xs text-slate-400 mt-1"><%= stats.week.c %> оплат</div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+      <div class="text-sm text-slate-500">За 30 дней</div>
+      <div class="flex items-baseline gap-2 mt-2">
+        <div class="text-3xl font-bold text-slate-900"><%= stats.month.s.toFixed(2) %></div>
+        <div class="text-sm text-slate-500">₽</div>
+      </div>
+      <div class="text-xs text-slate-400 mt-1"><%= stats.month.c %> оплат</div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+      <div class="text-sm text-slate-500">Пользователи</div>
+      <div class="flex items-baseline gap-2 mt-2">
+        <div class="text-3xl font-bold text-slate-900"><%= stats.totalUsers %></div>
+      </div>
+      <div class="text-xs text-slate-400 mt-1"><%= stats.pending %> в ожидании</div>
+    </div>
+  </div>
 
-<h2>🔗 Webhook URLs для платёжных систем</h2>
-<p class="muted">Скопируйте эти URL в ЛК сервисов:</p>
-<table>
-  <tr><th>Platega</th><td>ЛК → Настройки → Callback URLs</td><td><code><%= publicUrl %>/webhook/platega</code></td></tr>
-  <tr><th>CryptoBot</th><td>@CryptoBot → My Apps → приложение → Webhook</td><td><code><%= publicUrl %>/webhook/cryptobot</code></td></tr>
-</table>
+  <!-- Webhooks card -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 mb-6">
+    <div class="px-6 py-4 border-b border-slate-200">
+      <h2 class="text-lg font-semibold text-slate-900">🔗 Webhook URLs</h2>
+      <p class="text-sm text-slate-500 mt-0.5">Скопируйте эти URL в ЛК платёжных сервисов</p>
+    </div>
+    <div class="divide-y divide-slate-200">
+      <div class="px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <div class="font-medium text-slate-900">Platega</div>
+          <div class="text-xs text-slate-500">ЛК Platega → Настройки → Callback URLs</div>
+        </div>
+        <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+          <code class="text-sm text-slate-700" id="wh-platega"><%= publicUrl %>/webhook/platega</code>
+          <button onclick="copy('wh-platega', this)" class="text-xs text-brand-600 hover:text-brand-700 font-medium">Копия</button>
+        </div>
+      </div>
+      <div class="px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <div class="font-medium text-slate-900">CryptoBot</div>
+          <div class="text-xs text-slate-500">@CryptoBot → My Apps → приложение → Webhook</div>
+        </div>
+        <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+          <code class="text-sm text-slate-700" id="wh-crypto"><%= publicUrl %>/webhook/cryptobot</code>
+          <button onclick="copy('wh-crypto', this)" class="text-xs text-brand-600 hover:text-brand-700 font-medium">Копия</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<h2>💸 Автовывод крипты</h2>
-<p class="muted">Кнопка отправит уведомление в LOG_CHAT_ID с текущим балансом. Вывод вручную через @CryptoBot → My Apps.</p>
-<form method="POST" action="/admin/withdraw">
-  <button type="submit">Отправить уведомление о выводе</button>
-</form>
-<%- include('../_footer') %>
+  <!-- Withdraw card -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+    <div class="px-6 py-4 border-b border-slate-200">
+      <h2 class="text-lg font-semibold text-slate-900">💸 Автовывод крипты</h2>
+      <p class="text-sm text-slate-500 mt-0.5">Отправит уведомление с балансом в лог-чат. Вывод вручную через @CryptoBot.</p>
+    </div>
+    <div class="px-6 py-4">
+      <form method="POST" action="/admin/withdraw">
+        <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-medium px-4 py-2 rounded-lg">
+          Отправить уведомление
+        </button>
+      </form>
+    </div>
+  </div>
+
+<script>
+function copy(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Скопировано';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+</script>
+
+<%- include('../_layout_end') %>

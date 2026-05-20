@@ -1,21 +1,61 @@
-<%- include('../_header', { title: 'Платежи' }) %>
-<h1>💰 Последние 200 платежей</h1>
-<table>
-  <thead><tr>
-    <th>#</th><th>TG ID</th><th>Провайдер</th><th>Сумма</th><th>Статус</th><th>Создан</th><th>Оплачен</th>
-  </tr></thead>
-  <tbody>
-  <% rows.forEach(function(r){ %>
-    <tr>
-      <td><%= r.id %></td>
-      <td><%= r.tg_id %></td>
-      <td><%= r.provider %></td>
-      <td><%= r.amount %> <%= r.currency %></td>
-      <td class="status-<%= r.status %>"><%= r.status %></td>
-      <td><%= r.created_at %></td>
-      <td><%= r.paid_at || '—' %></td>
-    </tr>
-  <% }); %>
-  </tbody>
-</table>
-<%- include('../_footer') %>
+<%- include('../_layout_start', { title: 'Платежи', page: page }) %>
+
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-slate-900">Платежи</h1>
+    <p class="text-slate-500 text-sm mt-1">Последние 200 транзакций</p>
+  </div>
+
+  <% if (!rows.length) { %>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-10 text-center">
+      <div class="text-5xl mb-3">💭</div>
+      <p class="text-slate-500">Пока нет ни одного платежа</p>
+    </div>
+  <% } else { %>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider">
+            <tr>
+              <th class="px-4 py-3 text-left">#</th>
+              <th class="px-4 py-3 text-left">TG ID</th>
+              <th class="px-4 py-3 text-left">Провайдер</th>
+              <th class="px-4 py-3 text-right">Сумма</th>
+              <th class="px-4 py-3 text-left">Статус</th>
+              <th class="px-4 py-3 text-left">Создан</th>
+              <th class="px-4 py-3 text-left">Оплачен</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            <% rows.forEach(function(r){
+              var badge = {
+                paid:    'bg-emerald-50 text-emerald-700 border-emerald-200',
+                pending: 'bg-amber-50 text-amber-700 border-amber-200',
+                failed:  'bg-red-50 text-red-700 border-red-200',
+                refunded:'bg-slate-100 text-slate-600 border-slate-200'
+              }[r.status] || 'bg-slate-100 text-slate-600 border-slate-200';
+            %>
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3 font-mono text-xs text-slate-500">#<%= r.id %></td>
+                <td class="px-4 py-3 font-mono"><%= r.tg_id %></td>
+                <td class="px-4 py-3">
+                  <% if (r.provider==='platega') { %>
+                    <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded">💳 Platega</span>
+                  <% } else { %>
+                    <span class="inline-flex items-center gap-1 text-xs bg-purple-50 text-purple-700 px-2 py-0.5 rounded">🪙 CryptoBot</span>
+                  <% } %>
+                </td>
+                <td class="px-4 py-3 text-right font-medium"><%= r.amount %> <span class="text-slate-400"><%= r.currency %></span></td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center text-xs px-2 py-0.5 rounded border <%= badge %>"><%= r.status %></span>
+                </td>
+                <td class="px-4 py-3 text-xs text-slate-500"><%= r.created_at %></td>
+                <td class="px-4 py-3 text-xs text-slate-500"><%= r.paid_at || '—' %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% } %>
+
+<%- include('../_layout_end') %>
