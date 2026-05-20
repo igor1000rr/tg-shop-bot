@@ -90,6 +90,49 @@ async function registerAdmin(app) {
     return reply.render('admin/payments.ejs', { page: 'payments', rows });
   });
 
+  app.get('/admin/users', { preHandler: requireAuth }, async (req, reply) => {
+    const q = (req.query?.q || '').trim();
+    const params = [];
+    let where = '';
+    if (q) {
+      where = `WHERE u.username LIKE ? OR u.first_name LIKE ? OR CAST(u.tg_id AS TEXT) LIKE ?`;
+      const like = `%${q}%`;
+      params.push(like, like, like);
+    }
+    const rows = getDb().prepare(`
+      SELECT
+        u.tg_id,
+        u.username,
+        u.first_name,
+        u.created_at,
+        COALESCE(SUM(CASE WHEN p.status='paid'    THEN 1 ELSE 0 END), 0) AS paid_count,
+        COALESCE(SUM(CASE WHEN p.status='pending' THEN 1 ELSE 0 END), 0) AS pending_count,
+        COALESCE(SUM(CASE WHEN p.status='paid' AND p.currency='RUB'  THEN CAST(p.amount AS REAL) ELSE 0 END), 0) AS paid_rub,
+        COALESCE(SUM(CASE WHEN p.status='paid' AND p.currency='USDT' THEN CAST(p.amount AS REAL) ELSE 0 END), 0) AS paid_usdt,
+        MAX(p.paid_at) AS last_paid
+      FROM users u
+      LEFT JOIN payments p ON p.tg_id = u.tg_id
+      ${where}
+      GROUP BY u.tg_id
+      ORDER BY (CASE WHEN MAX(p.paid_at) IS NULL THEN 1 ELSE 0 END), MAX(p.paid_at) DESC, u.created_at DESC
+      LIMIT 300
+    `).all(...params);
+
+    const summary = getDb().prepare(`
+      SELECT
+        (SELECT COUNT(*) FROM users) AS total_users,
+        (SELECT COUNT(DISTINCT tg_id) FROM payments WHERE status='paid') AS paying_users,
+        (SELECT COUNT(*) FROM users WHERE created_at >= datetime('now','-1 day')) AS new_today
+    `).get();
+
+    return reply.render('admin/users.ejs', {
+      page: 'users',
+      rows,
+      summary,
+      q
+    });
+  });
+
   app.post('/admin/withdraw', { preHandler: requireAuth }, async (req, reply) => {
     try {
       const asset   = getSetting('withdraw_asset')   || 'USDT';

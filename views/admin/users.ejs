@@ -1,0 +1,120 @@
+<%- include('../_layout_start', { title: 'Пользователи', page: page }) %>
+
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-900">Пользователи</h1>
+      <p class="text-slate-500 text-sm mt-1">Все, кто запускал /start в боте</p>
+    </div>
+    <form method="GET" action="/admin/users" class="flex items-center gap-2">
+      <input type="text" name="q" value="<%= q %>" placeholder="Поиск: @username, имя или TG ID"
+             class="px-3 py-2 border border-slate-300 rounded-lg text-sm w-72 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+      <% if (q) { %>
+        <a href="/admin/users" class="text-sm text-slate-500 hover:text-slate-900">Сбросить</a>
+      <% } %>
+    </form>
+  </div>
+
+  <!-- KPI summary -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+      <div class="text-sm text-slate-500">Всего пользователей</div>
+      <div class="text-3xl font-bold text-slate-900 mt-2"><%= summary.total_users %></div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+      <div class="text-sm text-slate-500">Оплатили</div>
+      <div class="flex items-baseline gap-2 mt-2">
+        <div class="text-3xl font-bold text-emerald-600"><%= summary.paying_users %></div>
+        <% if (summary.total_users > 0) { %>
+          <div class="text-sm text-slate-400">(<%= Math.round(summary.paying_users / summary.total_users * 100) %>%)</div>
+        <% } %>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+      <div class="text-sm text-slate-500">Новых за 24 часа</div>
+      <div class="text-3xl font-bold text-slate-900 mt-2"><%= summary.new_today %></div>
+    </div>
+  </div>
+
+  <!-- Users table -->
+  <% if (!rows.length) { %>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-10 text-center">
+      <div class="text-5xl mb-3">👋</div>
+      <p class="text-slate-500">
+        <% if (q) { %>
+          Никто не найден по запросу «<%= q %>»
+        <% } else { %>
+          Пока никто не запускал бота. Как только первый клиент отправит /start — появится здесь.
+        <% } %>
+      </p>
+    </div>
+  <% } else { %>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider">
+            <tr>
+              <th class="px-4 py-3 text-left">Пользователь</th>
+              <th class="px-4 py-3 text-left">TG ID</th>
+              <th class="px-4 py-3 text-left">/start</th>
+              <th class="px-4 py-3 text-center">Оплат</th>
+              <th class="px-4 py-3 text-right">Сумма</th>
+              <th class="px-4 py-3 text-left">Последняя оплата</th>
+              <th class="px-4 py-3 text-left">Статус</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            <% rows.forEach(function(r){
+              var displayName = r.first_name || (r.username ? '@'+r.username : '—');
+              var paid = Number(r.paid_count) || 0;
+              var pending = Number(r.pending_count) || 0;
+              var rub = Number(r.paid_rub) || 0;
+              var usdt = Number(r.paid_usdt) || 0;
+            %>
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3">
+                  <div class="font-medium text-slate-900"><%= displayName %></div>
+                  <% if (r.username) { %>
+                    <a href="https://t.me/<%= r.username %>" target="_blank" class="text-xs text-brand-600 hover:underline">@<%= r.username %></a>
+                  <% } %>
+                </td>
+                <td class="px-4 py-3 font-mono text-xs text-slate-600"><%= r.tg_id %></td>
+                <td class="px-4 py-3 text-xs text-slate-500"><%= r.created_at %></td>
+                <td class="px-4 py-3 text-center">
+                  <% if (paid > 0) { %>
+                    <span class="inline-flex items-center gap-1 text-xs bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200">✓ <%= paid %></span>
+                  <% } else { %>
+                    <span class="text-xs text-slate-400">—</span>
+                  <% } %>
+                  <% if (pending > 0) { %>
+                    <span class="ml-1 inline-flex items-center gap-1 text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded border border-amber-200">⏳ <%= pending %></span>
+                  <% } %>
+                </td>
+                <td class="px-4 py-3 text-right text-sm">
+                  <% if (rub > 0) { %><div><%= rub.toFixed(0) %> <span class="text-slate-400 text-xs">₽</span></div><% } %>
+                  <% if (usdt > 0) { %><div><%= usdt.toFixed(2) %> <span class="text-slate-400 text-xs">USDT</span></div><% } %>
+                  <% if (rub === 0 && usdt === 0) { %><span class="text-slate-300">—</span><% } %>
+                </td>
+                <td class="px-4 py-3 text-xs text-slate-500"><%= r.last_paid || '—' %></td>
+                <td class="px-4 py-3">
+                  <% if (paid > 0) { %>
+                    <span class="inline-flex items-center text-xs bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200">клиент</span>
+                  <% } else if (pending > 0) { %>
+                    <span class="inline-flex items-center text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded border border-amber-200">в ожидании</span>
+                  <% } else { %>
+                    <span class="inline-flex items-center text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200">лид</span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <% if (rows.length >= 300) { %>
+        <div class="px-4 py-3 bg-slate-50 border-t border-slate-200 text-xs text-slate-500 text-center">
+          Показаны первые 300. Используйте поиск, чтобы найти конкретного пользователя.
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+
+<%- include('../_layout_end') %>
