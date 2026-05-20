@@ -1,0 +1,26 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Деплой на VPS через SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            set -e
+            cd /opt/tg-shop-bot
+            git fetch --all --prune
+            git reset --hard origin/main
+            npm install --omit=dev --no-audit --no-fund
+            sudo -n /usr/bin/systemctl restart tg-shop-bot
+            sleep 2
+            sudo -n /usr/bin/systemctl status tg-shop-bot --no-pager | head -25
