@@ -1,6 +1,6 @@
 {
   "name": "tg-shop-bot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Telegram-бот для продажи цифровых продуктов",
   "main": "src/index.js",
   "scripts": {

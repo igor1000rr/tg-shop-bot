@@ -7,9 +7,8 @@ const { registerLegal } = require('./legal');
 async function startServer(bot) {
   const app = Fastify({ logger: false, bodyLimit: 5 * 1024 * 1024 });
 
-  // Переопределяем JSON-парсер, чтобы сохранить req.rawBody для проверки
-  // HMAC-подписи webhook'ов. Без removeContentTypeParser Fastify бросит
-  // FST_ERR_CTP_ALREADY_PRESENT, т.к. application/json уже зарегистрирован по умолчанию.
+  // raw body для JSON — нужен для проверки HMAC-подписи CryptoBot.
+  // Без removeContentTypeParser Fastify бросит FST_ERR_CTP_ALREADY_PRESENT.
   app.removeContentTypeParser('application/json');
   app.addContentTypeParser('application/json', { parseAs: 'buffer' }, (req, body, done) => {
     try {
@@ -26,6 +25,7 @@ async function startServer(bot) {
   });
 
   app.get('/',               async (_, reply) => reply.redirect('/admin'));
+  app.get('/healthz',        async (_, reply) => reply.send({ ok: true, ts: new Date().toISOString() }));
   app.get('/return/success', async (_, reply) => reply.type('text/html; charset=utf-8').send('<h1>Оплата получена</h1><p>Вернитесь в Telegram-бот — доступ отправлен автоматически.</p>'));
   app.get('/return/fail',    async (_, reply) => reply.type('text/html; charset=utf-8').send('<h1>Оплата не прошла</h1><p>Попробуйте ещё раз в боте.</p>'));
 

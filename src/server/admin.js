@@ -18,7 +18,10 @@ async function registerAdmin(app, bot) {
     app.route({
       method: 'GET', url: '/admin',
       onRequest: app.basicAuth,
-      handler: async (_, reply) => reply.render('admin/dashboard.ejs', { stats: computeStats() })
+      handler: async (_, reply) => reply.render('admin/dashboard.ejs', {
+        stats: computeStats(),
+        publicUrl: process.env.PUBLIC_URL || '(PUBLIC_URL не задан)'
+      })
     });
 
     app.route({

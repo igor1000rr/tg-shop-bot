@@ -3,6 +3,8 @@ const { startBot } = require('./bot');
 const { startServer } = require('./server');
 const { initDb } = require('./db');
 const { startWithdrawCron } = require('./cron/withdraw');
+const { startPollCron }     = require('./cron/poll');
+const { startCleanupCron }  = require('./cron/cleanup');
 const logger = require('./utils/logger');
 
 let bot, app;
@@ -20,13 +22,15 @@ async function main() {
   logger.info(`HTTP сервер слушает порт ${process.env.PORT || 3000}`);
 
   startWithdrawCron(bot);
-  logger.info('Cron автовывода активен');
+  startPollCron(bot);
+  startCleanupCron();
+  logger.info('Cron активен: withdraw, poll (каждые 2 мин), cleanup (дневной)');
 }
 
 async function shutdown(signal) {
   logger.info(`Получен ${signal}, останавливаемся...`);
-  try { if (bot) await bot.stop(); }   catch (e) { logger.error('bot.stop:', e?.message); }
-  try { if (app) await app.close(); }  catch (e) { logger.error('app.close:', e?.message); }
+  try { if (bot) await bot.stop(); }  catch (e) { logger.error('bot.stop:', e?.message); }
+  try { if (app) await app.close(); } catch (e) { logger.error('app.close:', e?.message); }
   process.exit(0);
 }
 

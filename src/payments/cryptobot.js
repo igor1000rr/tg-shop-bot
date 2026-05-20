@@ -29,16 +29,18 @@ async function createCryptobotInvoice({ tgId, amountUsdt, description }) {
   };
 }
 
+async function getInvoiceStatus(invoiceId) {
+  const { data } = await client().get('/getInvoices', { params: { invoice_ids: invoiceId } });
+  if (!data.ok) return null;
+  return data.result?.items?.[0] || null;
+}
+
 async function getBalance() {
   const { data } = await client().get('/getBalance');
   if (!data.ok) throw new Error(`CryptoBot getBalance: ${JSON.stringify(data)}`);
   return data.result;
 }
 
-// ВАЖНО: публичный API CryptoBot НЕ поддерживает прямой вывод на внешний
-// blockchain-адрес. Метод /transfer работает только между юзерами CryptoBot.
-// Поэтому cron и admin-кнопка формируют уведомление в LOG_CHAT_ID,
-// а владелец выводит вручную через интерфейс @CryptoBot.
 function buildWithdrawNotice({ asset, amount, wallet, network }) {
   return [
     `💸 Накопилось <b>${amount} ${asset}</b> в CryptoBot.`,
@@ -58,6 +60,7 @@ function verifyCryptobotSignature(rawBody, signatureHeader) {
 
 module.exports = {
   createCryptobotInvoice,
+  getInvoiceStatus,
   getBalance,
   buildWithdrawNotice,
   verifyCryptobotSignature
