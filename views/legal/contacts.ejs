@@ -1,0 +1,13 @@
+<%- include('../_header', { title: 'Контакты' }) %>
+<div class="legal">
+<h1>Контакты</h1>
+<p>
+  <%= s.legal_entity_type %>: <strong><%= s.legal_name || '[ФИО / Название]' %></strong><br>
+  ИНН: <%= s.legal_inn || '[ИНН]' %><br>
+  <% if (s.legal_ogrn) { %>ОГРНИП / ОГРН: <%= s.legal_ogrn %><br><% } %>
+  Email: <% if (s.legal_email) { %><a href="mailto:<%= s.legal_email %>"><%= s.legal_email %></a><% } else { %>[email]<% } %><br>
+  Телефон: <%= s.legal_phone || '[телефон]' %><br>
+  <% if (s.legal_address) { %>Адрес: <%= s.legal_address %><% } %>
+</p>
+</div>
+<%- include('../_footer') %>

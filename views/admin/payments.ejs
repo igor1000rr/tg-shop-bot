@@ -1,0 +1,21 @@
+<%- include('../_header', { title: 'Платежи' }) %>
+<h1>💰 Последние 200 платежей</h1>
+<table>
+  <thead><tr>
+    <th>#</th><th>TG ID</th><th>Провайдер</th><th>Сумма</th><th>Статус</th><th>Создан</th><th>Оплачен</th>
+  </tr></thead>
+  <tbody>
+  <% rows.forEach(function(r){ %>
+    <tr>
+      <td><%= r.id %></td>
+      <td><%= r.tg_id %></td>
+      <td><%= r.provider %></td>
+      <td><%= r.amount %> <%= r.currency %></td>
+      <td class="status-<%= r.status %>"><%= r.status %></td>
+      <td><%= r.created_at %></td>
+      <td><%= r.paid_at || '—' %></td>
+    </tr>
+  <% }); %>
+  </tbody>
+</table>
+<%- include('../_footer') %>

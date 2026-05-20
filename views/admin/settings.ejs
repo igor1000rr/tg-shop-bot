@@ -1,0 +1,14 @@
+<%- include('../_header', { title: 'Настройки' }) %>
+<h1>⚙️ Настройки</h1>
+<form method="POST" action="/admin/settings">
+  <% keys.forEach(function(k){ %>
+    <label for="<%= k %>"><%= k %></label>
+    <% if (k.includes('description') || k.includes('text') || k === 'legal_address') { %>
+      <textarea name="<%= k %>" id="<%= k %>"><%= settings[k] || '' %></textarea>
+    <% } else { %>
+      <input type="text" name="<%= k %>" id="<%= k %>" value="<%= settings[k] || '' %>">
+    <% } %>
+  <% }); %>
+  <button type="submit">💾 Сохранить</button>
+</form>
+<%- include('../_footer') %>

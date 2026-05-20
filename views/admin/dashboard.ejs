@@ -1,0 +1,17 @@
+<%- include('../_header', { title: 'Дашборд' }) %>
+<h1>📊 Дашборд</h1>
+<h2>Статистика оплат</h2>
+<table>
+  <tr><th>Период</th><th>Кол-во</th><th>Сумма</th></tr>
+  <tr><td>Сегодня</td><td><%= stats.today.c %></td><td><%= stats.today.s.toFixed(2) %></td></tr>
+  <tr><td>7 дней</td><td><%= stats.week.c %></td><td><%= stats.week.s.toFixed(2) %></td></tr>
+  <tr><td>30 дней</td><td><%= stats.month.c %></td><td><%= stats.month.s.toFixed(2) %></td></tr>
+  <tr><td>Всего пользователей</td><td colspan="2"><%= stats.totalUsers %></td></tr>
+</table>
+
+<h2>💸 Автовывод крипты</h2>
+<p class="muted">Адрес кошелька и сеть берутся из переменных окружения (WITHDRAW_WALLET, WITHDRAW_NETWORK, WITHDRAW_ASSET).</p>
+<form method="POST" action="/admin/withdraw">
+  <button type="submit">Вывести крипту на Trust Wallet сейчас</button>
+</form>
+<%- include('../_footer') %>
