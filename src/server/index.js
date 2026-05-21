@@ -2,7 +2,6 @@ const Fastify = require('fastify');
 const path = require('path');
 const { registerWebhooks } = require('./webhooks');
 const { registerAdmin } = require('./admin');
-const { registerLegal } = require('./legal');
 
 async function startServer() {
   const app = Fastify({ logger: false, bodyLimit: 5 * 1024 * 1024 });
@@ -29,7 +28,6 @@ async function startServer() {
   app.get('/return/fail',    async (_, reply) => reply.type('text/html; charset=utf-8').send(returnPage('fail')));
 
   await registerWebhooks(app);
-  await registerLegal(app);
   await registerAdmin(app);
 
   await app.listen({ port: Number(process.env.PORT) || 3000, host: '0.0.0.0' });
