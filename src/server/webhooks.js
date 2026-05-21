@@ -1,13 +1,12 @@
 const { getDb } = require('../db');
 const { getSetting } = require('../config');
 const { verifyPlategaCallback } = require('../payments/platega');
-const { verifyWebhook: verifyCryptomus } = require('../payments/cryptomus');
+const { verifyCryptomusSignature } = require('../payments/cryptomus');
 const { issueAccess } = require('../utils/invite');
 const { getBot } = require('../bot');
 const logger = require('../utils/logger');
 
 async function registerWebhooks(app) {
-  // ===== Platega (карты) =====
   app.post('/webhook/platega', async (req, reply) => {
     if (!verifyPlategaCallback(req.headers)) {
       logger.warn('Platega callback: неверные креды');
@@ -33,58 +32,26 @@ async function registerWebhooks(app) {
     return reply.send({ ok: true });
   });
 
-  // ===== Cryptomus (крипта) =====
+  // Cryptomus webhook: сигнатура в самом боди (body.sign), проверяем через md5(base64(JSON) + apiKey)
   app.post('/webhook/cryptomus', async (req, reply) => {
-    if (!verifyCryptomus(req.body, 'payment')) {
+    if (!verifyCryptomusSignature(req.body)) {
       logger.warn('Cryptomus: неверная подпись');
       return reply.code(401).send({ error: 'bad signature' });
     }
-    const { uuid, order_id, status, amount, currency } = req.body || {};
-    const externalId = String(uuid || order_id);
-    const s = String(status || '').toLowerCase();
+    const { order_id, status } = req.body || {};
+    if (!order_id) return reply.code(400).send({ error: 'no order_id' });
 
-    try {
-      getDb().prepare(`UPDATE payments SET payload=? WHERE provider='cryptomus' AND external_id=?`)
-        .run(JSON.stringify({ status: s, amount, currency, at: new Date().toISOString() }), externalId);
-    } catch (e) { logger.warn('save callback:', e?.message); }
-
-    // Статусы Cryptomus: paid, paid_over (оплачено больше чем нужно), wrong_amount, fail, cancel, refund_paid, system_fail
-    if (s === 'paid' || s === 'paid_over') {
-      await markPaidAndIssue({ provider: 'cryptomus', externalId });
-      // После успешной оплаты — попробуем сразу вывести на внешний кошелёк (если включено)
-      setImmediate(() => {
-        require('../cron/withdraw').runWithdrawNow().catch(e =>
-          logger.warn('post-payment withdraw failed:', e?.message)
-        );
-      });
-    } else if (s === 'fail' || s === 'cancel' || s === 'system_fail' || s === 'wrong_amount') {
-      getDb().prepare(`UPDATE payments SET status='failed' WHERE provider='cryptomus' AND external_id=?`).run(externalId);
-    } else if (s === 'refund_paid') {
-      getDb().prepare(`UPDATE payments SET status='refunded' WHERE provider='cryptomus' AND external_id=?`).run(externalId);
-      await notifyLog(`⚠️ Возврат Cryptomus ${externalId}: ${amount} ${currency}`);
+    // Статусы Cryptomus: paid, paid_over, fail, cancel, system_fail, expired, wrong_amount, ...
+    if (status === 'paid' || status === 'paid_over') {
+      await markPaidAndIssue({ provider: 'cryptomus', externalId: String(order_id) });
+    } else if (['fail', 'cancel', 'system_fail', 'expired', 'wrong_amount'].includes(status)) {
+      getDb().prepare(`UPDATE payments SET status='failed' WHERE provider='cryptomus' AND external_id=?`).run(String(order_id));
     }
     return reply.send({ ok: true });
   });
 
-  // ===== Cryptomus payout webhook =====
-  app.post('/webhook/cryptomus-payout', async (req, reply) => {
-    if (!verifyCryptomus(req.body, 'payout')) {
-      logger.warn('Cryptomus payout: неверная подпись');
-      return reply.code(401).send({ error: 'bad signature' });
-    }
-    const { uuid, status, amount, currency, txid } = req.body || {};
-    const s = String(status || '').toLowerCase();
-    if (s === 'paid') {
-      await notifyLog(`✅ Автовывод выполнен: ${amount} ${currency}\nTx: <code>${txid || '—'}</code>`);
-    } else if (s === 'fail' || s === 'system_fail') {
-      await notifyLog(`⚠️ Автовывод не удался (${uuid}): ${amount} ${currency}\nСтатус: ${s}`);
-    }
-    return reply.send({ ok: true });
-  });
-
-  app.get('/webhook/platega',         async (_, reply) => reply.code(405).send({ method: 'POST only' }));
-  app.get('/webhook/cryptomus',       async (_, reply) => reply.code(405).send({ method: 'POST only' }));
-  app.get('/webhook/cryptomus-payout',async (_, reply) => reply.code(405).send({ method: 'POST only' }));
+  app.get('/webhook/platega',   async (_, reply) => reply.code(405).send({ method: 'POST only' }));
+  app.get('/webhook/cryptomus', async (_, reply) => reply.code(405).send({ method: 'POST only' }));
 }
 
 async function notifyLog(text) {

@@ -2,158 +2,93 @@ const axios = require('axios');
 const crypto = require('crypto');
 const { getSetting } = require('../config');
 
-// API: https://doc.cryptomus.com
+// Cryptomus Merchant API
+// Доки: https://doc.cryptomus.com/business
+// Автовывод настраивается в ЛК Cryptomus в разделе Payouts → Auto-Payouts:
+// определяешь процент/валюту/адрес и после каждой оплаты Cryptomus сам отправляет средства.
+// Мы просто принимаем оплаты и подпись вебхука.
+
 function baseUrl() {
-  return process.env.CRYPTOMUS_API_URL || 'https://api.cryptomus.com';
+  return process.env.CRYPTOMUS_API_URL || 'https://api.cryptomus.com/v1';
 }
 
-function sign(body, apiKey) {
-  // Подпись Cryptomus: md5( base64( JSON-боди ) + payment_api_key )
-  const json = JSON.stringify(body);
-  const b64  = Buffer.from(json, 'utf8').toString('base64');
-  return crypto.createHash('md5').update(b64 + apiKey).digest('hex');
+function sign(payloadObj, apiKey) {
+  const json = JSON.stringify(payloadObj);
+  const base64 = Buffer.from(json).toString('base64');
+  return crypto.createHash('md5').update(base64 + apiKey).digest('hex');
 }
 
-function merchantId() {
-  const v = getSetting('cryptomus_merchant_uuid');
-  if (!v) throw new Error('Cryptomus: Merchant UUID не задан в админке');
-  return v;
+function creds() {
+  const merchant = getSetting('cryptomus_merchant');
+  const apiKey   = getSetting('cryptomus_api_key');
+  if (!merchant || !apiKey) throw new Error('Cryptomus: merchant/api_key не заданы в админке');
+  return { merchant, apiKey };
 }
 
-function paymentApiKey() {
-  const v = getSetting('cryptomus_payment_api_key');
-  if (!v) throw new Error('Cryptomus: Payment API Key не задан в админке');
-  return v;
-}
-
-function payoutApiKey() {
-  // Отдельный ключ для автовывода. Необязательный: без него просто не работает payout.
-  return getSetting('cryptomus_payout_api_key') || null;
-}
-
-async function post(path, body, useApiKey) {
-  const url = `${baseUrl()}${path}`;
-  const signature = sign(body, useApiKey);
-  const { data } = await axios.post(url, body, {
+async function post(path, payloadObj) {
+  const { merchant, apiKey } = creds();
+  const signature = sign(payloadObj, apiKey);
+  const { data } = await axios.post(baseUrl() + path, payloadObj, {
     headers: {
-      'merchant':     merchantId(),
-      'sign':         signature,
+      'merchant': merchant,
+      'sign':     signature,
       'Content-Type': 'application/json'
     },
-    timeout: 15000
+    timeout: 20000
   });
   return data;
 }
 
-/**
- * Создать инвойс на оплату. Сумма в произвольной валюте (USD/USDT/RUB),
- * клиент выберет крипту на странице оплаты.
- */
-async function createCryptomusInvoice({ tgId, amount, currency = 'USD', description }) {
-  const orderId  = `tg-${tgId}-${Date.now()}`;
-  const callback = (process.env.PUBLIC_URL || '').replace(/\/$/, '');
-  const body = {
-    amount:       String(amount),
-    currency:     String(currency).toUpperCase(),
-    order_id:     orderId,
-    url_callback: `${callback}/webhook/cryptomus`,
-    url_return:   `${callback}/return/success`,
-    url_success:  `${callback}/return/success`,
+// Создаём инвойс. Клиент платит в USDT (либо в любой крипте по курсу), сумма фиксирована в USDT.
+async function createCryptomusInvoice({ tgId, amountUsdt, description }) {
+  // order_id должен быть уникальным в рамках merchant'а. Кладём tg_id + timestamp + 6 знаков случайных.
+  const orderId = `tg${tgId}-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
+  const publicUrl = process.env.PUBLIC_URL?.replace(/\/$/, '') || '';
+  const data = await post('/payment', {
+    amount:      String(amountUsdt),
+    currency:    'USDT',
+    order_id:    orderId,
+    url_callback: publicUrl ? `${publicUrl}/webhook/cryptomus` : undefined,
+    url_success:  publicUrl ? `${publicUrl}/return/success` : undefined,
+    url_return:   publicUrl ? `${publicUrl}/return/fail` : undefined,
     is_payment_multiple: false,
-    lifetime:     3600,
-    additional_data: JSON.stringify({ tg_id: tgId, description: description || 'Purchase' })
-  };
-
-  const data = await post('/v1/payment', body, paymentApiKey());
-  if (data?.state !== 0 || !data?.result?.url) {
-    throw new Error(`Cryptomus createInvoice: ${JSON.stringify(data)}`);
-  }
+    lifetime:    1800, // 30 минут
+    additional_data: description || ''
+  });
+  if (data?.state !== 0) throw new Error(`Cryptomus: ${JSON.stringify(data)}`);
   return {
     url:        data.result.url,
-    externalId: String(data.result.uuid),
-    orderId
+    externalId: orderId
   };
 }
 
-/**
- * Проверка статуса оплаты по uuid или order_id (poll-fallback).
- */
-async function getInvoiceStatus({ uuid, orderId }) {
-  const body = uuid ? { uuid } : { order_id: orderId };
-  const data = await post('/v1/payment/info', body, paymentApiKey());
-  if (data?.state !== 0) return null;
-  return data.result;
-}
-
-/**
- * Баланс аккаунта в Cryptomus.
- */
-async function getBalance() {
-  // При пустом body нужен просто {}, не undefined — иначе base64('undefined').
-  const data = await post('/v1/balance', {}, paymentApiKey());
-  if (data?.state !== 0) throw new Error(`Cryptomus balance: ${JSON.stringify(data)}`);
-  // result — это массив { merchant: [...], user: [...] }
-  return data.result;
-}
-
-/**
- * Создать payout (автовывод на внешний кошелёк). Требует payout API key.
- */
-async function createPayout({ amount, currency, network, address, orderId }) {
-  const key = payoutApiKey();
-  if (!key) throw new Error('Cryptomus: Payout API Key не задан в админке — автовывод невозможен');
-  const callback = (process.env.PUBLIC_URL || '').replace(/\/$/, '');
-  const body = {
-    amount:       String(amount),
-    currency:     String(currency).toUpperCase(),
-    network:      String(network).toUpperCase(),
-    order_id:     orderId || `payout-${Date.now()}`,
-    address:      String(address),
-    is_subtract:  '1',                  // комиссия вычитается из суммы
-    url_callback: `${callback}/webhook/cryptomus-payout`
-  };
-  const data = await post('/v1/payout', body, key);
-  if (data?.state !== 0) throw new Error(`Cryptomus payout: ${JSON.stringify(data)}`);
-  return data.result;
-}
-
-/**
- * Проверка подписи webhook. Алгоритм: md5( base64(json без поля sign) + api_key ).
- * Для payment-webhook используется payment_api_key, для payout — payout_api_key.
- */
-function verifyWebhook(body, kind = 'payment') {
-  if (!body || typeof body !== 'object') return false;
-  const incoming = body.sign;
-  if (!incoming) return false;
-  const key = kind === 'payout' ? payoutApiKey() : paymentApiKey();
-  if (!key) return false;
-  const copy = { ...body };
-  delete copy.sign;
-  const calc = sign(copy, key);
-  // Сравнение в const-time
+// Сверка статуса платежа (для poll-cron). По order_id.
+async function getCryptomusStatus(orderId) {
   try {
-    return crypto.timingSafeEqual(Buffer.from(incoming, 'hex'), Buffer.from(calc, 'hex'));
-  } catch { return false; }
+    const data = await post('/payment/info', { order_id: orderId });
+    if (data?.state !== 0) return null;
+    return data.result; // {payment_status: 'paid' | 'cancel' | 'process' | 'expired' | ...}
+  } catch (e) {
+    return null;
+  }
 }
 
-/**
- * Генерация текста уведомления при сбое автовывода или отсутствии payout-ключа.
- */
-function buildManualWithdrawNotice({ asset, amount, wallet, network, reason }) {
-  return [
-    `💸 Накопилось <b>${amount} ${asset}</b> в Cryptomus.`,
-    `Адрес: <code>${wallet}</code> (${network})`,
-    reason ? `\nПричина: ${reason}` : '',
-    ``,
-    `Выведи вручную: <a href="https://app.cryptomus.com/payouts">cryptomus.com/payouts</a>`
-  ].filter(Boolean).join('\n');
+// Проверка подписи вебхука. Cryptomus присылает сигнатуру в самом боди:
+//   body.sign = md5(base64(JSON без sign) + apiKey)
+function verifyCryptomusSignature(parsedBody) {
+  if (!parsedBody || typeof parsedBody !== 'object') return false;
+  const incoming = parsedBody.sign;
+  if (!incoming) return false;
+  const apiKey = getSetting('cryptomus_api_key');
+  if (!apiKey) return false;
+  const { sign: _omit, ...rest } = parsedBody;
+  const base64 = Buffer.from(JSON.stringify(rest)).toString('base64');
+  const calc = crypto.createHash('md5').update(base64 + apiKey).digest('hex');
+  return calc === incoming;
 }
 
 module.exports = {
   createCryptomusInvoice,
-  getInvoiceStatus,
-  getBalance,
-  createPayout,
-  verifyWebhook,
-  buildManualWithdrawNotice
+  getCryptomusStatus,
+  verifyCryptomusSignature
 };

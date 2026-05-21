@@ -33,12 +33,12 @@ function registerHandlers(bot) {
     const title       = escapeHtml(getSetting('offer_title'));
     const description = escapeHtml(getSetting('offer_description'));
     const priceRub    = escapeHtml(getSetting('price_rub'));
-    const priceUsd    = escapeHtml(getSetting('price_usd'));
+    const priceUsdt   = escapeHtml(getSetting('price_usdt'));
     const image       = getSetting('offer_image_url');
 
     const text =
       `<b>${title}</b>\n\n${description}\n\n` +
-      `💳 Карта: ${priceRub} ₽\n🪙 Крипто: ${priceUsd} USD (эквивалент в USDT/BTC/ETH/др.)\n\n` +
+      `💳 Карта: ${priceRub} ₽\n🪙 Крипто: ${priceUsdt} USDT\n\n` +
       `<i>Нажимая «Оплатить», вы принимаете условия Пользовательского соглашения и Политики конфиденциальности (кнопка «Информация»).</i>`;
 
     const opts = { parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: mainKeyboard() };
@@ -85,7 +85,10 @@ function registerHandlers(bot) {
   bot.command('info', async (ctx) => { saveUser(ctx); await showInfoMenu(ctx); });
   bot.command('help', async (ctx) => { saveUser(ctx); await showInfoMenu(ctx); });
 
-  bot.callbackQuery('info_menu', async (ctx) => { await ctx.answerCallbackQuery(); await showInfoMenu(ctx, true); });
+  bot.callbackQuery('info_menu', async (ctx) => {
+    await ctx.answerCallbackQuery();
+    await showInfoMenu(ctx, true);
+  });
 
   bot.callbackQuery('info_back', async (ctx) => {
     await ctx.answerCallbackQuery();
@@ -151,19 +154,18 @@ function registerHandlers(bot) {
     }
     await ctx.answerCallbackQuery();
     try {
-      const amountUsd = getSetting('price_usd');
+      const amountUsdt = getSetting('price_usdt');
       const { url, externalId } = await createCryptomusInvoice({
         tgId: ctx.from.id,
-        amount: amountUsd,
-        currency: 'USD',
+        amountUsdt,
         description: getSetting('offer_title')
       });
       getDb().prepare(`
         INSERT INTO payments (tg_id, provider, external_id, amount, currency, status)
-        VALUES (?, 'cryptomus', ?, ?, 'USD', 'pending')
-      `).run(ctx.from.id, externalId, amountUsd);
+        VALUES (?, 'cryptomus', ?, ?, 'USDT', 'pending')
+      `).run(ctx.from.id, externalId, amountUsdt);
       await ctx.reply(
-        `🪙 Ссылка для оплаты криптой:\n${url}\n\nНа странице выберите USDT, BTC, ETH или другую крипту. После оплаты доступ выдастся автоматически. Если не пришёл — /myaccess.`,
+        `🪙 Ссылка для оплаты криптой:\n${url}\n\nПосле оплаты вернитесь в бот — доступ выдастся автоматически. Если не пришёл — /myaccess.`,
         { disable_web_page_preview: true }
       );
     } catch (e) {
