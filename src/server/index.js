@@ -2,6 +2,7 @@ const Fastify = require('fastify');
 const path = require('path');
 const { registerWebhooks } = require('./webhooks');
 const { registerAdmin } = require('./admin');
+const { registerLanding } = require('./landing');
 
 async function startServer() {
   const app = Fastify({ logger: false, bodyLimit: 5 * 1024 * 1024 });
@@ -22,11 +23,11 @@ async function startServer() {
     propertyName: 'render'
   });
 
-  app.get('/',               async (_, reply) => reply.redirect('/admin'));
   app.get('/healthz',        async (_, reply) => reply.send({ ok: true, ts: new Date().toISOString() }));
   app.get('/return/success', async (_, reply) => reply.type('text/html; charset=utf-8').send(returnPage('success')));
   app.get('/return/fail',    async (_, reply) => reply.type('text/html; charset=utf-8').send(returnPage('fail')));
 
+  await registerLanding(app);
   await registerWebhooks(app);
   await registerAdmin(app);
 
