@@ -1,53 +1,96 @@
 const cron = require('node-cron');
-const { getBalance, buildWithdrawNotice } = require('../payments/cryptobot');
 const { getSetting } = require('../config');
+const { getBalance, createPayout, buildManualWithdrawNotice } = require('../payments/cryptomus');
 const { getBot } = require('../bot');
 const logger = require('../utils/logger');
 
-let activeTask = null;
+let task = null;
 
-function startWithdrawCron() {
-  reloadWithdrawCron();
+async function notifyLog(text) {
+  const bot = getBot();
+  const chat = getSetting('log_chat_id');
+  if (!bot || !chat) return;
+  try { await bot.api.sendMessage(chat, text, { parse_mode: 'HTML' }); }
+  catch (e) { logger.warn('notifyLog:', e?.message); }
 }
 
-function reloadWithdrawCron() {
-  if (activeTask) {
-    try { activeTask.stop(); } catch {}
-    activeTask = null;
-  }
-  const schedule = getSetting('withdraw_cron') || '0 3 * * *';
-  if (!cron.validate(schedule)) {
-    logger.warn(`Cron: невалидный withdraw_cron "${schedule}" — пропуск`);
+/**
+ * Главная логика автовывода. Вызывается по cron и после каждой успешной оплаты.
+ */
+async function runWithdrawNow() {
+  if (getSetting('withdraw_enabled') !== '1') return;
+
+  const asset     = (getSetting('withdraw_asset')   || 'USDT').toUpperCase();
+  const network   = (getSetting('withdraw_network') || 'TRON').toUpperCase();
+  const wallet    =  getSetting('withdraw_wallet');
+  const threshold = parseFloat(getSetting('withdraw_threshold') || '10');
+
+  if (!wallet) {
+    logger.warn('runWithdrawNow: адрес кошелька не задан');
     return;
   }
-  activeTask = cron.schedule(schedule, async () => {
-    try {
-      const wallet = getSetting('withdraw_wallet');
-      if (!wallet) return logger.info('Cron: withdraw_wallet не задан — пропуск');
-      if (!getSetting('cryptobot_token')) return logger.info('Cron: cryptobot_token пуст — пропуск');
 
-      const asset     = getSetting('withdraw_asset')    || 'USDT';
-      const network   = getSetting('withdraw_network')  || 'TRC20';
-      const threshold = Number(getSetting('withdraw_threshold') || 0);
+  let balances;
+  try {
+    balances = await getBalance();
+  } catch (e) {
+    logger.error('runWithdrawNow getBalance:', e?.response?.data || e?.message);
+    return;
+  }
 
-      const balances = await getBalance();
-      const bal = balances.find(b => b.currency_code === asset);
-      if (!bal) return logger.info(`Cron: нет баланса по ${asset}`);
-      const amount = Number(bal.available);
-      if (amount < threshold) return logger.info(`Cron: ${amount} ${asset} < ${threshold} — пропуск`);
+  // balance: { merchant: [{ currency_code, balance, ... }], user: [...] }
+  const merchantBalances = balances?.[0]?.balance?.merchant || balances?.merchant || [];
+  const row = merchantBalances.find(b => String(b.currency_code).toUpperCase() === asset);
+  if (!row) {
+    logger.info(`runWithdrawNow: нет баланса по ${asset}`);
+    return;
+  }
+  const balance = parseFloat(row.balance || '0');
+  if (balance < threshold) {
+    logger.info(`runWithdrawNow: баланс ${balance} ${asset} ниже порога ${threshold}`);
+    return;
+  }
 
-      const text = buildWithdrawNotice({ asset, amount, wallet, network });
-      const bot = getBot();
-      const logChat = getSetting('log_chat_id');
-      if (bot && logChat) {
-        await bot.api.sendMessage(logChat, text, { parse_mode: 'HTML' });
-      }
-      logger.info(`Cron: уведомление о выводе отправлено (${amount} ${asset})`);
-    } catch (e) {
-      logger.error('Cron withdraw error:', e?.response?.data || e.message);
-    }
-  });
-  logger.info(`Withdraw cron активен: ${schedule}`);
+  // Если payout-ключ не задан — идём по fallback: уведомление в лог-чат
+  if (!getSetting('cryptomus_payout_api_key')) {
+    await notifyLog(buildManualWithdrawNotice({
+      asset, amount: balance, wallet, network,
+      reason: 'Payout API Key не задан в админке'
+    }));
+    return;
+  }
+
+  try {
+    const result = await createPayout({
+      amount: balance,
+      currency: asset,
+      network,
+      address: wallet
+    });
+    logger.info(`Payout создан: ${balance} ${asset} → ${wallet} (uuid: ${result?.uuid})`);
+    await notifyLog(`💸 Автовывод в обработке: <b>${balance} ${asset}</b> → <code>${wallet}</code> (${network})\nСтатус придёт в следующем сообщении.`);
+  } catch (e) {
+    logger.error('createPayout:', e?.response?.data || e?.message);
+    await notifyLog(`⚠️ Не удалось создать payout (${balance} ${asset}):\n<code>${escapeForTg(e?.response?.data || e?.message)}</code>`);
+  }
 }
 
-module.exports = { startWithdrawCron, reloadWithdrawCron };
+function escapeForTg(v) {
+  const s = (typeof v === 'string') ? v : JSON.stringify(v);
+  return String(s).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+}
+
+function startWithdrawCron() {
+  const expr = getSetting('withdraw_cron') || '*/30 * * * *';
+  if (!cron.validate(expr)) {
+    logger.warn(`Withdraw cron: неверный формат "${expr}", не запускаем`);
+    return;
+  }
+  if (task) { try { task.stop(); } catch {} }
+  task = cron.schedule(expr, () => runWithdrawNow().catch(e => logger.error('withdraw cron:', e?.message)));
+  logger.info(`Withdraw cron активен: ${expr}`);
+}
+
+function reloadWithdrawCron() { startWithdrawCron(); }
+
+module.exports = { startWithdrawCron, reloadWithdrawCron, runWithdrawNow };

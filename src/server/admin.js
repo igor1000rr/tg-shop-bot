@@ -1,6 +1,9 @@
 const { getDb } = require('../db');
-const { getSetting, setSetting, getAllSettings, SETTINGS_META, GROUPS, SECRET_KEYS } = require('../config');
-const { getBalance, buildWithdrawNotice } = require('../payments/cryptobot');
+const { getSetting } = require('../config');
+const { getAllSettings, SETTINGS_META, GROUPS, SECRET_KEYS } = require('../config');
+const { setSetting } = require('../config');
+const { runWithdrawNow } = require('../cron/withdraw');
+const { getBalance } = require('../payments/cryptomus');
 const { getBot, getBotStatus, startBot, stopBot } = require('../bot');
 const { reloadWithdrawCron } = require('../cron/withdraw');
 const {
@@ -10,7 +13,6 @@ const {
 const logger = require('../utils/logger');
 
 async function registerAdmin(app) {
-  // Логин
   app.get('/admin/login', async (req, reply) => {
     return reply.render('admin/login.ejs', {
       from: req.query?.from || '/admin',
@@ -39,7 +41,6 @@ async function registerAdmin(app) {
     return reply.redirect('/admin/login');
   });
 
-  // Дальше — защищённые роуты
   app.get('/admin', { preHandler: requireAuth }, async (req, reply) => {
     return reply.render('admin/dashboard.ejs', {
       page: 'dashboard',
@@ -107,8 +108,8 @@ async function registerAdmin(app) {
         u.created_at,
         COALESCE(SUM(CASE WHEN p.status='paid'    THEN 1 ELSE 0 END), 0) AS paid_count,
         COALESCE(SUM(CASE WHEN p.status='pending' THEN 1 ELSE 0 END), 0) AS pending_count,
-        COALESCE(SUM(CASE WHEN p.status='paid' AND p.currency='RUB'  THEN CAST(p.amount AS REAL) ELSE 0 END), 0) AS paid_rub,
-        COALESCE(SUM(CASE WHEN p.status='paid' AND p.currency='USDT' THEN CAST(p.amount AS REAL) ELSE 0 END), 0) AS paid_usdt,
+        COALESCE(SUM(CASE WHEN p.status='paid' AND p.currency='RUB' THEN CAST(p.amount AS REAL) ELSE 0 END), 0) AS paid_rub,
+        COALESCE(SUM(CASE WHEN p.status='paid' AND p.currency='USD' THEN CAST(p.amount AS REAL) ELSE 0 END), 0) AS paid_usd,
         MAX(p.paid_at) AS last_paid
       FROM users u
       LEFT JOIN payments p ON p.tg_id = u.tg_id
@@ -125,42 +126,32 @@ async function registerAdmin(app) {
         (SELECT COUNT(*) FROM users WHERE created_at >= datetime('now','-1 day')) AS new_today
     `).get();
 
-    return reply.render('admin/users.ejs', {
-      page: 'users',
-      rows,
-      summary,
-      q
-    });
+    return reply.render('admin/users.ejs', { page: 'users', rows, summary, q });
   });
 
+  // Ручной запуск проверки баланса и вывода
   app.post('/admin/withdraw', { preHandler: requireAuth }, async (req, reply) => {
     try {
-      const asset   = getSetting('withdraw_asset')   || 'USDT';
-      const wallet  = getSetting('withdraw_wallet');
-      const network = getSetting('withdraw_network') || 'TRC20';
-      if (!wallet) throw new Error('Адрес Trust Wallet не задан в настройках');
-
       const balances = await getBalance();
-      const bal = balances.find(b => b.currency_code === asset);
-      if (!bal) throw new Error(`Нет баланса по ${asset}`);
-      const amount = Number(bal.available);
+      const asset = (getSetting('withdraw_asset') || 'USDT').toUpperCase();
+      const merchantBalances = balances?.[0]?.balance?.merchant || balances?.merchant || [];
+      const row = merchantBalances.find(b => String(b.currency_code).toUpperCase() === asset);
+      const balance = row ? parseFloat(row.balance || '0') : 0;
 
-      const text = buildWithdrawNotice({ asset, amount, wallet, network });
-      const bot = getBot();
-      const logChat = getSetting('log_chat_id');
-      if (bot && logChat) await bot.api.sendMessage(logChat, text, { parse_mode: 'HTML' });
+      // Запустим логику автовывода в фоне
+      setImmediate(() => runWithdrawNow().catch(e => logger.warn('manual withdraw:', e?.message)));
 
       return reply.render('admin/withdraw_result.ejs', {
         page: 'dashboard',
         success: true,
-        message: text.replace(/<[^>]+>/g, '')
+        message: `Текущий баланс: ${balance} ${asset}\nЗапущена проверка автовывода — результат придёт в лог-чат в боте.`
       });
     } catch (e) {
-      logger.error('Withdraw notify:', e?.response?.data || e.message);
+      logger.error('manual withdraw:', e?.response?.data || e.message);
       return reply.code(500).render('admin/withdraw_result.ejs', {
         page: 'dashboard',
         success: false,
-        message: e.message
+        message: typeof e?.response?.data === 'object' ? JSON.stringify(e.response.data) : (e?.message || String(e))
       });
     }
   });

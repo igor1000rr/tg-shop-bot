@@ -2,7 +2,7 @@ const { getDb } = require('../db');
 const { getSetting } = require('../config');
 const { mainKeyboard, infoKeyboard, backToInfoKeyboard } = require('./keyboards');
 const { createPlategaInvoice } = require('../payments/platega');
-const { createCryptobotInvoice } = require('../payments/cryptobot');
+const { createCryptomusInvoice } = require('../payments/cryptomus');
 const { issueAccess } = require('../utils/invite');
 const { checkRateLimit } = require('../utils/rateLimit');
 const { escapeHtml } = require('../utils/html');
@@ -17,7 +17,6 @@ function saveUser(ctx) {
   `).run(u.id, u.username || null, u.first_name || null);
 }
 
-// Безопасно ответить или отредактировать сообщение; если было фото (нельзя редактировать в текст) — вышлем новым.
 async function editOrSend(ctx, text, keyboard) {
   const opts = { parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: keyboard };
   try {
@@ -34,12 +33,12 @@ function registerHandlers(bot) {
     const title       = escapeHtml(getSetting('offer_title'));
     const description = escapeHtml(getSetting('offer_description'));
     const priceRub    = escapeHtml(getSetting('price_rub'));
-    const priceUsdt   = escapeHtml(getSetting('price_usdt'));
+    const priceUsd    = escapeHtml(getSetting('price_usd'));
     const image       = getSetting('offer_image_url');
 
     const text =
       `<b>${title}</b>\n\n${description}\n\n` +
-      `💳 Карта: ${priceRub} ₽\n🪙 Крипто: ${priceUsdt} USDT\n\n` +
+      `💳 Карта: ${priceRub} ₽\n🪙 Крипто: ${priceUsd} USD (эквивалент в USDT/BTC/ETH/др.)\n\n` +
       `<i>Нажимая «Оплатить», вы принимаете условия Пользовательского соглашения и Политики конфиденциальности (кнопка «Информация»).</i>`;
 
     const opts = { parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: mainKeyboard() };
@@ -77,7 +76,6 @@ function registerHandlers(bot) {
     }
   });
 
-  // Старый /help и новый /info ведут в одно меню
   const showInfoMenu = async (ctx, asEdit = false) => {
     const text = `ℹ️ <b>Информация</b>\n\nВыберите раздел:`;
     if (asEdit) return editOrSend(ctx, text, infoKeyboard());
@@ -87,14 +85,10 @@ function registerHandlers(bot) {
   bot.command('info', async (ctx) => { saveUser(ctx); await showInfoMenu(ctx); });
   bot.command('help', async (ctx) => { saveUser(ctx); await showInfoMenu(ctx); });
 
-  bot.callbackQuery('info_menu', async (ctx) => {
-    await ctx.answerCallbackQuery();
-    await showInfoMenu(ctx, true);
-  });
+  bot.callbackQuery('info_menu', async (ctx) => { await ctx.answerCallbackQuery(); await showInfoMenu(ctx, true); });
 
   bot.callbackQuery('info_back', async (ctx) => {
     await ctx.answerCallbackQuery();
-    // Возврат на главный экран: просто закрываем менюшку «Информация»
     try { await ctx.deleteMessage(); } catch {}
     await ctx.reply('Чтобы вернуться к покупке — /start');
   });
@@ -157,22 +151,23 @@ function registerHandlers(bot) {
     }
     await ctx.answerCallbackQuery();
     try {
-      const amountUsdt = getSetting('price_usdt');
-      const { url, externalId } = await createCryptobotInvoice({
+      const amountUsd = getSetting('price_usd');
+      const { url, externalId } = await createCryptomusInvoice({
         tgId: ctx.from.id,
-        amountUsdt,
+        amount: amountUsd,
+        currency: 'USD',
         description: getSetting('offer_title')
       });
       getDb().prepare(`
         INSERT INTO payments (tg_id, provider, external_id, amount, currency, status)
-        VALUES (?, 'cryptobot', ?, ?, 'USDT', 'pending')
-      `).run(ctx.from.id, externalId, amountUsdt);
+        VALUES (?, 'cryptomus', ?, ?, 'USD', 'pending')
+      `).run(ctx.from.id, externalId, amountUsd);
       await ctx.reply(
-        `🪙 Ссылка для оплаты криптой:\n${url}\n\nПосле оплаты вернитесь в бот — доступ выдастся автоматически. Если не пришёл — /myaccess.`,
+        `🪙 Ссылка для оплаты криптой:\n${url}\n\nНа странице выберите USDT, BTC, ETH или другую крипту. После оплаты доступ выдастся автоматически. Если не пришёл — /myaccess.`,
         { disable_web_page_preview: true }
       );
     } catch (e) {
-      logger.error('CryptoBot invoice error:', e?.response?.data || e?.message);
+      logger.error('Cryptomus invoice error:', e?.response?.data || e?.message);
       await ctx.reply('Не удалось создать счёт. Попробуйте позже или /info.');
     }
   });
