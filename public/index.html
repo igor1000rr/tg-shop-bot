@@ -42,7 +42,6 @@
     min-height:100vh;
   }
 
-  /* Театральный фон */
   body::before{
     content:'';
     position:fixed;
@@ -63,7 +62,6 @@
     z-index:1;
   }
 
-  /* Шум */
   .noise{
     position:fixed;
     inset:0;
@@ -74,10 +72,8 @@
     background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   }
 
-  /* Контейнеры */
   .container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:10}
 
-  /* Хедер */
   header{
     position:fixed;
     top:0;
@@ -91,11 +87,7 @@
     transition:padding 0.3s;
   }
   header.scrolled{padding:14px 0;background:rgba(10,6,8,0.95)}
-  .nav{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
+  .nav{display:flex;justify-content:space-between;align-items:center}
   .logo{
     font-family:'Playfair Display',serif;
     font-size:22px;
@@ -105,11 +97,7 @@
     text-decoration:none;
   }
   .logo span{color:var(--text)}
-  .nav-links{
-    display:flex;
-    gap:36px;
-    list-style:none;
-  }
+  .nav-links{display:flex;gap:36px;list-style:none}
   .nav-links a{
     color:var(--text-dim);
     text-decoration:none;
@@ -153,8 +141,21 @@
     z-index:3;
     pointer-events:none;
     opacity:0.55;
+    transition:opacity 0.6s;
   }
   .puppet-stage svg{width:100%;height:100%}
+
+  /* Three.js canvas — поверх SVG */
+  #puppet-canvas{
+    position:absolute;
+    inset:0;
+    z-index:4;
+    width:100%;
+    height:100%;
+    pointer-events:auto;
+    cursor:crosshair;
+  }
+  @media(max-width:820px){#puppet-canvas{display:none}}
 
   @keyframes sway1{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
   @keyframes sway2{0%,100%{transform:rotate(3deg)}50%{transform:rotate(-3deg)}}
@@ -165,10 +166,7 @@
     50%{transform:translateX(8px) translateY(2px) rotate(1.5deg)}
     75%{transform:translateX(-4px) translateY(-1px) rotate(-0.8deg)}
   }
-  @keyframes spotlight{
-    0%,100%{opacity:0.4}
-    50%{opacity:0.6}
-  }
+  @keyframes spotlight{0%,100%{opacity:0.4}50%{opacity:0.6}}
 
   .puppet-1{animation:sway1 5.5s ease-in-out infinite;transform-origin:50% 0%}
   .puppet-2{animation:sway2 6.8s ease-in-out infinite;transform-origin:50% 0%}
@@ -176,11 +174,8 @@
   .puppeteer-hand{animation:handMove 9s ease-in-out infinite;transform-origin:50% 0%}
   .spotlight{animation:spotlight 4s ease-in-out infinite}
 
-  .hero-content{
-    position:relative;
-    z-index:10;
-    max-width:920px;
-  }
+  .hero-content{position:relative;z-index:10;max-width:920px;pointer-events:none}
+  .hero-content a,.hero-content button{pointer-events:auto}
   .hero-tagline{
     display:inline-block;
     font-size:11px;
@@ -205,13 +200,9 @@
     color:var(--text);
     opacity:0;
     animation:fadeUp 1s 0.6s forwards;
+    text-shadow:0 4px 30px rgba(10,6,8,0.9);
   }
-  .hero h1 em{
-    font-style:italic;
-    color:var(--accent-gold);
-    font-weight:400;
-    position:relative;
-  }
+  .hero h1 em{font-style:italic;color:var(--accent-gold);font-weight:400}
   .hero-sub{
     font-size:clamp(16px, 2vw, 20px);
     color:var(--text-dim);
@@ -220,6 +211,7 @@
     line-height:1.75;
     opacity:0;
     animation:fadeUp 1s 0.9s forwards;
+    text-shadow:0 2px 20px rgba(10,6,8,0.9);
   }
   .cta-group{
     display:flex;
@@ -247,10 +239,7 @@
     position:relative;
     overflow:hidden;
   }
-  .btn-primary{
-    background:var(--accent-gold);
-    color:var(--bg-deep);
-  }
+  .btn-primary{background:var(--accent-gold);color:var(--bg-deep)}
   .btn-primary::before{
     content:'';
     position:absolute;
@@ -265,25 +254,13 @@
     transform:translateY(-2px);
     box-shadow:0 12px 40px rgba(200,165,96,0.35);
   }
-  .btn-secondary{
-    background:transparent;
-    color:var(--text);
-    border:1px solid var(--border);
-  }
-  .btn-secondary:hover{
-    border-color:var(--accent-gold);
-    color:var(--accent-gold);
-    background:rgba(200,165,96,0.05);
-  }
+  .btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .btn-secondary:hover{border-color:var(--accent-gold);color:var(--accent-gold);background:rgba(200,165,96,0.05)}
   .btn-arrow{transition:transform 0.3s}
   .btn:hover .btn-arrow{transform:translateX(4px)}
 
-  @keyframes fadeUp{
-    from{opacity:0;transform:translateY(40px)}
-    to{opacity:1;transform:translateY(0)}
-  }
+  @keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
 
-  /* Скролл-индикатор */
   .scroll-hint{
     position:absolute;
     bottom:36px;
@@ -299,6 +276,7 @@
     flex-direction:column;
     align-items:center;
     gap:8px;
+    pointer-events:none;
   }
   .scroll-hint::after{
     content:'';
@@ -311,12 +289,27 @@
     50%{transform:translateX(-50%) translateY(8px);opacity:1}
   }
 
-  /* Секции */
-  section{
-    padding:120px 0;
-    position:relative;
-    z-index:5;
+  .interactive-hint{
+    position:absolute;
+    bottom:36px;
+    right:36px;
+    color:var(--accent-gold-dim);
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    z-index:10;
+    opacity:0;
+    animation:fadeIn 1s 2.5s forwards;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-style:italic;
+    pointer-events:none;
   }
+  @keyframes fadeIn{from{opacity:0}to{opacity:0.7}}
+  @media(max-width:820px){.interactive-hint{display:none}}
+
+  section{padding:120px 0;position:relative;z-index:5}
   .section-label{
     display:flex;
     align-items:center;
@@ -329,12 +322,7 @@
     margin-bottom:20px;
   }
   .section-label::before,
-  .section-label::after{
-    content:'';
-    width:40px;
-    height:1px;
-    background:var(--accent-gold-dim);
-  }
+  .section-label::after{content:'';width:40px;height:1px;background:var(--accent-gold-dim)}
   .section-title{
     font-family:'Playfair Display',serif;
     font-size:clamp(36px, 5.5vw, 60px);
@@ -344,10 +332,7 @@
     line-height:1.15;
     letter-spacing:-0.5px;
   }
-  .section-title em{
-    font-style:italic;
-    color:var(--accent-gold);
-  }
+  .section-title em{font-style:italic;color:var(--accent-gold)}
   .section-sub{
     text-align:center;
     color:var(--text-dim);
@@ -357,7 +342,6 @@
     line-height:1.7;
   }
 
-  /* Программа */
   .program-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(290px, 1fr));
@@ -405,13 +389,8 @@
     color:var(--text);
     line-height:1.3;
   }
-  .module-card p{
-    color:var(--text-dim);
-    font-size:15px;
-    line-height:1.75;
-  }
+  .module-card p{color:var(--text-dim);font-size:15px;line-height:1.75}
 
-  /* Отзывы */
   .reviews-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
@@ -465,11 +444,7 @@
     color:var(--accent-gold);
   }
   .platform-icon svg{width:16px;height:16px}
-  .review-rating{
-    color:var(--accent-gold);
-    font-size:14px;
-    letter-spacing:1px;
-  }
+  .review-rating{color:var(--accent-gold);font-size:14px;letter-spacing:1px}
   .review-text{
     font-style:italic;
     color:var(--text);
@@ -497,11 +472,7 @@
     padding-top:20px;
     border-top:1px solid var(--border);
   }
-  .author-info{
-    display:flex;
-    align-items:center;
-    gap:12px;
-  }
+  .author-info{display:flex;align-items:center;gap:12px}
   .review-avatar{
     width:42px;
     height:42px;
@@ -515,16 +486,8 @@
     font-size:13px;
     flex-shrink:0;
   }
-  .review-name{
-    font-size:14px;
-    font-weight:500;
-    color:var(--text);
-  }
-  .review-handle{
-    font-size:12px;
-    color:var(--text-mute);
-    margin-top:2px;
-  }
+  .review-name{font-size:14px;font-weight:500;color:var(--text)}
+  .review-handle{font-size:12px;color:var(--text-mute);margin-top:2px}
   .review-link{
     display:inline-flex;
     align-items:center;
@@ -537,12 +500,7 @@
   }
   .review-card:hover .review-link{transform:translateX(3px)}
 
-  /* CTA-секция */
-  .cta-section{
-    text-align:center;
-    padding:140px 24px;
-    position:relative;
-  }
+  .cta-section{text-align:center;padding:140px 24px;position:relative}
   .cta-section::before{
     content:'';
     position:absolute;
@@ -563,27 +521,10 @@
     letter-spacing:-0.5px;
   }
   .cta-section h2 em{font-style:italic;color:var(--accent-gold)}
-  .cta-section p{
-    color:var(--text-dim);
-    font-size:18px;
-    max-width:580px;
-    margin:0 auto 44px;
-    line-height:1.7;
-  }
+  .cta-section p{color:var(--text-dim);font-size:18px;max-width:580px;margin:0 auto 44px;line-height:1.7}
 
-  /* Футер */
-  footer{
-    border-top:1px solid var(--border);
-    padding:60px 0 40px;
-    position:relative;
-    z-index:5;
-  }
-  .footer-grid{
-    display:grid;
-    grid-template-columns:1.5fr 1fr 1fr;
-    gap:48px;
-    margin-bottom:48px;
-  }
+  footer{border-top:1px solid var(--border);padding:60px 0 40px;position:relative;z-index:5}
+  .footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:48px;margin-bottom:48px}
   @media(max-width:768px){.footer-grid{grid-template-columns:1fr;gap:36px}}
   .footer-col h4{
     font-family:'Playfair Display',serif;
@@ -593,11 +534,7 @@
     color:var(--accent-gold);
     letter-spacing:0.3px;
   }
-  .footer-col p{
-    color:var(--text-dim);
-    font-size:14px;
-    line-height:1.8;
-  }
+  .footer-col p{color:var(--text-dim);font-size:14px;line-height:1.8}
   .footer-col ul{list-style:none}
   .footer-col li{margin-bottom:10px}
   .footer-col a{
@@ -624,13 +561,12 @@
   }
   @media(max-width:600px){.footer-bottom{justify-content:center;text-align:center}}
 
-  /* Reveal-анимации при скролле */
   .reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s, transform 0.8s}
   .reveal.visible{opacity:1;transform:translateY(0)}
 
   @media(prefers-reduced-motion:reduce){
     .puppet-1,.puppet-2,.puppet-3,.puppeteer-hand,.spotlight,
-    .scroll-hint,.hero-tagline,.hero h1,.hero-sub,.cta-group{
+    .scroll-hint,.hero-tagline,.hero h1,.hero-sub,.cta-group,.interactive-hint{
       animation:none !important;
       opacity:1 !important;
       transform:none !important;
@@ -656,11 +592,14 @@
   </div>
 </header>
 
-<!-- HERO -->
 <section class="hero">
+
+  <!-- Three.js сцена (если доступна) -->
+  <canvas id="puppet-canvas"></canvas>
+
+  <!-- SVG-fallback на случай если Three.js не загрузится -->
   <div class="puppet-stage">
     <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <!-- Прожекторные пятна -->
       <defs>
         <radialGradient id="spot" cx="50%" cy="0%" r="60%">
           <stop offset="0%" stop-color="#c8a560" stop-opacity="0.15"/>
@@ -670,8 +609,6 @@
       <ellipse class="spotlight" cx="400" cy="0" rx="200" ry="500" fill="url(#spot)"/>
       <ellipse class="spotlight" cx="650" cy="0" rx="200" ry="500" fill="url(#spot)" style="animation-delay:1.5s"/>
       <ellipse class="spotlight" cx="900" cy="0" rx="200" ry="500" fill="url(#spot)" style="animation-delay:3s"/>
-
-      <!-- Рука кукловода -->
       <g class="puppeteer-hand">
         <ellipse cx="600" cy="-20" rx="80" ry="60" fill="#1a0a14" stroke="#c8a560" stroke-width="1" stroke-opacity="0.5"/>
         <path d="M540 30 Q545 50 555 60 M580 35 Q585 55 590 65 M620 35 Q615 55 610 65 M660 30 Q655 50 645 60" stroke="#c8a560" stroke-width="2" stroke-opacity="0.5" fill="none" stroke-linecap="round"/>
@@ -679,83 +616,29 @@
         <line x1="550" y1="80" x2="750" y2="80" stroke="#c8a560" stroke-width="1.5" stroke-opacity="0.4"/>
         <line x1="800" y1="80" x2="1000" y2="80" stroke="#c8a560" stroke-width="1.5" stroke-opacity="0.4"/>
       </g>
-
-      <!-- Кукла 1: слева -->
       <g class="puppet-1">
         <line x1="350" y1="80" x2="370" y2="280" stroke="#c8a560" stroke-width="0.5" stroke-opacity="0.5"/>
         <line x1="450" y1="80" x2="430" y2="280" stroke="#c8a560" stroke-width="0.5" stroke-opacity="0.5"/>
-        <line x1="380" y1="80" x2="370" y2="380" stroke="#c8a560" stroke-width="0.5" stroke-opacity="0.3"/>
-        <line x1="420" y1="80" x2="430" y2="380" stroke="#c8a560" stroke-width="0.5" stroke-opacity="0.3"/>
         <circle cx="400" cy="320" r="45" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
         <circle cx="385" cy="315" r="4" fill="#c8a560"/>
         <circle cx="415" cy="315" r="4" fill="#c8a560"/>
-        <path d="M385 340 Q400 348 415 340" stroke="#c8a560" stroke-width="1.5" fill="none"/>
         <rect x="375" y="255" width="50" height="35" fill="#5a1325" stroke="#c8a560" stroke-width="1"/>
-        <ellipse cx="400" cy="290" rx="35" ry="5" fill="#5a1325" stroke="#c8a560" stroke-width="1"/>
         <path d="M370 365 L430 365 L420 470 L380 470 Z" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
-        <line x1="370" y1="375" x2="340" y2="430" stroke="#c8a560" stroke-width="2.5"/>
-        <line x1="430" y1="375" x2="460" y2="430" stroke="#c8a560" stroke-width="2.5"/>
-        <circle cx="340" cy="430" r="6" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
-        <circle cx="460" cy="430" r="6" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
-        <line x1="385" y1="470" x2="375" y2="540" stroke="#c8a560" stroke-width="2.5"/>
-        <line x1="415" y1="470" x2="425" y2="540" stroke="#c8a560" stroke-width="2.5"/>
-        <ellipse cx="375" cy="545" rx="10" ry="4" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
-        <ellipse cx="425" cy="545" rx="10" ry="4" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
       </g>
-
-      <!-- Кукла 2: центр -->
       <g class="puppet-2">
         <line x1="620" y1="80" x2="615" y2="280" stroke="#c8a560" stroke-width="0.5" stroke-opacity="0.5"/>
         <line x1="680" y1="80" x2="685" y2="280" stroke="#c8a560" stroke-width="0.5" stroke-opacity="0.5"/>
-        <line x1="630" y1="80" x2="615" y2="380" stroke="#c8a560" stroke-width="0.5" stroke-opacity="0.3"/>
-        <line x1="670" y1="80" x2="685" y2="380" stroke="#c8a560" stroke-width="0.5" stroke-opacity="0.3"/>
         <ellipse cx="650" cy="320" rx="42" ry="48" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
-        <path d="M620 270 L650 285 L680 270 L670 290 L650 295 L630 290 Z" fill="#5a1325" stroke="#c8a560" stroke-width="1"/>
         <circle cx="638" cy="320" r="5" fill="#c8a560"/>
         <circle cx="662" cy="320" r="5" fill="#c8a560"/>
-        <line x1="630" y1="312" x2="625" y2="308" stroke="#c8a560" stroke-width="1"/>
-        <line x1="670" y1="312" x2="675" y2="308" stroke="#c8a560" stroke-width="1"/>
-        <circle cx="625" cy="340" r="4" fill="#5a1325" opacity="0.6"/>
-        <circle cx="675" cy="340" r="4" fill="#5a1325" opacity="0.6"/>
-        <path d="M635 348 Q650 358 665 348" stroke="#c8a560" stroke-width="1.5" fill="none"/>
         <path d="M615 370 L685 370 L710 500 L590 500 Z" fill="#5a1325" stroke="#c8a560" stroke-width="1.5"/>
-        <line x1="615" y1="380" x2="580" y2="440" stroke="#c8a560" stroke-width="2.5"/>
-        <line x1="685" y1="380" x2="720" y2="440" stroke="#c8a560" stroke-width="2.5"/>
-        <circle cx="580" cy="440" r="6" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
-        <circle cx="720" cy="440" r="6" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
-        <line x1="630" y1="500" x2="620" y2="570" stroke="#c8a560" stroke-width="2.5"/>
-        <line x1="670" y1="500" x2="680" y2="570" stroke="#c8a560" stroke-width="2.5"/>
-        <ellipse cx="620" cy="575" rx="10" ry="4" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
-        <ellipse cx="680" cy="575" rx="10" ry="4" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
       </g>
-
-      <!-- Кукла 3: справа -->
       <g class="puppet-3">
         <line x1="850" y1="80" x2="870" y2="280" stroke="#c8a560" stroke-width="0.5" stroke-opacity="0.5"/>
         <line x1="950" y1="80" x2="930" y2="280" stroke="#c8a560" stroke-width="0.5" stroke-opacity="0.5"/>
-        <line x1="880" y1="80" x2="870" y2="380" stroke="#c8a560" stroke-width="0.5" stroke-opacity="0.3"/>
-        <line x1="920" y1="80" x2="930" y2="380" stroke="#c8a560" stroke-width="0.5" stroke-opacity="0.3"/>
         <rect x="855" y="280" width="90" height="80" rx="8" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
         <path d="M870 285 L900 240 L930 285 Z" fill="#5a1325" stroke="#c8a560" stroke-width="1.5"/>
-        <circle cx="900" cy="240" r="4" fill="#c8a560"/>
-        <line x1="875" y1="310" x2="885" y2="320" stroke="#c8a560" stroke-width="2"/>
-        <line x1="885" y1="310" x2="875" y2="320" stroke="#c8a560" stroke-width="2"/>
-        <line x1="915" y1="310" x2="925" y2="320" stroke="#c8a560" stroke-width="2"/>
-        <line x1="925" y1="310" x2="915" y2="320" stroke="#c8a560" stroke-width="2"/>
-        <path d="M895 330 L905 330 L900 340 Z" fill="#c8a560"/>
-        <path d="M880 350 Q900 355 920 350" stroke="#c8a560" stroke-width="1.5" fill="none"/>
         <path d="M870 360 L930 360 L940 480 L860 480 Z" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
-        <circle cx="900" cy="395" r="3" fill="#c8a560"/>
-        <circle cx="900" cy="420" r="3" fill="#c8a560"/>
-        <circle cx="900" cy="445" r="3" fill="#c8a560"/>
-        <line x1="870" y1="370" x2="835" y2="440" stroke="#c8a560" stroke-width="2.5"/>
-        <line x1="930" y1="370" x2="965" y2="440" stroke="#c8a560" stroke-width="2.5"/>
-        <circle cx="835" cy="440" r="6" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
-        <circle cx="965" cy="440" r="6" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
-        <line x1="880" y1="480" x2="870" y2="550" stroke="#c8a560" stroke-width="2.5"/>
-        <line x1="920" y1="480" x2="930" y2="550" stroke="#c8a560" stroke-width="2.5"/>
-        <ellipse cx="870" cy="555" rx="10" ry="4" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
-        <ellipse cx="930" cy="555" rx="10" ry="4" fill="#2a1620" stroke="#c8a560" stroke-width="1.5"/>
       </g>
     </svg>
   </div>
@@ -774,9 +657,9 @@
   </div>
 
   <div class="scroll-hint">scroll</div>
+  <div class="interactive-hint">↑ подвигай мышью или кликни по куклам</div>
 </section>
 
-<!-- ПРОГРАММА -->
 <section id="program">
   <div class="container">
     <div class="section-label reveal">Программа курса</div>
@@ -821,7 +704,6 @@
   </div>
 </section>
 
-<!-- ОТЗЫВЫ -->
 <section id="reviews">
   <div class="container">
     <div class="section-label reveal">Голоса учеников</div>
@@ -833,7 +715,6 @@
 
     <div class="reviews-grid">
 
-      <!-- INSTAGRAM -->
       <a href="https://www.instagram.com/" target="_blank" rel="noopener" class="review-card reveal">
         <div class="review-platform">
           <div class="platform-badge">
@@ -864,7 +745,6 @@
         </div>
       </a>
 
-      <!-- TIKTOK -->
       <a href="https://www.tiktok.com/" target="_blank" rel="noopener" class="review-card reveal">
         <div class="review-platform">
           <div class="platform-badge">
@@ -893,7 +773,6 @@
         </div>
       </a>
 
-      <!-- YOUTUBE -->
       <a href="https://www.youtube.com/" target="_blank" rel="noopener" class="review-card reveal">
         <div class="review-platform">
           <div class="platform-badge">
@@ -922,7 +801,6 @@
         </div>
       </a>
 
-      <!-- TELEGRAM -->
       <a href="https://t.me/" target="_blank" rel="noopener" class="review-card reveal">
         <div class="review-platform">
           <div class="platform-badge">
@@ -951,7 +829,6 @@
         </div>
       </a>
 
-      <!-- VK -->
       <a href="https://vk.com/" target="_blank" rel="noopener" class="review-card reveal">
         <div class="review-platform">
           <div class="platform-badge">
@@ -980,7 +857,6 @@
         </div>
       </a>
 
-      <!-- REDDIT -->
       <a href="https://www.reddit.com/" target="_blank" rel="noopener" class="review-card reveal">
         <div class="review-platform">
           <div class="platform-badge">
@@ -1013,7 +889,6 @@
   </div>
 </section>
 
-<!-- CTA -->
 <section class="cta-section">
   <div class="container">
     <h2>Поднять <em>занавес?</em></h2>
@@ -1025,7 +900,6 @@
   </div>
 </section>
 
-<!-- ФУТЕР -->
 <footer id="contact">
   <div class="container">
     <div class="footer-grid">
@@ -1055,6 +929,10 @@
   </div>
 </footer>
 
+<!-- Three.js + сцена с марионетками -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js" crossorigin="anonymous"></script>
+<script src="/puppet-scene.js" defer></script>
+
 <script>
   // Header shrink on scroll
   const header = document.getElementById('site-header');
@@ -1068,7 +946,6 @@
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e, i) => {
         if (e.isIntersecting) {
-          // Лёгкая задержка для каскадного эффекта в гридах
           const delay = e.target.closest('.program-grid, .reviews-grid') ? i * 80 : 0;
           setTimeout(() => e.target.classList.add('visible'), delay);
           io.unobserve(e.target);
@@ -1080,7 +957,6 @@
     reveals.forEach(el => el.classList.add('visible'));
   }
 
-  // Smooth scroll для якорей
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', (ev) => {
       const id = a.getAttribute('href');
