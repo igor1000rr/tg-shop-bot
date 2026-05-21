@@ -10,11 +10,26 @@ function mainKeyboard() {
   const kb = new InlineKeyboard();
   if (getSetting('enable_card')   === '1') kb.text('💳 Оплатить картой',  'pay_card').row();
   if (getSetting('enable_crypto') === '1') kb.text('🪙 Оплатить криптой', 'pay_crypto').row();
-  const base = publicUrl();
-  if (base) {
-    kb.url('📜 Оферта', `${base}/terms`).url('🔒 Политика', `${base}/privacy`);
-  }
+  kb.text('ℹ️ Информация', 'info_menu');
   return kb;
 }
 
-module.exports = { mainKeyboard, publicUrl };
+function infoKeyboard() {
+  const kb = new InlineKeyboard();
+  kb.text('📜 Пользовательское соглашение', 'info_terms').row();
+  kb.text('🔒 Политика конфиденциальности', 'info_privacy').row();
+  const supportUrl = getSetting('doc_support_url');
+  if (supportUrl && /^https?:\/\//.test(supportUrl)) {
+    kb.url('💬 Написать в поддержку', supportUrl).row();
+  } else {
+    kb.text('💬 Поддержка', 'info_support').row();
+  }
+  kb.text('« Назад', 'info_back');
+  return kb;
+}
+
+function backToInfoKeyboard() {
+  return new InlineKeyboard().text('« Назад', 'info_menu');
+}
+
+module.exports = { mainKeyboard, infoKeyboard, backToInfoKeyboard, publicUrl };
