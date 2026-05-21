@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0608">
 <title>Cartoon Academy — школа AI-анимации</title>
 <meta name="description" content="Школа создания мультфильмов с помощью нейросетей. Курсы по Midjourney, Runway, Kling и ElevenLabs.">
 <meta property="og:title" content="Cartoon Academy">
@@ -31,7 +32,7 @@
     --border:rgba(200,165,96,0.18);
     --border-bright:rgba(200,165,96,0.4);
   }
-  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%}
   body{
     background:var(--bg-deep);
     color:var(--text);
@@ -40,6 +41,7 @@
     line-height:1.7;
     overflow-x:hidden;
     min-height:100vh;
+    -webkit-tap-highlight-color:transparent;
   }
 
   body::before{
@@ -85,6 +87,7 @@
     backdrop-filter:blur(12px);
     -webkit-backdrop-filter:blur(12px);
     transition:padding 0.3s;
+    padding-top:max(20px, env(safe-area-inset-top));
   }
   header.scrolled{padding:14px 0;background:rgba(10,6,8,0.95)}
   .nav{display:flex;justify-content:space-between;align-items:center}
@@ -126,6 +129,7 @@
   /* Hero */
   .hero{
     min-height:100vh;
+    min-height:100svh;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -154,8 +158,13 @@
     height:100%;
     pointer-events:auto;
     cursor:crosshair;
+    touch-action:pan-y;
+    -webkit-user-select:none;
+    user-select:none;
   }
-  @media(max-width:820px){#puppet-canvas{display:none}}
+  @media(hover:none){
+    #puppet-canvas{cursor:default}
+  }
 
   @keyframes sway1{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
   @keyframes sway2{0%,100%{transform:rotate(3deg)}50%{transform:rotate(-3deg)}}
@@ -192,7 +201,7 @@
   }
   .hero h1{
     font-family:'Playfair Display',serif;
-    font-size:clamp(44px, 8vw, 100px);
+    font-size:clamp(40px, 8vw, 100px);
     font-weight:700;
     line-height:1.05;
     letter-spacing:-1.5px;
@@ -200,18 +209,18 @@
     color:var(--text);
     opacity:0;
     animation:fadeUp 1s 0.6s forwards;
-    text-shadow:0 4px 30px rgba(10,6,8,0.9);
+    text-shadow:0 4px 30px rgba(10,6,8,0.95), 0 2px 12px rgba(10,6,8,0.9);
   }
   .hero h1 em{font-style:italic;color:var(--accent-gold);font-weight:400}
   .hero-sub{
-    font-size:clamp(16px, 2vw, 20px);
+    font-size:clamp(15px, 2vw, 20px);
     color:var(--text-dim);
     max-width:640px;
     margin:0 auto 52px;
     line-height:1.75;
     opacity:0;
     animation:fadeUp 1s 0.9s forwards;
-    text-shadow:0 2px 20px rgba(10,6,8,0.9);
+    text-shadow:0 2px 20px rgba(10,6,8,0.95), 0 1px 6px rgba(10,6,8,0.85);
   }
   .cta-group{
     display:flex;
@@ -224,6 +233,7 @@
   .btn{
     display:inline-flex;
     align-items:center;
+    justify-content:center;
     gap:8px;
     padding:18px 40px;
     font-size:13px;
@@ -238,6 +248,7 @@
     font-family:inherit;
     position:relative;
     overflow:hidden;
+    min-height:48px;
   }
   .btn-primary{background:var(--accent-gold);color:var(--bg-deep)}
   .btn-primary::before{
@@ -254,6 +265,7 @@
     transform:translateY(-2px);
     box-shadow:0 12px 40px rgba(200,165,96,0.35);
   }
+  .btn-primary:active{transform:translateY(0);background:var(--accent-gold-bright)}
   .btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
   .btn-secondary:hover{border-color:var(--accent-gold);color:var(--accent-gold);background:rgba(200,165,96,0.05)}
   .btn-arrow{transition:transform 0.3s}
@@ -307,7 +319,25 @@
     pointer-events:none;
   }
   @keyframes fadeIn{from{opacity:0}to{opacity:0.7}}
-  @media(max-width:820px){.interactive-hint{display:none}}
+  /* На тач-устройстве — другой текст */
+  .interactive-hint .desktop-hint{display:inline}
+  .interactive-hint .touch-hint{display:none}
+  @media(hover:none){
+    .interactive-hint .desktop-hint{display:none}
+    .interactive-hint .touch-hint{display:inline}
+  }
+  @media(max-width:600px){
+    .interactive-hint{
+      bottom:auto;
+      top:calc(100vh - 130px);
+      top:calc(100svh - 130px);
+      right:50%;
+      transform:translateX(50%);
+      text-align:center;
+      font-size:10px;
+      letter-spacing:1.5px;
+    }
+  }
 
   section{padding:120px 0;position:relative;z-index:5}
   .section-label{
@@ -325,7 +355,7 @@
   .section-label::after{content:'';width:40px;height:1px;background:var(--accent-gold-dim)}
   .section-title{
     font-family:'Playfair Display',serif;
-    font-size:clamp(36px, 5.5vw, 60px);
+    font-size:clamp(32px, 5.5vw, 60px);
     font-weight:500;
     text-align:center;
     margin-bottom:24px;
@@ -393,7 +423,7 @@
 
   .reviews-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
     gap:24px;
   }
   .review-card{
@@ -416,6 +446,7 @@
     transform:translateY(-4px);
     background:rgba(30,15,22,0.75);
   }
+  .review-card:active{transform:translateY(0)}
   .review-platform{
     display:flex;
     align-items:center;
@@ -423,6 +454,7 @@
     margin-bottom:20px;
     padding-bottom:20px;
     border-bottom:1px solid var(--border);
+    gap:12px;
   }
   .platform-badge{
     display:flex;
@@ -442,9 +474,10 @@
     justify-content:center;
     background:rgba(200,165,96,0.1);
     color:var(--accent-gold);
+    flex-shrink:0;
   }
   .platform-icon svg{width:16px;height:16px}
-  .review-rating{color:var(--accent-gold);font-size:14px;letter-spacing:1px}
+  .review-rating{color:var(--accent-gold);font-size:14px;letter-spacing:1px;white-space:nowrap}
   .review-text{
     font-style:italic;
     color:var(--text);
@@ -471,8 +504,9 @@
     justify-content:space-between;
     padding-top:20px;
     border-top:1px solid var(--border);
+    gap:12px;
   }
-  .author-info{display:flex;align-items:center;gap:12px}
+  .author-info{display:flex;align-items:center;gap:12px;min-width:0}
   .review-avatar{
     width:42px;
     height:42px;
@@ -486,8 +520,8 @@
     font-size:13px;
     flex-shrink:0;
   }
-  .review-name{font-size:14px;font-weight:500;color:var(--text)}
-  .review-handle{font-size:12px;color:var(--text-mute);margin-top:2px}
+  .review-name{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .review-handle{font-size:12px;color:var(--text-mute);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .review-link{
     display:inline-flex;
     align-items:center;
@@ -497,6 +531,7 @@
     text-transform:uppercase;
     letter-spacing:1px;
     transition:transform 0.3s;
+    flex-shrink:0;
   }
   .review-card:hover .review-link{transform:translateX(3px)}
 
@@ -514,16 +549,22 @@
   }
   .cta-section h2{
     font-family:'Playfair Display',serif;
-    font-size:clamp(36px, 5.5vw, 56px);
+    font-size:clamp(32px, 5.5vw, 56px);
     font-weight:500;
     margin-bottom:24px;
     line-height:1.2;
     letter-spacing:-0.5px;
   }
   .cta-section h2 em{font-style:italic;color:var(--accent-gold)}
-  .cta-section p{color:var(--text-dim);font-size:18px;max-width:580px;margin:0 auto 44px;line-height:1.7}
+  .cta-section p{color:var(--text-dim);font-size:17px;max-width:580px;margin:0 auto 44px;line-height:1.7}
 
-  footer{border-top:1px solid var(--border);padding:60px 0 40px;position:relative;z-index:5}
+  footer{
+    border-top:1px solid var(--border);
+    padding:60px 0 40px;
+    padding-bottom:max(40px, env(safe-area-inset-bottom));
+    position:relative;
+    z-index:5;
+  }
   .footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:48px;margin-bottom:48px}
   @media(max-width:768px){.footer-grid{grid-template-columns:1fr;gap:36px}}
   .footer-col h4{
@@ -545,6 +586,7 @@
     display:inline-flex;
     align-items:center;
     gap:6px;
+    padding:6px 0;
   }
   .footer-col a:hover{color:var(--accent-gold)}
   .footer-bottom{
@@ -563,6 +605,39 @@
 
   .reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s, transform 0.8s}
   .reveal.visible{opacity:1;transform:translateY(0)}
+
+  /* ===== Мобильная адаптация ===== */
+  @media(max-width:820px){
+    .container{padding:0 20px}
+    section{padding:80px 0}
+    .hero{padding:120px 20px 80px}
+    .hero-tagline{font-size:10px;letter-spacing:5px;padding:6px 16px;margin-bottom:24px}
+    .hero h1{margin-bottom:24px;letter-spacing:-1px}
+    .hero-sub{margin:0 auto 36px}
+    .cta-group{gap:12px;width:100%}
+    .btn{padding:16px 28px;font-size:12px;letter-spacing:1.5px;flex:1 1 auto;min-width:200px;max-width:340px}
+    .section-sub{margin-bottom:48px}
+    .module-card{padding:32px 24px}
+    .module-card h3{font-size:21px}
+    .review-card{padding:24px 22px}
+    .review-card .review-text{font-size:15px}
+    .scroll-hint{bottom:20px}
+    .cta-section{padding:80px 20px}
+    .reviews-grid{gap:18px}
+    .program-grid{gap:18px}
+  }
+  @media(max-width:480px){
+    .hero{padding:110px 16px 70px}
+    .container{padding:0 16px}
+    .hero h1{font-size:36px;line-height:1.1}
+    .module-card{padding:28px 20px}
+    .review-card{padding:22px 20px}
+    .platform-badge span{font-size:12px}
+    .review-rating{font-size:12px}
+    .footer-grid{margin-bottom:36px}
+    section{padding:64px 0}
+    .cta-section{padding:64px 16px}
+  }
 
   @media(prefers-reduced-motion:reduce){
     .puppet-1,.puppet-2,.puppet-3,.puppeteer-hand,.spotlight,
@@ -594,10 +669,8 @@
 
 <section class="hero">
 
-  <!-- Three.js сцена (если доступна) -->
   <canvas id="puppet-canvas"></canvas>
 
-  <!-- SVG-fallback на случай если Three.js не загрузится -->
   <div class="puppet-stage">
     <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -657,7 +730,10 @@
   </div>
 
   <div class="scroll-hint">scroll</div>
-  <div class="interactive-hint">↑ подвигай мышью или кликни по куклам</div>
+  <div class="interactive-hint">
+    <span class="desktop-hint">↑ подвигай мышью или кликни по куклам</span>
+    <span class="touch-hint">↑ коснись кукол — они оживают</span>
+  </div>
 </section>
 
 <section id="program">
@@ -929,18 +1005,15 @@
   </div>
 </footer>
 
-<!-- Three.js + сцена с марионетками -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js" crossorigin="anonymous"></script>
 <script src="/puppet-scene.js" defer></script>
 
 <script>
-  // Header shrink on scroll
   const header = document.getElementById('site-header');
   window.addEventListener('scroll', () => {
     header.classList.toggle('scrolled', window.scrollY > 30);
   }, { passive: true });
 
-  // Reveal on scroll
   const reveals = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
