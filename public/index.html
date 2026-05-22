@@ -142,7 +142,7 @@
   }
   .perk-icon svg{width:20px;height:20px;color:#fff}
 
-  /* HERO стэйдж с театральной сценой и марионетками */
+  /* HERO стэйдж */
   .hero-stage{
     position:relative;
     aspect-ratio:1.1/1;
@@ -157,13 +157,11 @@
     border:1px solid rgba(230,57,70,0.2);
     box-shadow:0 20px 60px rgba(0,0,0,0.5), inset 0 0 80px rgba(230,57,70,0.1);
   }
-  /* Карниз тонкий */
   .hero-stage::before{
     content:'';position:absolute;top:0;left:0;right:0;height:5%;
     background:linear-gradient(180deg, #d12a40 0%, #8a1024 60%, #4a0810 100%);
     box-shadow:0 4px 12px rgba(0,0,0,0.5);z-index:5;
   }
-  /* Занавеси */
   .curtain-left,.curtain-right{
     position:absolute;top:0;bottom:0;width:18%;z-index:4;
     background:linear-gradient(180deg, #d12a40 0%, #9a1830 50%, #6a0e22 100%);
@@ -177,19 +175,16 @@
       rgba(255,255,255,0.04) 13px, rgba(255,255,255,0.04) 14px,
       transparent 14px, transparent 26px);
   }
-  /* Подвески занавеса снизу */
   .curtain-left::after,.curtain-right::after{
     content:'';position:absolute;bottom:0;left:0;right:0;height:24px;
     background:radial-gradient(ellipse at top, transparent 35%, #4a0810 65%);
   }
-  /* Пол сцены */
   .stage-floor{
     position:absolute;bottom:0;left:0;right:0;height:18%;z-index:1;
     background:
       linear-gradient(180deg, transparent 0%, rgba(230,57,70,0.35) 70%, rgba(230,57,70,0.5) 100%);
     box-shadow:inset 0 4px 12px rgba(0,0,0,0.5);
   }
-  /* Прожекторы */
   .spotlight{
     position:absolute;top:5%;width:30%;height:80%;z-index:2;
     background:radial-gradient(ellipse at top, rgba(255,210,140,0.3) 0%, transparent 60%);
@@ -199,23 +194,10 @@
   .spotlight.l2{left:35%}
   .spotlight.l3{right:18%}
 
-  /* SVG с марионетками — заполняет всю сцену */
+  /* SVG марионеток */
   .puppets-svg{
     position:absolute;inset:0;z-index:3;
-    width:100%;height:100%;
-    pointer-events:none;
-  }
-  /* Лёгкое покачивание */
-  @keyframes sway-1{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
-  @keyframes sway-2{0%,100%{transform:rotate(1deg)}50%{transform:rotate(-1deg)}}
-  @keyframes sway-3{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1deg)}}
-  @keyframes sway-4{0%,100%{transform:rotate(1.5deg)}50%{transform:rotate(-1.5deg)}}
-  .puppet-1{animation:sway-1 5s ease-in-out infinite;transform-origin:50% 5%}
-  .puppet-2{animation:sway-2 6s ease-in-out infinite;transform-origin:50% 5%}
-  .puppet-3{animation:sway-3 5.5s ease-in-out infinite;transform-origin:50% 5%}
-  .puppet-4{animation:sway-4 6.5s ease-in-out infinite;transform-origin:50% 5%}
-  @media(prefers-reduced-motion:reduce){
-    .puppet-1,.puppet-2,.puppet-3,.puppet-4{animation:none}
+    width:100%;height:100%;pointer-events:none;
   }
 
   /* ===== Секции ===== */
@@ -227,25 +209,21 @@
     margin-bottom:56px;letter-spacing:-0.5px;text-transform:uppercase;
   }
 
-  /* ===== Чему вы научитесь — КВАДРАТНЫЕ плитки ===== */
+  /* ===== Скиллы ===== */
   .skills-grid{display:grid;grid-template-columns:repeat(5, 1fr);gap:18px}
   @media(max-width:1100px){.skills-grid{grid-template-columns:repeat(3, 1fr)}}
   @media(max-width:640px){.skills-grid{grid-template-columns:repeat(2, 1fr);gap:14px}}
-
   .skill{display:flex;flex-direction:column;text-align:center;transition:transform 0.3s}
   .skill:hover{transform:translateY(-4px)}
   .skill-tile{
-    width:100%;
-    aspect-ratio:1/1;   /* КВАДРАТНЫЕ */
-    border-radius:16px;
-    overflow:hidden;background:var(--bg-soft);
+    width:100%;aspect-ratio:1/1;
+    border-radius:16px;overflow:hidden;background:var(--bg-soft);
     position:relative;margin-bottom:14px;
     box-shadow:0 8px 24px rgba(0,0,0,0.4);
   }
   .skill-tile img{
     width:100%;height:100%;
-    object-fit:cover;display:block;
-    object-position:center center;   /* по центру */
+    object-fit:cover;display:block;object-position:center center;
   }
   .skill-title{
     font-family:'Manrope',sans-serif;
@@ -254,7 +232,7 @@
   }
   .skill-text{font-size:12.5px;color:var(--text-dim);line-height:1.5;padding:0 6px}
 
-  /* ===== Как проходит обучение ===== */
+  /* ===== Шаги ===== */
   .steps-wrap{display:grid;grid-template-columns:repeat(5, 1fr);gap:24px;position:relative}
   .steps-wrap::before{
     content:'';position:absolute;top:44px;left:8%;right:8%;height:1px;
@@ -265,7 +243,6 @@
     .steps-wrap{grid-template-columns:repeat(2, 1fr);gap:36px 16px}
     .steps-wrap::before{display:none}
   }
-
   .step{text-align:center;position:relative;z-index:1}
   .step-circle{
     width:88px;height:88px;border-radius:50%;
@@ -283,14 +260,12 @@
   .step-circle.icon-red svg{color:var(--accent)}
   .step-circle.icon-gold svg{color:var(--star)}
   .step-circle.icon-gold{box-shadow:inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 24px rgba(0,0,0,0.5), 0 0 32px rgba(255,213,74,0.2)}
-
   .step-name{font-family:'Manrope',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:10px}
   .step-text{font-size:13px;color:var(--text-dim);line-height:1.5;padding:0 6px}
 
-  /* ===== Отзывы — с фото-силуэтами ===== */
+  /* ===== Отзывы ===== */
   .reviews-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:20px}
   @media(max-width:900px){.reviews-grid{grid-template-columns:1fr}}
-
   .review{
     background:linear-gradient(180deg, #1c1c25 0%, #15151c 100%);
     border:1px solid var(--border);border-radius:18px;
@@ -310,10 +285,7 @@
     box-shadow:0 4px 12px rgba(0,0,0,0.4);
   }
   .review-photo svg{width:100%;height:100%;display:block}
-  .review-name{
-    font-family:'Manrope',sans-serif;
-    font-size:15.5px;font-weight:700;color:#fff;margin-bottom:4px;
-  }
+  .review-name{font-family:'Manrope',sans-serif;font-size:15.5px;font-weight:700;color:#fff;margin-bottom:4px}
   .review-stars{color:var(--star);font-size:14px;letter-spacing:1.5px}
   .review-body{color:var(--text-dim);font-size:14px;line-height:1.65;flex-grow:1}
   .review-platform{
@@ -322,19 +294,14 @@
     font-size:11px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;
   }
   .review-link{color:var(--accent);font-weight:700}
-
-  /* Карусельные точки */
-  .reviews-dots{
-    display:flex;gap:10px;justify-content:center;margin-top:32px;
-  }
+  .reviews-dots{display:flex;gap:10px;justify-content:center;margin-top:32px}
   .reviews-dots span{
     width:8px;height:8px;border-radius:50%;
-    background:var(--text-mute);opacity:0.4;
-    transition:all 0.3s;
+    background:var(--text-mute);opacity:0.4;transition:all 0.3s;
   }
   .reviews-dots span.active{background:var(--accent);opacity:1;width:24px;border-radius:4px}
 
-  /* ===== Большой CTA — Женя помещается целиком ===== */
+  /* ===== Большой CTA ===== */
   .big-cta{padding:80px 0 100px}
   .big-cta-box{
     background:linear-gradient(135deg, #1a1a22 0%, #16161d 100%);
@@ -351,7 +318,6 @@
   .big-cta h2 .red{color:var(--accent)}
   .big-cta p{color:var(--text-dim);font-size:16px;line-height:1.65;margin-bottom:32px;max-width:440px}
   .big-cta-buttons{display:flex;gap:14px;flex-wrap:wrap}
-  /* Картинка с Женей — object-fit:contain + позиция справа, чтобы целиком вошёл */
   .big-cta-image{
     position:relative;overflow:hidden;
     background:
@@ -360,9 +326,7 @@
   }
   .big-cta-image img{
     width:100%;height:100%;
-    object-fit:contain;
-    object-position:center center;
-    display:block;
+    object-fit:contain;object-position:center center;display:block;
   }
   @media(max-width:900px){
     .big-cta-box{grid-template-columns:1fr;min-height:auto}
@@ -500,7 +464,6 @@
         </div>
       </div>
 
-      <!-- Театральная сцена с марионетками -->
       <div class="hero-stage">
         <div class="curtain-left"></div>
         <div class="curtain-right"></div>
@@ -537,132 +500,120 @@
             </radialGradient>
           </defs>
 
-          <!-- Рука кукловода сверху -->
-          <g opacity="0.9">
-            <ellipse cx="300" cy="20" rx="180" ry="30" fill="#0a0508"/>
-            <!-- Пальцы -->
-            <path d="M150 30 Q145 50 140 65 Q150 70 158 65 L160 35 Z" fill="#2a1a18"/>
-            <path d="M225 30 Q220 55 218 75 Q230 80 240 73 L240 35 Z" fill="#2a1a18"/>
-            <path d="M300 30 Q298 60 298 80 Q310 85 318 78 L318 35 Z" fill="#2a1a18"/>
-            <path d="M375 30 Q378 55 380 73 Q390 78 395 72 L390 35 Z" fill="#2a1a18"/>
-            <path d="M450 30 Q452 50 458 65 Q466 68 470 60 L460 35 Z" fill="#2a1a18"/>
+          <!-- Рука кукловода -->
+          <g opacity="0.95">
+            <ellipse cx="300" cy="20" rx="200" ry="32" fill="#0a0508"/>
+            <path d="M140 30 Q135 55 130 75 Q145 82 158 73 L162 35 Z" fill="#2a1a18"/>
+            <path d="M220 30 Q215 60 215 85 Q232 90 245 80 L245 35 Z" fill="#2a1a18"/>
+            <path d="M300 30 Q298 65 300 90 Q317 95 325 85 L325 35 Z" fill="#2a1a18"/>
+            <path d="M380 30 Q385 60 388 82 Q400 88 410 78 L405 35 Z" fill="#2a1a18"/>
+            <path d="M460 30 Q462 55 470 73 Q478 78 482 68 L472 35 Z" fill="#2a1a18"/>
           </g>
 
-          <!-- Нити для каждой марионетки (от пальцев к плечам/голове) -->
+          <!-- Нити -->
           <g stroke="#c8a560" stroke-width="0.8" opacity="0.55">
-            <!-- К марионетке 1 -->
-            <line x1="145" y1="65" x2="105" y2="220"/>
-            <line x1="165" y1="65" x2="135" y2="220"/>
-            <!-- К марионетке 2 -->
-            <line x1="225" y1="75" x2="225" y2="220"/>
-            <line x1="245" y1="73" x2="255" y2="220"/>
-            <!-- К марионетке 3 -->
-            <line x1="305" y1="80" x2="345" y2="220"/>
-            <line x1="325" y1="78" x2="375" y2="220"/>
-            <!-- К марионетке 4 -->
-            <line x1="385" y1="73" x2="455" y2="220"/>
-            <line x1="405" y1="72" x2="485" y2="220"/>
+            <line x1="135" y1="73" x2="105" y2="230"/>
+            <line x1="155" y1="73" x2="135" y2="230"/>
+            <line x1="220" y1="85" x2="220" y2="225"/>
+            <line x1="245" y1="80" x2="265" y2="225"/>
+            <line x1="305" y1="90" x2="350" y2="230"/>
+            <line x1="325" y1="85" x2="380" y2="230"/>
+            <line x1="385" y1="82" x2="455" y2="230"/>
+            <line x1="405" y1="78" x2="485" y2="230"/>
           </g>
 
-          <!-- МАРИОНЕТКА 1 (синий костюм) -->
-          <g class="puppet-1" transform="translate(70, 200)">
+          <!-- МАРИОНЕТКА 1 (синий костюм) — координаты явные, без g transform -->
+          <g>
             <!-- Шея -->
-            <rect x="48" y="55" width="14" height="14" fill="url(#skin)"/>
+            <rect x="118" y="255" width="14" height="14" fill="url(#skin)"/>
             <!-- Голова -->
-            <ellipse cx="55" cy="40" rx="28" ry="32" fill="url(#skin)"/>
+            <ellipse cx="125" cy="240" rx="28" ry="32" fill="url(#skin)"/>
             <!-- Волосы -->
-            <path d="M28 35 Q30 12 55 10 Q80 12 82 35 Q80 22 55 22 Q30 22 28 35 Z" fill="#3a2a1a"/>
+            <path d="M98 235 Q100 212 125 210 Q150 212 152 235 Q150 222 125 222 Q100 222 98 235 Z" fill="#3a2a1a"/>
             <!-- Глаза -->
-            <circle cx="46" cy="38" r="2.5" fill="#1a0a08"/>
-            <circle cx="64" cy="38" r="2.5" fill="#1a0a08"/>
+            <circle cx="116" cy="238" r="2.5" fill="#1a0a08"/>
+            <circle cx="134" cy="238" r="2.5" fill="#1a0a08"/>
             <!-- Костюм -->
-            <path d="M20 72 L90 72 L100 270 L10 270 Z" fill="url(#suit-blue)"/>
-            <!-- Воротник рубашки -->
-            <path d="M38 72 L55 92 L72 72 L70 68 L55 80 L40 68 Z" fill="#f0f0f0"/>
-            <!-- Галстук -->
-            <path d="M52 80 L58 80 L62 140 L48 140 Z" fill="#c41e36"/>
-            <!-- Руки -->
-            <ellipse cx="14" cy="120" rx="10" ry="40" fill="url(#suit-blue)"/>
-            <ellipse cx="96" cy="120" rx="10" ry="40" fill="url(#suit-blue)"/>
-            <!-- Кисти -->
-            <circle cx="14" cy="165" r="8" fill="url(#skin)"/>
-            <circle cx="96" cy="165" r="8" fill="url(#skin)"/>
-            <!-- Брюки/ноги -->
-            <path d="M20 270 L48 270 L42 350 L20 350 Z" fill="#1a1a25"/>
-            <path d="M62 270 L90 270 L90 350 L68 350 Z" fill="#1a1a25"/>
-            <!-- Ботинки -->
-            <ellipse cx="30" cy="352" rx="14" ry="6" fill="#0a0a0c"/>
-            <ellipse cx="80" cy="352" rx="14" ry="6" fill="#0a0a0c"/>
-          </g>
-
-          <!-- МАРИОНЕТКА 2 (тёмный костюм + красный галстук) -->
-          <g class="puppet-2" transform="translate(190, 195)">
-            <!-- Шея -->
-            <rect x="48" y="58" width="14" height="14" fill="url(#skin)"/>
-            <!-- Голова -->
-            <ellipse cx="55" cy="42" rx="30" ry="34" fill="url(#skin)"/>
-            <!-- Волосы (зачёс) -->
-            <path d="M27 36 Q26 10 55 8 Q82 10 84 38 Q82 24 65 22 Q40 22 28 32 Q28 30 27 36 Z" fill="#d4b478"/>
-            <!-- Глаза -->
-            <circle cx="46" cy="40" r="2.5" fill="#1a0a08"/>
-            <circle cx="64" cy="40" r="2.5" fill="#1a0a08"/>
-            <!-- Костюм -->
-            <path d="M18 76 L92 76 L102 275 L8 275 Z" fill="url(#suit-dark)"/>
+            <path d="M90 272 L160 272 L170 470 L80 470 Z" fill="url(#suit-blue)"/>
             <!-- Воротник -->
-            <path d="M38 76 L55 96 L72 76 L70 72 L55 84 L40 72 Z" fill="#f0f0f0"/>
-            <!-- Красный галстук — длинный -->
-            <path d="M52 84 L58 84 L64 160 L46 160 Z" fill="#c41e36"/>
+            <path d="M108 272 L125 292 L142 272 L140 268 L125 280 L110 268 Z" fill="#f0f0f0"/>
+            <!-- Галстук -->
+            <path d="M122 280 L128 280 L132 340 L118 340 Z" fill="#c41e36"/>
             <!-- Руки -->
-            <ellipse cx="12" cy="125" rx="10" ry="42" fill="url(#suit-dark)"/>
-            <ellipse cx="98" cy="125" rx="10" ry="42" fill="url(#suit-dark)"/>
-            <circle cx="12" cy="172" r="8" fill="url(#skin)"/>
-            <circle cx="98" cy="172" r="8" fill="url(#skin)"/>
-            <!-- Брюки -->
-            <path d="M18 275 L48 275 L42 355 L18 355 Z" fill="#1a1a25"/>
-            <path d="M62 275 L92 275 L92 355 L68 355 Z" fill="#1a1a25"/>
-            <ellipse cx="30" cy="357" rx="14" ry="6" fill="#0a0a0c"/>
-            <ellipse cx="80" cy="357" rx="14" ry="6" fill="#0a0a0c"/>
+            <ellipse cx="84" cy="320" rx="10" ry="40" fill="url(#suit-blue)"/>
+            <ellipse cx="166" cy="320" rx="10" ry="40" fill="url(#suit-blue)"/>
+            <circle cx="84" cy="365" r="8" fill="url(#skin)"/>
+            <circle cx="166" cy="365" r="8" fill="url(#skin)"/>
+            <!-- Ноги -->
+            <path d="M90 470 L118 470 L112 540 L90 540 Z" fill="#1a1a25"/>
+            <path d="M132 470 L160 470 L160 540 L138 540 Z" fill="#1a1a25"/>
+            <ellipse cx="100" cy="542" rx="14" ry="5" fill="#0a0a0c"/>
+            <ellipse cx="150" cy="542" rx="14" ry="5" fill="#0a0a0c"/>
           </g>
 
-          <!-- МАРИОНЕТКА 3 (серый костюм, синий галстук) -->
-          <g class="puppet-3" transform="translate(310, 200)">
-            <rect x="48" y="55" width="14" height="14" fill="url(#skin-2)"/>
-            <ellipse cx="55" cy="40" rx="29" ry="33" fill="url(#skin-2)"/>
+          <!-- МАРИОНЕТКА 2 (тёмный костюм, светлые волосы) -->
+          <g>
+            <rect x="238" y="253" width="14" height="14" fill="url(#skin)"/>
+            <ellipse cx="245" cy="237" rx="30" ry="34" fill="url(#skin)"/>
+            <!-- Светлые волосы зачёсаные -->
+            <path d="M217 233 Q216 207 245 205 Q272 207 274 235 Q272 221 255 219 Q230 219 218 229 Q218 227 217 233 Z" fill="#d4b478"/>
+            <circle cx="236" cy="235" r="2.5" fill="#1a0a08"/>
+            <circle cx="254" cy="235" r="2.5" fill="#1a0a08"/>
+            <path d="M208 271 L282 271 L292 470 L198 470 Z" fill="url(#suit-dark)"/>
+            <path d="M228 271 L245 291 L262 271 L260 267 L245 279 L230 267 Z" fill="#f0f0f0"/>
+            <!-- Длинный красный галстук -->
+            <path d="M242 279 L248 279 L254 355 L236 355 Z" fill="#c41e36"/>
+            <ellipse cx="202" cy="320" rx="10" ry="42" fill="url(#suit-dark)"/>
+            <ellipse cx="288" cy="320" rx="10" ry="42" fill="url(#suit-dark)"/>
+            <circle cx="202" cy="367" r="8" fill="url(#skin)"/>
+            <circle cx="288" cy="367" r="8" fill="url(#skin)"/>
+            <path d="M208 470 L238 470 L232 540 L208 540 Z" fill="#1a1a25"/>
+            <path d="M252 470 L282 470 L282 540 L258 540 Z" fill="#1a1a25"/>
+            <ellipse cx="220" cy="542" rx="14" ry="5" fill="#0a0a0c"/>
+            <ellipse cx="270" cy="542" rx="14" ry="5" fill="#0a0a0c"/>
+          </g>
+
+          <!-- МАРИОНЕТКА 3 (серый костюм, седые волосы, синий галстук) -->
+          <g>
+            <rect x="358" y="255" width="14" height="14" fill="url(#skin-2)"/>
+            <ellipse cx="365" cy="240" rx="29" ry="33" fill="url(#skin-2)"/>
             <!-- Седые волосы -->
-            <path d="M28 36 Q28 12 55 10 Q82 12 82 36 Q80 24 55 22 Q30 24 28 36 Z" fill="#888"/>
-            <circle cx="46" cy="38" r="2.5" fill="#1a0a08"/>
-            <circle cx="64" cy="38" r="2.5" fill="#1a0a08"/>
-            <path d="M20 72 L90 72 L100 270 L10 270 Z" fill="url(#suit-grey)"/>
-            <path d="M38 72 L55 92 L72 72 L70 68 L55 80 L40 68 Z" fill="#f0f0f0"/>
-            <path d="M52 80 L58 80 L62 145 L48 145 Z" fill="#3a5a8e"/>
-            <ellipse cx="14" cy="120" rx="10" ry="40" fill="url(#suit-grey)"/>
-            <ellipse cx="96" cy="120" rx="10" ry="40" fill="url(#suit-grey)"/>
-            <circle cx="14" cy="165" r="8" fill="url(#skin-2)"/>
-            <circle cx="96" cy="165" r="8" fill="url(#skin-2)"/>
-            <path d="M20 270 L48 270 L42 350 L20 350 Z" fill="#1a1a25"/>
-            <path d="M62 270 L90 270 L90 350 L68 350 Z" fill="#1a1a25"/>
-            <ellipse cx="30" cy="352" rx="14" ry="6" fill="#0a0a0c"/>
-            <ellipse cx="80" cy="352" rx="14" ry="6" fill="#0a0a0c"/>
+            <path d="M338 236 Q338 212 365 210 Q392 212 392 236 Q390 224 365 222 Q340 224 338 236 Z" fill="#888"/>
+            <circle cx="356" cy="238" r="2.5" fill="#1a0a08"/>
+            <circle cx="374" cy="238" r="2.5" fill="#1a0a08"/>
+            <path d="M330 272 L400 272 L410 470 L320 470 Z" fill="url(#suit-grey)"/>
+            <path d="M348 272 L365 292 L382 272 L380 268 L365 280 L350 268 Z" fill="#f0f0f0"/>
+            <!-- Синий галстук -->
+            <path d="M362 280 L368 280 L372 345 L358 345 Z" fill="#3a5a8e"/>
+            <ellipse cx="324" cy="320" rx="10" ry="40" fill="url(#suit-grey)"/>
+            <ellipse cx="406" cy="320" rx="10" ry="40" fill="url(#suit-grey)"/>
+            <circle cx="324" cy="365" r="8" fill="url(#skin-2)"/>
+            <circle cx="406" cy="365" r="8" fill="url(#skin-2)"/>
+            <path d="M330 470 L358 470 L352 540 L330 540 Z" fill="#1a1a25"/>
+            <path d="M372 470 L400 470 L400 540 L378 540 Z" fill="#1a1a25"/>
+            <ellipse cx="340" cy="542" rx="14" ry="5" fill="#0a0a0c"/>
+            <ellipse cx="390" cy="542" rx="14" ry="5" fill="#0a0a0c"/>
           </g>
 
           <!-- МАРИОНЕТКА 4 (тёмный костюм, голубой галстук) -->
-          <g class="puppet-4" transform="translate(430, 205)">
-            <rect x="48" y="55" width="14" height="14" fill="url(#skin)"/>
-            <ellipse cx="55" cy="40" rx="28" ry="32" fill="url(#skin)"/>
-            <path d="M28 34 Q30 10 55 8 Q80 10 82 36 Q80 22 55 22 Q32 24 28 34 Z" fill="#2a1a10"/>
-            <circle cx="46" cy="38" r="2.5" fill="#1a0a08"/>
-            <circle cx="64" cy="38" r="2.5" fill="#1a0a08"/>
-            <path d="M20 70 L90 70 L100 268 L10 268 Z" fill="url(#suit-black)"/>
-            <path d="M38 70 L55 90 L72 70 L70 66 L55 78 L40 66 Z" fill="#f0f0f0"/>
-            <path d="M52 78 L58 78 L62 140 L48 140 Z" fill="#5e9ed8"/>
-            <ellipse cx="14" cy="118" rx="10" ry="40" fill="url(#suit-black)"/>
-            <ellipse cx="96" cy="118" rx="10" ry="40" fill="url(#suit-black)"/>
-            <circle cx="14" cy="163" r="8" fill="url(#skin)"/>
-            <circle cx="96" cy="163" r="8" fill="url(#skin)"/>
-            <path d="M20 268 L48 268 L42 348 L20 348 Z" fill="#1a1a25"/>
-            <path d="M62 268 L90 268 L90 348 L68 348 Z" fill="#1a1a25"/>
-            <ellipse cx="30" cy="350" rx="14" ry="6" fill="#0a0a0c"/>
-            <ellipse cx="80" cy="350" rx="14" ry="6" fill="#0a0a0c"/>
+          <g>
+            <rect x="478" y="255" width="14" height="14" fill="url(#skin)"/>
+            <ellipse cx="485" cy="240" rx="28" ry="32" fill="url(#skin)"/>
+            <path d="M458 234 Q460 210 485 208 Q510 210 512 236 Q510 222 485 222 Q462 224 458 234 Z" fill="#2a1a10"/>
+            <circle cx="476" cy="238" r="2.5" fill="#1a0a08"/>
+            <circle cx="494" cy="238" r="2.5" fill="#1a0a08"/>
+            <path d="M450 270 L520 270 L530 468 L440 468 Z" fill="url(#suit-black)"/>
+            <path d="M468 270 L485 290 L502 270 L500 266 L485 278 L470 266 Z" fill="#f0f0f0"/>
+            <!-- Голубой галстук -->
+            <path d="M482 278 L488 278 L492 340 L478 340 Z" fill="#5e9ed8"/>
+            <ellipse cx="444" cy="318" rx="10" ry="40" fill="url(#suit-black)"/>
+            <ellipse cx="526" cy="318" rx="10" ry="40" fill="url(#suit-black)"/>
+            <circle cx="444" cy="363" r="8" fill="url(#skin)"/>
+            <circle cx="526" cy="363" r="8" fill="url(#skin)"/>
+            <path d="M450 468 L478 468 L472 538 L450 538 Z" fill="#1a1a25"/>
+            <path d="M492 468 L520 468 L520 538 L498 538 Z" fill="#1a1a25"/>
+            <ellipse cx="460" cy="540" rx="14" ry="5" fill="#0a0a0c"/>
+            <ellipse cx="510" cy="540" rx="14" ry="5" fill="#0a0a0c"/>
           </g>
         </svg>
       </div>
@@ -704,7 +655,7 @@
   </div>
 </section>
 
-<!-- ===== КАК ПРОХОДИТ ОБУЧЕНИЕ — иконки 3 и 4 заменены ===== -->
+<!-- ===== КАК ПРОХОДИТ ОБУЧЕНИЕ ===== -->
 <section id="process">
   <div class="container">
     <h2 class="section-title reveal">Как проходит обучение</h2>
@@ -730,7 +681,7 @@
         <div class="step-name">2. Смотрите уроки</div>
         <div class="step-text">Пошаговые видео-уроки от простого к сложному</div>
       </div>
-      <!-- Шаг 3: ХЛОПУШКА фильма -->
+      <!-- Шаг 3: ХЛОПУШКА -->
       <div class="step reveal">
         <div class="step-circle">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -770,7 +721,7 @@
   </div>
 </section>
 
-<!-- ===== ОТЗЫВЫ — с SVG фото-силуэтами ===== -->
+<!-- ===== ОТЗЫВЫ ===== -->
 <section id="reviews">
   <div class="container">
     <h2 class="section-title reveal">Отзывы учеников</h2>
@@ -810,13 +761,9 @@
                 <stop offset="0%" stop-color="#c08eb0"/><stop offset="100%" stop-color="#704a60"/>
               </linearGradient></defs>
               <rect width="56" height="56" fill="url(#ava2)"/>
-              <!-- Волосы сзади -->
               <ellipse cx="28" cy="26" rx="14" ry="16" fill="#5a3a30"/>
-              <!-- Лицо -->
               <circle cx="28" cy="24" r="10" fill="#f0c8a8"/>
-              <!-- Чёлка -->
               <path d="M18 19 Q22 14 28 14 Q34 14 38 19 Q34 17 28 17 Q22 17 18 19 Z" fill="#3a2418"/>
-              <!-- Плечи -->
               <path d="M10 56 Q10 38 28 38 Q46 38 46 56 Z" fill="#c41e36"/>
             </svg>
           </div>
@@ -844,7 +791,6 @@
               </linearGradient></defs>
               <rect width="56" height="56" fill="url(#ava3)"/>
               <circle cx="28" cy="22" r="9" fill="#e0b890"/>
-              <!-- Короткая стрижка -->
               <path d="M19 17 Q21 11 28 11 Q35 11 37 17 Q35 15 28 15 Q21 15 19 17 Z" fill="#1a1008"/>
               <path d="M10 56 Q10 38 28 38 Q46 38 46 56 Z" fill="#3a3a45"/>
             </svg>
