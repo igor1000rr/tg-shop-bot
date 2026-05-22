@@ -43,14 +43,11 @@
     -webkit-tap-highlight-color:transparent;
   }
   body::before{
-    content:'';
-    position:fixed;
-    inset:0;
+    content:'';position:fixed;inset:0;
     background:
       radial-gradient(ellipse at 90% 10%, rgba(230,57,70,0.12) 0%, transparent 45%),
       radial-gradient(ellipse at 0% 90%, rgba(230,57,70,0.06) 0%, transparent 50%);
-    pointer-events:none;
-    z-index:0;
+    pointer-events:none;z-index:0;
   }
   .container{max-width:1280px;margin:0 auto;padding:0 24px;position:relative;z-index:10}
 
@@ -70,8 +67,7 @@
   .logo-img{
     width:48px;height:48px;border-radius:50%;
     background:var(--bg-card);overflow:hidden;
-    display:flex;align-items:center;justify-content:center;
-    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
   }
   .logo-img img{width:100%;height:100%;object-fit:cover}
   .logo-text{display:flex;flex-direction:column;line-height:1}
@@ -93,35 +89,34 @@
     .nav-cta{padding:10px 16px;font-size:11px}
   }
 
-  /* ===== HERO — слева текст, справа сцена с марионетками ===== */
+  /* ===== HERO ===== */
   .hero{padding:140px 0 80px;position:relative;overflow:hidden}
   .hero-grid{
     display:grid;
-    grid-template-columns:1fr 1.1fr;
-    gap:60px;
+    grid-template-columns:1fr 1fr;
+    gap:48px;
     align-items:center;
   }
   .hero-tagline{
     display:inline-block;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
-    color:var(--accent);margin-bottom:28px;
+    color:var(--accent);margin-bottom:24px;
     padding:8px 18px;border:1px solid var(--border-bright);border-radius:22px;
     background:rgba(230,57,70,0.08);
   }
   .hero h1{
     font-family:'Manrope',sans-serif;
-    font-size:clamp(40px, 5.5vw, 76px);
-    font-weight:900;line-height:1.02;letter-spacing:-2px;
-    margin-bottom:28px;text-transform:none;
+    font-size:clamp(36px, 4.6vw, 64px);
+    font-weight:900;line-height:1.05;letter-spacing:-1.5px;
+    margin-bottom:24px;
   }
   .hero h1 .red{color:var(--accent)}
   .hero-sub{
     font-size:17px;color:var(--text-dim);
-    max-width:520px;margin-bottom:40px;line-height:1.65;
+    max-width:520px;margin-bottom:36px;line-height:1.65;
   }
   .hero-sub .name{color:var(--accent);font-weight:600}
 
-  /* Красные «капсульные» кнопки как в IMG_8588 — глянцевые */
-  .cta-group{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:52px}
+  .cta-group{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:44px}
   .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;
     padding:18px 32px;font-size:14px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;
@@ -162,76 +157,84 @@
     transform:translateY(-2px);
   }
 
-  /* Преимущества под кнопками */
-  .hero-perks{display:flex;gap:32px;flex-wrap:wrap}
-  .perk{display:flex;align-items:center;gap:12px;color:var(--text-dim);font-size:13.5px;font-weight:500}
+  .hero-perks{display:flex;gap:28px;flex-wrap:wrap}
+  .perk{display:flex;align-items:center;gap:10px;color:var(--text-dim);font-size:13px;font-weight:500}
   .perk-icon{
-    width:44px;height:44px;border-radius:50%;
+    width:42px;height:42px;border-radius:50%;
     background:var(--bg-card);border:1px solid var(--border);
     display:flex;align-items:center;justify-content:center;flex-shrink:0;
   }
-  .perk-icon svg{width:22px;height:22px;color:#fff}
+  .perk-icon svg{width:20px;height:20px;color:#fff}
 
-  /* HERO визуал — сцена с занавесом, плейсхолдер для марионеток */
+  /* HERO визуал — театральная сцена с КОНТРАСТНЫМ занавесом */
   .hero-stage{
     position:relative;
-    aspect-ratio:1.1/1;
-    max-width:680px;
+    aspect-ratio:1/1;
+    width:100%;
+    max-width:560px;
     margin:0 auto;
-    border-radius:24px;
+    border-radius:20px;
     overflow:hidden;
     background:
-      radial-gradient(ellipse at 50% 100%, rgba(230,57,70,0.15) 0%, transparent 60%),
-      linear-gradient(180deg, #0a0a0c 0%, #1a0a10 60%, #0a0a0c 100%);
-    border:1px solid var(--border);
+      radial-gradient(ellipse at 50% 100%, rgba(230,57,70,0.25) 0%, transparent 70%),
+      linear-gradient(180deg, #1a0508 0%, #2a0a14 60%, #1a0508 100%);
+    border:1px solid rgba(230,57,70,0.25);
+    box-shadow:0 20px 60px rgba(0,0,0,0.5), inset 0 0 80px rgba(230,57,70,0.08);
   }
-  /* Театральный «занавес» по бокам */
-  .hero-stage::before,
-  .hero-stage::after{
-    content:'';position:absolute;top:0;bottom:0;width:18%;
-    background:linear-gradient(180deg, #6a1020 0%, #3a0810 50%, #2a050c 100%);
-    box-shadow:inset -8px 0 20px rgba(0,0,0,0.5);
-    z-index:2;
+  /* Верхняя перекладина — карниз */
+  .hero-stage::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:8%;
+    background:linear-gradient(180deg, #c41e36 0%, #8a1024 100%);
+    box-shadow:0 4px 12px rgba(0,0,0,0.5);
+    z-index:4;
   }
-  .hero-stage::before{left:0}
-  .hero-stage::after{right:0;background:linear-gradient(180deg, #6a1020 0%, #3a0810 50%, #2a050c 100%);box-shadow:inset 8px 0 20px rgba(0,0,0,0.5)}
-
-  /* Складки на занавесе */
-  .curtain-folds{position:absolute;inset:0;z-index:3;pointer-events:none}
-  .curtain-folds::before{
-    content:'';position:absolute;top:0;bottom:0;left:0;width:18%;
+  /* Занавеси по бокам — ЯРКО-КРАСНЫЕ контрастные */
+  .curtain-left,
+  .curtain-right{
+    position:absolute;top:0;bottom:0;width:22%;z-index:3;
+    background:linear-gradient(180deg, #d12a40 0%, #9a1830 50%, #6a0e22 100%);
+    box-shadow:inset 0 0 30px rgba(0,0,0,0.4);
+  }
+  .curtain-left{left:0;background:linear-gradient(180deg, #d12a40 0%, #9a1830 50%, #6a0e22 100%)}
+  .curtain-right{right:0;background:linear-gradient(180deg, #d12a40 0%, #9a1830 50%, #6a0e22 100%)}
+  /* Складки на занавесах */
+  .curtain-left::before,
+  .curtain-right::before{
+    content:'';position:absolute;inset:0;
     background:repeating-linear-gradient(90deg,
       transparent 0,
-      transparent 12px,
-      rgba(0,0,0,0.25) 12px,
-      rgba(0,0,0,0.25) 13px,
-      transparent 13px,
+      transparent 14px,
+      rgba(0,0,0,0.3) 14px,
+      rgba(0,0,0,0.3) 15px,
+      rgba(255,255,255,0.04) 15px,
+      rgba(255,255,255,0.04) 16px,
+      transparent 16px,
       transparent 30px);
   }
-  .curtain-folds::after{
-    content:'';position:absolute;top:0;bottom:0;right:0;width:18%;
-    background:repeating-linear-gradient(90deg,
-      transparent 0,
-      transparent 12px,
-      rgba(0,0,0,0.25) 12px,
-      rgba(0,0,0,0.25) 13px,
-      transparent 13px,
-      transparent 30px);
+  /* Нижняя складка занавеса (вырез) */
+  .curtain-left::after,
+  .curtain-right::after{
+    content:'';position:absolute;bottom:0;left:0;right:0;height:30px;
+    background:radial-gradient(ellipse at top, transparent 40%, #6a0e22 70%);
   }
-  /* Пол сцены */
+  /* Пол сцены — деревянный с красной подсветкой */
   .stage-floor{
-    position:absolute;bottom:0;left:0;right:0;height:22%;
-    background:linear-gradient(180deg, transparent 0%, rgba(230,57,70,0.15) 60%, rgba(230,57,70,0.25) 100%);
+    position:absolute;bottom:0;left:0;right:0;height:24%;
+    background:
+      linear-gradient(180deg, transparent 0%, rgba(230,57,70,0.3) 80%),
+      linear-gradient(180deg, #2a0810 0%, #3a0e1c 100%);
     z-index:1;
+    box-shadow:inset 0 4px 12px rgba(0,0,0,0.5);
   }
-  /* Прожекторы */
+  /* Прожекторы желтоватые */
   .spotlight{
-    position:absolute;top:0;width:30%;height:120%;z-index:1;
-    background:radial-gradient(ellipse at top, rgba(255,220,180,0.18) 0%, transparent 60%);
-    filter:blur(4px);
+    position:absolute;top:0;width:35%;height:100%;z-index:2;
+    background:radial-gradient(ellipse at top, rgba(255,200,120,0.22) 0%, transparent 65%);
+    filter:blur(8px);
+    pointer-events:none;
   }
-  .spotlight.left{left:20%}
-  .spotlight.right{right:20%}
+  .spotlight.left{left:18%}
+  .spotlight.right{right:18%}
 
   /* Заглушка для марионеток */
   .stage-placeholder{
@@ -240,14 +243,21 @@
     transform:translate(-50%,-50%);
     z-index:5;
     text-align:center;
-    color:var(--text-mute);
+    color:rgba(255,255,255,0.5);
     padding:24px;
+    max-width:60%;
   }
-  .stage-placeholder .mask{font-size:64px;margin-bottom:12px;opacity:0.5}
+  .stage-placeholder .mask{
+    font-size:64px;
+    margin-bottom:14px;
+    filter:drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+  }
   .stage-placeholder .label{
     font-family:'Manrope',sans-serif;
-    font-size:14px;font-weight:600;color:var(--text-dim);
+    font-size:13px;font-weight:600;
+    color:rgba(255,255,255,0.55);
     letter-spacing:0.5px;line-height:1.5;
+    text-shadow:0 2px 8px rgba(0,0,0,0.6);
   }
 
   /* ===== Секции ===== */
@@ -259,7 +269,7 @@
     margin-bottom:56px;letter-spacing:-0.5px;text-transform:uppercase;
   }
 
-  /* ===== Чему вы научитесь — карбоновые карточки целиком ===== */
+  /* ===== Чему вы научитесь ===== */
   .skills-grid{
     display:grid;
     grid-template-columns:repeat(5, 1fr);
@@ -269,13 +279,10 @@
   @media(max-width:640px){.skills-grid{grid-template-columns:repeat(2, 1fr);gap:14px}}
 
   .skill{
-    display:flex;
-    flex-direction:column;
-    text-align:center;
+    display:flex;flex-direction:column;text-align:center;
     transition:transform 0.3s;
   }
   .skill:hover{transform:translateY(-4px)}
-  /* Карбоновая иконка-плитка — используем готовые webp как фон */
   .skill-tile{
     width:100%;
     aspect-ratio:1/1.15;
@@ -288,6 +295,7 @@
   }
   .skill-tile img{
     width:100%;height:100%;object-fit:cover;display:block;
+    object-position:center top;
   }
   .skill-title{
     font-family:'Manrope',sans-serif;
@@ -298,29 +306,25 @@
     font-size:12.5px;color:var(--text-dim);line-height:1.5;padding:0 6px;
   }
 
-  /* ===== Как проходит обучение — 5 кружков-шагов ===== */
+  /* ===== Как проходит обучение ===== */
   .steps-wrap{
     display:grid;
     grid-template-columns:repeat(5, 1fr);
     gap:24px;
     position:relative;
   }
-  /* Пунктирная линия между кружками */
   .steps-wrap::before{
-    content:'';
-    position:absolute;
-    top:44px;
-    left:8%;right:8%;
+    content:'';position:absolute;top:44px;left:8%;right:8%;
     height:1px;
     background-image:linear-gradient(90deg, var(--border) 50%, transparent 50%);
-    background-size:14px 1px;
-    z-index:0;
+    background-size:14px 1px;z-index:0;
   }
   @media(max-width:900px){
-    .steps-wrap{grid-template-columns:repeat(2, 1fr);gap:32px 20px}
+    .steps-wrap{grid-template-columns:repeat(2, 1fr);gap:36px 16px}
     .steps-wrap::before{display:none}
   }
-  @media(max-width:480px){.steps-wrap{grid-template-columns:1fr}}
+  /* На очень узких — НЕ опускаем в 1 столбик, оставляем 2 чтобы экран не вытягивался */
+  @media(max-width:360px){.steps-wrap{gap:28px 12px}}
 
   .step{text-align:center;position:relative;z-index:1}
   .step-circle{
@@ -332,18 +336,9 @@
       0 8px 24px rgba(0,0,0,0.5),
       0 0 0 1px rgba(255,255,255,0.04);
     display:flex;align-items:center;justify-content:center;
-    margin:0 auto 22px;
-    position:relative;
-    transition:all 0.3s;
-  }
-  .step-circle::before{
-    content:'';position:absolute;inset:-2px;
-    border-radius:50%;
-    background:radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
-    pointer-events:none;z-index:-1;
+    margin:0 auto 22px;position:relative;transition:all 0.3s;
   }
   .step-circle svg{width:36px;height:36px;color:#fff}
-  /* Цветные иконки */
   .step-circle.icon-red{box-shadow:inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 24px rgba(0,0,0,0.5), 0 0 32px rgba(230,57,70,0.2)}
   .step-circle.icon-red svg{color:var(--accent)}
   .step-circle.icon-gold svg{color:var(--star)}
@@ -356,26 +351,20 @@
   }
   .step-text{font-size:13px;color:var(--text-dim);line-height:1.5;padding:0 6px}
 
-  /* ===== Отзывы — круглые аватары из инициалов как в макете ===== */
+  /* ===== Отзывы ===== */
   .reviews-grid{
-    display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:20px;
+    display:grid;grid-template-columns:repeat(3, 1fr);gap:20px;
   }
   @media(max-width:900px){.reviews-grid{grid-template-columns:1fr}}
 
   .review{
     background:linear-gradient(180deg, #1c1c25 0%, #15151c 100%);
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:30px 28px;
-    text-decoration:none;color:inherit;
-    transition:all 0.3s;
-    display:flex;flex-direction:column;
+    border:1px solid var(--border);border-radius:18px;
+    padding:30px 28px;text-decoration:none;color:inherit;
+    transition:all 0.3s;display:flex;flex-direction:column;
   }
   .review:hover{
-    border-color:var(--border-bright);
-    transform:translateY(-3px);
+    border-color:var(--border-bright);transform:translateY(-3px);
     background:linear-gradient(180deg, #20202a 0%, #18181f 100%);
   }
   .review-head{display:flex;align-items:center;gap:14px;margin-bottom:20px}
@@ -391,33 +380,24 @@
     font-size:15.5px;font-weight:700;color:#fff;margin-bottom:4px;
   }
   .review-stars{color:var(--star);font-size:14px;letter-spacing:1.5px}
-  .review-body{
-    color:var(--text-dim);font-size:14px;line-height:1.65;flex-grow:1;
-  }
+  .review-body{color:var(--text-dim);font-size:14px;line-height:1.65;flex-grow:1}
   .review-platform{
-    margin-top:20px;padding-top:16px;
-    border-top:1px solid var(--border);
+    margin-top:20px;padding-top:16px;border-top:1px solid var(--border);
     display:flex;align-items:center;justify-content:space-between;
     font-size:11px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;
   }
   .review-link{color:var(--accent);font-weight:700}
 
-  /* ===== Большой CTA с Женей справа — используем IMG_8584 с тёмным фоном ===== */
+  /* ===== Большой CTA ===== */
   .big-cta{padding:80px 0 100px}
   .big-cta-box{
     background:linear-gradient(135deg, #1a1a22 0%, #16161d 100%);
-    border:1px solid var(--border);
-    border-radius:24px;
-    overflow:hidden;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    align-items:stretch;
-    position:relative;
-    min-height:380px;
+    border:1px solid var(--border);border-radius:24px;overflow:hidden;
+    display:grid;grid-template-columns:1fr 1fr;align-items:stretch;
+    position:relative;min-height:380px;
   }
   .big-cta-content{
-    padding:56px 48px;
-    display:flex;flex-direction:column;justify-content:center;
+    padding:56px 48px;display:flex;flex-direction:column;justify-content:center;
     position:relative;z-index:2;
   }
   .big-cta h2{
@@ -432,15 +412,8 @@
     margin-bottom:32px;max-width:440px;
   }
   .big-cta-buttons{display:flex;gap:14px;flex-wrap:wrap}
-  /* Картинка с Женей растягивается на свой блок */
-  .big-cta-image{
-    position:relative;
-    overflow:hidden;
-    background:#0a0a0c;
-  }
-  .big-cta-image img{
-    width:100%;height:100%;object-fit:cover;display:block;
-  }
+  .big-cta-image{position:relative;overflow:hidden;background:#0a0a0c}
+  .big-cta-image img{width:100%;height:100%;object-fit:cover;display:block}
   @media(max-width:900px){
     .big-cta-box{grid-template-columns:1fr;min-height:auto}
     .big-cta-content{padding:36px 24px;text-align:center}
@@ -454,8 +427,7 @@
     border-top:1px solid var(--border);
     padding:48px 0 32px;
     padding-bottom:max(32px, env(safe-area-inset-bottom));
-    position:relative;z-index:5;
-    background:var(--bg-soft);
+    position:relative;z-index:5;background:var(--bg-soft);
   }
   .footer-grid{
     display:flex;justify-content:space-between;align-items:center;
@@ -486,8 +458,8 @@
   /* ===== Мобила ===== */
   @media(max-width:900px){
     .hero{padding:120px 0 60px}
-    .hero-grid{grid-template-columns:1fr;gap:40px;text-align:left}
-    .hero-stage{max-width:520px;order:-1}
+    .hero-grid{grid-template-columns:1fr;gap:32px;text-align:left}
+    .hero-stage{max-width:440px;order:-1;aspect-ratio:1.3/1}
     .hero-perks{justify-content:flex-start;gap:24px}
     section{padding:72px 0}
     .section-title{margin-bottom:40px}
@@ -498,12 +470,15 @@
     .cta-group{flex-direction:column;align-items:stretch}
     .btn{width:100%;padding:16px 20px}
     .hero-perks{flex-direction:column;align-items:flex-start;gap:16px}
+    .hero-stage{max-width:100%;aspect-ratio:1.4/1}
     .skills-grid{gap:12px}
     .skill-tile{margin-bottom:12px}
     .skill-title{font-size:13.5px}
     .skill-text{font-size:11.5px}
     .step-circle{width:72px;height:72px}
     .step-circle svg{width:30px;height:30px}
+    .step-name{font-size:14px}
+    .step-text{font-size:12px}
     .big-cta-content{padding:32px 20px}
   }
 
@@ -580,10 +555,11 @@
         </div>
       </div>
       <div class="hero-stage">
+        <div class="curtain-left"></div>
+        <div class="curtain-right"></div>
         <div class="stage-floor"></div>
         <div class="spotlight left"></div>
         <div class="spotlight right"></div>
-        <div class="curtain-folds"></div>
         <div class="stage-placeholder">
           <div class="mask">🎭</div>
           <div class="label">Здесь скоро появятся<br>марионетки на нитях</div>
@@ -593,7 +569,7 @@
   </div>
 </section>
 
-<!-- ===== ЧЕМУ ВЫ НАУЧИТЕСЬ — 5 карбоновых карточек ===== -->
+<!-- ===== ЧЕМУ ВЫ НАУЧИТЕСЬ ===== -->
 <section id="skills">
   <div class="container">
     <h2 class="section-title reveal">Чему вы научитесь</h2>
@@ -667,9 +643,9 @@
       <div class="step reveal">
         <div class="step-circle">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 4l6 6-10 10-6-6z"/>
-            <path d="M14 4l3-2 3 3-2 3"/>
-            <path d="M9 11l4 4"/>
+            <path d="M5 13l-2 7 7-2L21 7l-5-5z"/>
+            <path d="M14 4l5 5"/>
+            <path d="M3 21l4-4"/>
           </svg>
         </div>
         <div class="step-name">4. Создавайте</div>
@@ -751,7 +727,7 @@
   </div>
 </section>
 
-<!-- ===== БОЛЬШОЙ CTA — Женя на тёмном карбоне ===== -->
+<!-- ===== БОЛЬШОЙ CTA ===== -->
 <section class="big-cta">
   <div class="container">
     <div class="big-cta-box reveal">
