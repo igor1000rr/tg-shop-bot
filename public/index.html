@@ -33,13 +33,9 @@
   }
   html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%}
   body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:'Inter',sans-serif;
-    font-weight:400;
-    line-height:1.6;
-    overflow-x:hidden;
-    min-height:100vh;
+    background:var(--bg);color:var(--text);
+    font-family:'Inter',sans-serif;font-weight:400;line-height:1.6;
+    overflow-x:hidden;min-height:100vh;
     -webkit-tap-highlight-color:transparent;
   }
   body::before{
@@ -53,20 +49,17 @@
 
   /* ===== ХЕДЕР ===== */
   header{
-    position:fixed;top:0;left:0;right:0;z-index:100;
-    padding:18px 0;
+    position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 0;
     background:rgba(10,10,12,0.92);
     backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-    border-bottom:1px solid var(--border);
-    transition:padding 0.3s;
+    border-bottom:1px solid var(--border);transition:padding 0.3s;
     padding-top:max(18px, env(safe-area-inset-top));
   }
   header.scrolled{padding:12px 0}
   .nav{display:flex;justify-content:space-between;align-items:center;gap:24px}
   .logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text);flex-shrink:0}
   .logo-img{
-    width:48px;height:48px;border-radius:50%;
-    background:var(--bg-card);overflow:hidden;
+    width:48px;height:48px;border-radius:50%;background:var(--bg-card);overflow:hidden;
     display:flex;align-items:center;justify-content:center;flex-shrink:0;
   }
   .logo-img img{width:100%;height:100%;object-fit:cover}
@@ -77,8 +70,7 @@
   .nav-links a{color:var(--text-dim);text-decoration:none;font-size:14px;font-weight:500;transition:color 0.25s}
   .nav-links a:hover{color:var(--text)}
   .nav-cta{
-    background:var(--accent);color:#fff;
-    padding:12px 24px;border-radius:8px;text-decoration:none;
+    background:var(--accent);color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;
     font-size:13px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;
     transition:all 0.25s;flex-shrink:0;
   }
@@ -91,23 +83,11 @@
 
   /* ===== HERO ===== */
   .hero{padding:140px 0 80px;position:relative;overflow:hidden}
-  .hero-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:48px;
-    align-items:center;
-  }
-  .hero-tagline{
-    display:inline-block;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
-    color:var(--accent);margin-bottom:24px;
-    padding:8px 18px;border:1px solid var(--border-bright);border-radius:22px;
-    background:rgba(230,57,70,0.08);
-  }
+  .hero-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:48px;align-items:center}
   .hero h1{
     font-family:'Manrope',sans-serif;
-    font-size:clamp(36px, 4.6vw, 64px);
-    font-weight:900;line-height:1.05;letter-spacing:-1.5px;
-    margin-bottom:24px;
+    font-size:clamp(36px, 4.8vw, 68px);
+    font-weight:900;line-height:1.05;letter-spacing:-1.5px;margin-bottom:24px;
   }
   .hero h1 .red{color:var(--accent)}
   .hero-sub{
@@ -147,15 +127,11 @@
       0 0 48px rgba(230,57,70,0.4);
   }
   .btn-secondary{
-    background:linear-gradient(180deg, #2a2a35 0%, #16161d 100%);
-    color:var(--text);
+    background:linear-gradient(180deg, #2a2a35 0%, #16161d 100%);color:var(--text);
     border:1px solid var(--border);
     box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 16px rgba(0,0,0,0.3);
   }
-  .btn-secondary:hover{
-    border-color:rgba(255,255,255,0.2);
-    transform:translateY(-2px);
-  }
+  .btn-secondary:hover{border-color:rgba(255,255,255,0.2);transform:translateY(-2px)}
 
   .hero-perks{display:flex;gap:28px;flex-wrap:wrap}
   .perk{display:flex;align-items:center;gap:10px;color:var(--text-dim);font-size:13px;font-weight:500}
@@ -166,98 +142,80 @@
   }
   .perk-icon svg{width:20px;height:20px;color:#fff}
 
-  /* HERO визуал — театральная сцена с КОНТРАСТНЫМ занавесом */
+  /* HERO стэйдж с театральной сценой и марионетками */
   .hero-stage{
     position:relative;
-    aspect-ratio:1/1;
+    aspect-ratio:1.1/1;
     width:100%;
-    max-width:560px;
+    max-width:640px;
     margin:0 auto;
     border-radius:20px;
     overflow:hidden;
     background:
-      radial-gradient(ellipse at 50% 100%, rgba(230,57,70,0.25) 0%, transparent 70%),
+      radial-gradient(ellipse at 50% 110%, rgba(230,57,70,0.4) 0%, transparent 60%),
       linear-gradient(180deg, #1a0508 0%, #2a0a14 60%, #1a0508 100%);
-    border:1px solid rgba(230,57,70,0.25);
-    box-shadow:0 20px 60px rgba(0,0,0,0.5), inset 0 0 80px rgba(230,57,70,0.08);
+    border:1px solid rgba(230,57,70,0.2);
+    box-shadow:0 20px 60px rgba(0,0,0,0.5), inset 0 0 80px rgba(230,57,70,0.1);
   }
-  /* Верхняя перекладина — карниз */
+  /* Карниз тонкий */
   .hero-stage::before{
-    content:'';position:absolute;top:0;left:0;right:0;height:8%;
-    background:linear-gradient(180deg, #c41e36 0%, #8a1024 100%);
-    box-shadow:0 4px 12px rgba(0,0,0,0.5);
-    z-index:4;
+    content:'';position:absolute;top:0;left:0;right:0;height:5%;
+    background:linear-gradient(180deg, #d12a40 0%, #8a1024 60%, #4a0810 100%);
+    box-shadow:0 4px 12px rgba(0,0,0,0.5);z-index:5;
   }
-  /* Занавеси по бокам — ЯРКО-КРАСНЫЕ контрастные */
-  .curtain-left,
-  .curtain-right{
-    position:absolute;top:0;bottom:0;width:22%;z-index:3;
+  /* Занавеси */
+  .curtain-left,.curtain-right{
+    position:absolute;top:0;bottom:0;width:18%;z-index:4;
     background:linear-gradient(180deg, #d12a40 0%, #9a1830 50%, #6a0e22 100%);
-    box-shadow:inset 0 0 30px rgba(0,0,0,0.4);
   }
-  .curtain-left{left:0;background:linear-gradient(180deg, #d12a40 0%, #9a1830 50%, #6a0e22 100%)}
-  .curtain-right{right:0;background:linear-gradient(180deg, #d12a40 0%, #9a1830 50%, #6a0e22 100%)}
-  /* Складки на занавесах */
-  .curtain-left::before,
-  .curtain-right::before{
+  .curtain-left{left:0}.curtain-right{right:0}
+  .curtain-left::before,.curtain-right::before{
     content:'';position:absolute;inset:0;
     background:repeating-linear-gradient(90deg,
-      transparent 0,
-      transparent 14px,
-      rgba(0,0,0,0.3) 14px,
-      rgba(0,0,0,0.3) 15px,
-      rgba(255,255,255,0.04) 15px,
-      rgba(255,255,255,0.04) 16px,
-      transparent 16px,
-      transparent 30px);
+      transparent 0, transparent 12px,
+      rgba(0,0,0,0.3) 12px, rgba(0,0,0,0.3) 13px,
+      rgba(255,255,255,0.04) 13px, rgba(255,255,255,0.04) 14px,
+      transparent 14px, transparent 26px);
   }
-  /* Нижняя складка занавеса (вырез) */
-  .curtain-left::after,
-  .curtain-right::after{
-    content:'';position:absolute;bottom:0;left:0;right:0;height:30px;
-    background:radial-gradient(ellipse at top, transparent 40%, #6a0e22 70%);
+  /* Подвески занавеса снизу */
+  .curtain-left::after,.curtain-right::after{
+    content:'';position:absolute;bottom:0;left:0;right:0;height:24px;
+    background:radial-gradient(ellipse at top, transparent 35%, #4a0810 65%);
   }
-  /* Пол сцены — деревянный с красной подсветкой */
+  /* Пол сцены */
   .stage-floor{
-    position:absolute;bottom:0;left:0;right:0;height:24%;
+    position:absolute;bottom:0;left:0;right:0;height:18%;z-index:1;
     background:
-      linear-gradient(180deg, transparent 0%, rgba(230,57,70,0.3) 80%),
-      linear-gradient(180deg, #2a0810 0%, #3a0e1c 100%);
-    z-index:1;
+      linear-gradient(180deg, transparent 0%, rgba(230,57,70,0.35) 70%, rgba(230,57,70,0.5) 100%);
     box-shadow:inset 0 4px 12px rgba(0,0,0,0.5);
   }
-  /* Прожекторы желтоватые */
+  /* Прожекторы */
   .spotlight{
-    position:absolute;top:0;width:35%;height:100%;z-index:2;
-    background:radial-gradient(ellipse at top, rgba(255,200,120,0.22) 0%, transparent 65%);
-    filter:blur(8px);
+    position:absolute;top:5%;width:30%;height:80%;z-index:2;
+    background:radial-gradient(ellipse at top, rgba(255,210,140,0.3) 0%, transparent 60%);
+    filter:blur(6px);pointer-events:none;
+  }
+  .spotlight.l1{left:18%}
+  .spotlight.l2{left:35%}
+  .spotlight.l3{right:18%}
+
+  /* SVG с марионетками — заполняет всю сцену */
+  .puppets-svg{
+    position:absolute;inset:0;z-index:3;
+    width:100%;height:100%;
     pointer-events:none;
   }
-  .spotlight.left{left:18%}
-  .spotlight.right{right:18%}
-
-  /* Заглушка для марионеток */
-  .stage-placeholder{
-    position:absolute;
-    top:50%;left:50%;
-    transform:translate(-50%,-50%);
-    z-index:5;
-    text-align:center;
-    color:rgba(255,255,255,0.5);
-    padding:24px;
-    max-width:60%;
-  }
-  .stage-placeholder .mask{
-    font-size:64px;
-    margin-bottom:14px;
-    filter:drop-shadow(0 4px 12px rgba(0,0,0,0.5));
-  }
-  .stage-placeholder .label{
-    font-family:'Manrope',sans-serif;
-    font-size:13px;font-weight:600;
-    color:rgba(255,255,255,0.55);
-    letter-spacing:0.5px;line-height:1.5;
-    text-shadow:0 2px 8px rgba(0,0,0,0.6);
+  /* Лёгкое покачивание */
+  @keyframes sway-1{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+  @keyframes sway-2{0%,100%{transform:rotate(1deg)}50%{transform:rotate(-1deg)}}
+  @keyframes sway-3{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1deg)}}
+  @keyframes sway-4{0%,100%{transform:rotate(1.5deg)}50%{transform:rotate(-1.5deg)}}
+  .puppet-1{animation:sway-1 5s ease-in-out infinite;transform-origin:50% 5%}
+  .puppet-2{animation:sway-2 6s ease-in-out infinite;transform-origin:50% 5%}
+  .puppet-3{animation:sway-3 5.5s ease-in-out infinite;transform-origin:50% 5%}
+  .puppet-4{animation:sway-4 6.5s ease-in-out infinite;transform-origin:50% 5%}
+  @media(prefers-reduced-motion:reduce){
+    .puppet-1,.puppet-2,.puppet-3,.puppet-4{animation:none}
   }
 
   /* ===== Секции ===== */
@@ -269,53 +227,37 @@
     margin-bottom:56px;letter-spacing:-0.5px;text-transform:uppercase;
   }
 
-  /* ===== Чему вы научитесь ===== */
-  .skills-grid{
-    display:grid;
-    grid-template-columns:repeat(5, 1fr);
-    gap:18px;
-  }
+  /* ===== Чему вы научитесь — КВАДРАТНЫЕ плитки ===== */
+  .skills-grid{display:grid;grid-template-columns:repeat(5, 1fr);gap:18px}
   @media(max-width:1100px){.skills-grid{grid-template-columns:repeat(3, 1fr)}}
   @media(max-width:640px){.skills-grid{grid-template-columns:repeat(2, 1fr);gap:14px}}
 
-  .skill{
-    display:flex;flex-direction:column;text-align:center;
-    transition:transform 0.3s;
-  }
+  .skill{display:flex;flex-direction:column;text-align:center;transition:transform 0.3s}
   .skill:hover{transform:translateY(-4px)}
   .skill-tile{
     width:100%;
-    aspect-ratio:1/1.15;
-    border-radius:18px;
-    overflow:hidden;
-    background:var(--bg-soft);
-    position:relative;
-    margin-bottom:16px;
+    aspect-ratio:1/1;   /* КВАДРАТНЫЕ */
+    border-radius:16px;
+    overflow:hidden;background:var(--bg-soft);
+    position:relative;margin-bottom:14px;
     box-shadow:0 8px 24px rgba(0,0,0,0.4);
   }
   .skill-tile img{
-    width:100%;height:100%;object-fit:cover;display:block;
-    object-position:center top;
+    width:100%;height:100%;
+    object-fit:cover;display:block;
+    object-position:center center;   /* по центру */
   }
   .skill-title{
     font-family:'Manrope',sans-serif;
     font-size:15px;font-weight:700;color:#fff;
     margin-bottom:8px;line-height:1.3;padding:0 4px;
   }
-  .skill-text{
-    font-size:12.5px;color:var(--text-dim);line-height:1.5;padding:0 6px;
-  }
+  .skill-text{font-size:12.5px;color:var(--text-dim);line-height:1.5;padding:0 6px}
 
   /* ===== Как проходит обучение ===== */
-  .steps-wrap{
-    display:grid;
-    grid-template-columns:repeat(5, 1fr);
-    gap:24px;
-    position:relative;
-  }
+  .steps-wrap{display:grid;grid-template-columns:repeat(5, 1fr);gap:24px;position:relative}
   .steps-wrap::before{
-    content:'';position:absolute;top:44px;left:8%;right:8%;
-    height:1px;
+    content:'';position:absolute;top:44px;left:8%;right:8%;height:1px;
     background-image:linear-gradient(90deg, var(--border) 50%, transparent 50%);
     background-size:14px 1px;z-index:0;
   }
@@ -323,8 +265,6 @@
     .steps-wrap{grid-template-columns:repeat(2, 1fr);gap:36px 16px}
     .steps-wrap::before{display:none}
   }
-  /* На очень узких — НЕ опускаем в 1 столбик, оставляем 2 чтобы экран не вытягивался */
-  @media(max-width:360px){.steps-wrap{gap:28px 12px}}
 
   .step{text-align:center;position:relative;z-index:1}
   .step-circle{
@@ -338,23 +278,17 @@
     display:flex;align-items:center;justify-content:center;
     margin:0 auto 22px;position:relative;transition:all 0.3s;
   }
-  .step-circle svg{width:36px;height:36px;color:#fff}
+  .step-circle svg{width:38px;height:38px;color:#fff}
   .step-circle.icon-red{box-shadow:inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 24px rgba(0,0,0,0.5), 0 0 32px rgba(230,57,70,0.2)}
   .step-circle.icon-red svg{color:var(--accent)}
   .step-circle.icon-gold svg{color:var(--star)}
   .step-circle.icon-gold{box-shadow:inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 24px rgba(0,0,0,0.5), 0 0 32px rgba(255,213,74,0.2)}
 
-  .step-name{
-    font-family:'Manrope',sans-serif;
-    font-size:16px;font-weight:700;color:#fff;
-    margin-bottom:10px;
-  }
+  .step-name{font-family:'Manrope',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:10px}
   .step-text{font-size:13px;color:var(--text-dim);line-height:1.5;padding:0 6px}
 
-  /* ===== Отзывы ===== */
-  .reviews-grid{
-    display:grid;grid-template-columns:repeat(3, 1fr);gap:20px;
-  }
+  /* ===== Отзывы — с фото-силуэтами ===== */
+  .reviews-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:20px}
   @media(max-width:900px){.reviews-grid{grid-template-columns:1fr}}
 
   .review{
@@ -367,14 +301,15 @@
     border-color:var(--border-bright);transform:translateY(-3px);
     background:linear-gradient(180deg, #20202a 0%, #18181f 100%);
   }
-  .review-head{display:flex;align-items:center;gap:14px;margin-bottom:20px}
-  .review-avatar{
-    width:48px;height:48px;border-radius:50%;
-    background:linear-gradient(135deg, #c41e36, #6a1020);
-    display:flex;align-items:center;justify-content:center;
-    color:#fff;font-weight:700;font-size:15px;flex-shrink:0;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.2), 0 4px 12px rgba(0,0,0,0.4);
+  .review-head{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+  .review-photo{
+    width:56px;height:56px;border-radius:50%;
+    overflow:hidden;flex-shrink:0;
+    background:linear-gradient(135deg, #2a2a35, #16161d);
+    border:1px solid var(--border);
+    box-shadow:0 4px 12px rgba(0,0,0,0.4);
   }
+  .review-photo svg{width:100%;height:100%;display:block}
   .review-name{
     font-family:'Manrope',sans-serif;
     font-size:15.5px;font-weight:700;color:#fff;margin-bottom:4px;
@@ -388,51 +323,62 @@
   }
   .review-link{color:var(--accent);font-weight:700}
 
-  /* ===== Большой CTA ===== */
+  /* Карусельные точки */
+  .reviews-dots{
+    display:flex;gap:10px;justify-content:center;margin-top:32px;
+  }
+  .reviews-dots span{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--text-mute);opacity:0.4;
+    transition:all 0.3s;
+  }
+  .reviews-dots span.active{background:var(--accent);opacity:1;width:24px;border-radius:4px}
+
+  /* ===== Большой CTA — Женя помещается целиком ===== */
   .big-cta{padding:80px 0 100px}
   .big-cta-box{
     background:linear-gradient(135deg, #1a1a22 0%, #16161d 100%);
     border:1px solid var(--border);border-radius:24px;overflow:hidden;
-    display:grid;grid-template-columns:1fr 1fr;align-items:stretch;
+    display:grid;grid-template-columns:1.05fr 1fr;align-items:stretch;
     position:relative;min-height:380px;
   }
-  .big-cta-content{
-    padding:56px 48px;display:flex;flex-direction:column;justify-content:center;
-    position:relative;z-index:2;
-  }
+  .big-cta-content{padding:56px 48px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2}
   .big-cta h2{
-    font-family:'Manrope',sans-serif;
-    font-size:clamp(28px, 3.5vw, 42px);
+    font-family:'Manrope',sans-serif;font-size:clamp(28px, 3.5vw, 42px);
     font-weight:900;line-height:1.1;
     margin-bottom:18px;text-transform:uppercase;letter-spacing:-0.5px;
   }
   .big-cta h2 .red{color:var(--accent)}
-  .big-cta p{
-    color:var(--text-dim);font-size:16px;line-height:1.65;
-    margin-bottom:32px;max-width:440px;
-  }
+  .big-cta p{color:var(--text-dim);font-size:16px;line-height:1.65;margin-bottom:32px;max-width:440px}
   .big-cta-buttons{display:flex;gap:14px;flex-wrap:wrap}
-  .big-cta-image{position:relative;overflow:hidden;background:#0a0a0c}
-  .big-cta-image img{width:100%;height:100%;object-fit:cover;display:block}
+  /* Картинка с Женей — object-fit:contain + позиция справа, чтобы целиком вошёл */
+  .big-cta-image{
+    position:relative;overflow:hidden;
+    background:
+      radial-gradient(ellipse at 70% 50%, rgba(230,57,70,0.2) 0%, transparent 60%),
+      #0e0e14;
+  }
+  .big-cta-image img{
+    width:100%;height:100%;
+    object-fit:contain;
+    object-position:center center;
+    display:block;
+  }
   @media(max-width:900px){
     .big-cta-box{grid-template-columns:1fr;min-height:auto}
     .big-cta-content{padding:36px 24px;text-align:center}
     .big-cta p{margin-left:auto;margin-right:auto}
     .big-cta-buttons{justify-content:center}
-    .big-cta-image{order:-1;aspect-ratio:16/9}
+    .big-cta-image{order:-1;aspect-ratio:16/8}
   }
 
   /* ===== Футер ===== */
   footer{
     border-top:1px solid var(--border);
-    padding:48px 0 32px;
-    padding-bottom:max(32px, env(safe-area-inset-bottom));
+    padding:48px 0 32px;padding-bottom:max(32px, env(safe-area-inset-bottom));
     position:relative;z-index:5;background:var(--bg-soft);
   }
-  .footer-grid{
-    display:flex;justify-content:space-between;align-items:center;
-    flex-wrap:wrap;gap:24px;margin-bottom:32px;
-  }
+  .footer-grid{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;margin-bottom:32px}
   .footer-nav{display:flex;gap:28px;flex-wrap:wrap}
   .footer-nav a{color:var(--text-dim);text-decoration:none;font-size:14px;transition:color 0.25s}
   .footer-nav a:hover{color:var(--text)}
@@ -459,7 +405,7 @@
   @media(max-width:900px){
     .hero{padding:120px 0 60px}
     .hero-grid{grid-template-columns:1fr;gap:32px;text-align:left}
-    .hero-stage{max-width:440px;order:-1;aspect-ratio:1.3/1}
+    .hero-stage{max-width:480px;order:-1;aspect-ratio:1.2/1}
     .hero-perks{justify-content:flex-start;gap:24px}
     section{padding:72px 0}
     .section-title{margin-bottom:40px}
@@ -470,16 +416,16 @@
     .cta-group{flex-direction:column;align-items:stretch}
     .btn{width:100%;padding:16px 20px}
     .hero-perks{flex-direction:column;align-items:flex-start;gap:16px}
-    .hero-stage{max-width:100%;aspect-ratio:1.4/1}
+    .hero-stage{max-width:100%;aspect-ratio:1.3/1}
     .skills-grid{gap:12px}
-    .skill-tile{margin-bottom:12px}
     .skill-title{font-size:13.5px}
     .skill-text{font-size:11.5px}
     .step-circle{width:72px;height:72px}
-    .step-circle svg{width:30px;height:30px}
+    .step-circle svg{width:32px;height:32px}
     .step-name{font-size:14px}
     .step-text{font-size:12px}
     .big-cta-content{padding:32px 20px}
+    .review-photo{width:48px;height:48px}
   }
 
   @media(prefers-reduced-motion:reduce){
@@ -517,7 +463,6 @@
   <div class="container">
     <div class="hero-grid">
       <div>
-        <div class="hero-tagline">School of AI Animation</div>
         <h1>AI-мультфильмы<br>и <span class="red">вирусные видео!</span></h1>
         <p class="hero-sub">
           Научись создавать AI-мультфильмы и вирусные видео с нуля до результата вместе
@@ -554,16 +499,172 @@
           </div>
         </div>
       </div>
+
+      <!-- Театральная сцена с марионетками -->
       <div class="hero-stage">
         <div class="curtain-left"></div>
         <div class="curtain-right"></div>
         <div class="stage-floor"></div>
-        <div class="spotlight left"></div>
-        <div class="spotlight right"></div>
-        <div class="stage-placeholder">
-          <div class="mask">🎭</div>
-          <div class="label">Здесь скоро появятся<br>марионетки на нитях</div>
-        </div>
+        <div class="spotlight l1"></div>
+        <div class="spotlight l2"></div>
+        <div class="spotlight l3"></div>
+
+        <svg class="puppets-svg" viewBox="0 0 600 545" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="suit-blue" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#3a4a6e"/>
+              <stop offset="100%" stop-color="#1f2944"/>
+            </linearGradient>
+            <linearGradient id="suit-dark" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#2a2a35"/>
+              <stop offset="100%" stop-color="#14141c"/>
+            </linearGradient>
+            <linearGradient id="suit-grey" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#4a5060"/>
+              <stop offset="100%" stop-color="#2a303a"/>
+            </linearGradient>
+            <linearGradient id="suit-black" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#1f1f28"/>
+              <stop offset="100%" stop-color="#0a0a0c"/>
+            </linearGradient>
+            <radialGradient id="skin" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#f0c8a8"/>
+              <stop offset="100%" stop-color="#c89878"/>
+            </radialGradient>
+            <radialGradient id="skin-2" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#e8b890"/>
+              <stop offset="100%" stop-color="#b88860"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Рука кукловода сверху -->
+          <g opacity="0.9">
+            <ellipse cx="300" cy="20" rx="180" ry="30" fill="#0a0508"/>
+            <!-- Пальцы -->
+            <path d="M150 30 Q145 50 140 65 Q150 70 158 65 L160 35 Z" fill="#2a1a18"/>
+            <path d="M225 30 Q220 55 218 75 Q230 80 240 73 L240 35 Z" fill="#2a1a18"/>
+            <path d="M300 30 Q298 60 298 80 Q310 85 318 78 L318 35 Z" fill="#2a1a18"/>
+            <path d="M375 30 Q378 55 380 73 Q390 78 395 72 L390 35 Z" fill="#2a1a18"/>
+            <path d="M450 30 Q452 50 458 65 Q466 68 470 60 L460 35 Z" fill="#2a1a18"/>
+          </g>
+
+          <!-- Нити для каждой марионетки (от пальцев к плечам/голове) -->
+          <g stroke="#c8a560" stroke-width="0.8" opacity="0.55">
+            <!-- К марионетке 1 -->
+            <line x1="145" y1="65" x2="105" y2="220"/>
+            <line x1="165" y1="65" x2="135" y2="220"/>
+            <!-- К марионетке 2 -->
+            <line x1="225" y1="75" x2="225" y2="220"/>
+            <line x1="245" y1="73" x2="255" y2="220"/>
+            <!-- К марионетке 3 -->
+            <line x1="305" y1="80" x2="345" y2="220"/>
+            <line x1="325" y1="78" x2="375" y2="220"/>
+            <!-- К марионетке 4 -->
+            <line x1="385" y1="73" x2="455" y2="220"/>
+            <line x1="405" y1="72" x2="485" y2="220"/>
+          </g>
+
+          <!-- МАРИОНЕТКА 1 (синий костюм) -->
+          <g class="puppet-1" transform="translate(70, 200)">
+            <!-- Шея -->
+            <rect x="48" y="55" width="14" height="14" fill="url(#skin)"/>
+            <!-- Голова -->
+            <ellipse cx="55" cy="40" rx="28" ry="32" fill="url(#skin)"/>
+            <!-- Волосы -->
+            <path d="M28 35 Q30 12 55 10 Q80 12 82 35 Q80 22 55 22 Q30 22 28 35 Z" fill="#3a2a1a"/>
+            <!-- Глаза -->
+            <circle cx="46" cy="38" r="2.5" fill="#1a0a08"/>
+            <circle cx="64" cy="38" r="2.5" fill="#1a0a08"/>
+            <!-- Костюм -->
+            <path d="M20 72 L90 72 L100 270 L10 270 Z" fill="url(#suit-blue)"/>
+            <!-- Воротник рубашки -->
+            <path d="M38 72 L55 92 L72 72 L70 68 L55 80 L40 68 Z" fill="#f0f0f0"/>
+            <!-- Галстук -->
+            <path d="M52 80 L58 80 L62 140 L48 140 Z" fill="#c41e36"/>
+            <!-- Руки -->
+            <ellipse cx="14" cy="120" rx="10" ry="40" fill="url(#suit-blue)"/>
+            <ellipse cx="96" cy="120" rx="10" ry="40" fill="url(#suit-blue)"/>
+            <!-- Кисти -->
+            <circle cx="14" cy="165" r="8" fill="url(#skin)"/>
+            <circle cx="96" cy="165" r="8" fill="url(#skin)"/>
+            <!-- Брюки/ноги -->
+            <path d="M20 270 L48 270 L42 350 L20 350 Z" fill="#1a1a25"/>
+            <path d="M62 270 L90 270 L90 350 L68 350 Z" fill="#1a1a25"/>
+            <!-- Ботинки -->
+            <ellipse cx="30" cy="352" rx="14" ry="6" fill="#0a0a0c"/>
+            <ellipse cx="80" cy="352" rx="14" ry="6" fill="#0a0a0c"/>
+          </g>
+
+          <!-- МАРИОНЕТКА 2 (тёмный костюм + красный галстук) -->
+          <g class="puppet-2" transform="translate(190, 195)">
+            <!-- Шея -->
+            <rect x="48" y="58" width="14" height="14" fill="url(#skin)"/>
+            <!-- Голова -->
+            <ellipse cx="55" cy="42" rx="30" ry="34" fill="url(#skin)"/>
+            <!-- Волосы (зачёс) -->
+            <path d="M27 36 Q26 10 55 8 Q82 10 84 38 Q82 24 65 22 Q40 22 28 32 Q28 30 27 36 Z" fill="#d4b478"/>
+            <!-- Глаза -->
+            <circle cx="46" cy="40" r="2.5" fill="#1a0a08"/>
+            <circle cx="64" cy="40" r="2.5" fill="#1a0a08"/>
+            <!-- Костюм -->
+            <path d="M18 76 L92 76 L102 275 L8 275 Z" fill="url(#suit-dark)"/>
+            <!-- Воротник -->
+            <path d="M38 76 L55 96 L72 76 L70 72 L55 84 L40 72 Z" fill="#f0f0f0"/>
+            <!-- Красный галстук — длинный -->
+            <path d="M52 84 L58 84 L64 160 L46 160 Z" fill="#c41e36"/>
+            <!-- Руки -->
+            <ellipse cx="12" cy="125" rx="10" ry="42" fill="url(#suit-dark)"/>
+            <ellipse cx="98" cy="125" rx="10" ry="42" fill="url(#suit-dark)"/>
+            <circle cx="12" cy="172" r="8" fill="url(#skin)"/>
+            <circle cx="98" cy="172" r="8" fill="url(#skin)"/>
+            <!-- Брюки -->
+            <path d="M18 275 L48 275 L42 355 L18 355 Z" fill="#1a1a25"/>
+            <path d="M62 275 L92 275 L92 355 L68 355 Z" fill="#1a1a25"/>
+            <ellipse cx="30" cy="357" rx="14" ry="6" fill="#0a0a0c"/>
+            <ellipse cx="80" cy="357" rx="14" ry="6" fill="#0a0a0c"/>
+          </g>
+
+          <!-- МАРИОНЕТКА 3 (серый костюм, синий галстук) -->
+          <g class="puppet-3" transform="translate(310, 200)">
+            <rect x="48" y="55" width="14" height="14" fill="url(#skin-2)"/>
+            <ellipse cx="55" cy="40" rx="29" ry="33" fill="url(#skin-2)"/>
+            <!-- Седые волосы -->
+            <path d="M28 36 Q28 12 55 10 Q82 12 82 36 Q80 24 55 22 Q30 24 28 36 Z" fill="#888"/>
+            <circle cx="46" cy="38" r="2.5" fill="#1a0a08"/>
+            <circle cx="64" cy="38" r="2.5" fill="#1a0a08"/>
+            <path d="M20 72 L90 72 L100 270 L10 270 Z" fill="url(#suit-grey)"/>
+            <path d="M38 72 L55 92 L72 72 L70 68 L55 80 L40 68 Z" fill="#f0f0f0"/>
+            <path d="M52 80 L58 80 L62 145 L48 145 Z" fill="#3a5a8e"/>
+            <ellipse cx="14" cy="120" rx="10" ry="40" fill="url(#suit-grey)"/>
+            <ellipse cx="96" cy="120" rx="10" ry="40" fill="url(#suit-grey)"/>
+            <circle cx="14" cy="165" r="8" fill="url(#skin-2)"/>
+            <circle cx="96" cy="165" r="8" fill="url(#skin-2)"/>
+            <path d="M20 270 L48 270 L42 350 L20 350 Z" fill="#1a1a25"/>
+            <path d="M62 270 L90 270 L90 350 L68 350 Z" fill="#1a1a25"/>
+            <ellipse cx="30" cy="352" rx="14" ry="6" fill="#0a0a0c"/>
+            <ellipse cx="80" cy="352" rx="14" ry="6" fill="#0a0a0c"/>
+          </g>
+
+          <!-- МАРИОНЕТКА 4 (тёмный костюм, голубой галстук) -->
+          <g class="puppet-4" transform="translate(430, 205)">
+            <rect x="48" y="55" width="14" height="14" fill="url(#skin)"/>
+            <ellipse cx="55" cy="40" rx="28" ry="32" fill="url(#skin)"/>
+            <path d="M28 34 Q30 10 55 8 Q80 10 82 36 Q80 22 55 22 Q32 24 28 34 Z" fill="#2a1a10"/>
+            <circle cx="46" cy="38" r="2.5" fill="#1a0a08"/>
+            <circle cx="64" cy="38" r="2.5" fill="#1a0a08"/>
+            <path d="M20 70 L90 70 L100 268 L10 268 Z" fill="url(#suit-black)"/>
+            <path d="M38 70 L55 90 L72 70 L70 66 L55 78 L40 66 Z" fill="#f0f0f0"/>
+            <path d="M52 78 L58 78 L62 140 L48 140 Z" fill="#5e9ed8"/>
+            <ellipse cx="14" cy="118" rx="10" ry="40" fill="url(#suit-black)"/>
+            <ellipse cx="96" cy="118" rx="10" ry="40" fill="url(#suit-black)"/>
+            <circle cx="14" cy="163" r="8" fill="url(#skin)"/>
+            <circle cx="96" cy="163" r="8" fill="url(#skin)"/>
+            <path d="M20 268 L48 268 L42 348 L20 348 Z" fill="#1a1a25"/>
+            <path d="M62 268 L90 268 L90 348 L68 348 Z" fill="#1a1a25"/>
+            <ellipse cx="30" cy="350" rx="14" ry="6" fill="#0a0a0c"/>
+            <ellipse cx="80" cy="350" rx="14" ry="6" fill="#0a0a0c"/>
+          </g>
+        </svg>
       </div>
     </div>
   </div>
@@ -603,7 +704,7 @@
   </div>
 </section>
 
-<!-- ===== КАК ПРОХОДИТ ОБУЧЕНИЕ ===== -->
+<!-- ===== КАК ПРОХОДИТ ОБУЧЕНИЕ — иконки 3 и 4 заменены ===== -->
 <section id="process">
   <div class="container">
     <h2 class="section-title reveal">Как проходит обучение</h2>
@@ -629,23 +730,25 @@
         <div class="step-name">2. Смотрите уроки</div>
         <div class="step-text">Пошаговые видео-уроки от простого к сложному</div>
       </div>
+      <!-- Шаг 3: ХЛОПУШКА фильма -->
       <div class="step reveal">
         <div class="step-circle">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="6" width="18" height="14" rx="1.5"/>
-            <path d="M3 10h18M7 6V4M11 6V4M15 6V4M19 6V4"/>
-            <path d="M10 12.5v4l4-2z" fill="currentColor" stroke="none"/>
+            <path d="M3 8h18v12H3z"/>
+            <path d="M3 8l3-4h14l-3 4M9 4l-3 4M14 4l-3 4M19 4l-3 4"/>
           </svg>
         </div>
         <div class="step-name">3. Практика</div>
         <div class="step-text">Выполняйте задания и применяйте знания на практике</div>
       </div>
+      <!-- Шаг 4: РАКЕТА -->
       <div class="step reveal">
         <div class="step-circle">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 13l-2 7 7-2L21 7l-5-5z"/>
-            <path d="M14 4l5 5"/>
-            <path d="M3 21l4-4"/>
+            <path d="M12 2c3 2 5 5 5 9v6l-2 2h-6l-2-2v-6c0-4 2-7 5-9z"/>
+            <circle cx="12" cy="10" r="2"/>
+            <path d="M7 14l-3 2 1 4 3-2M17 14l3 2-1 4-3-2"/>
+            <path d="M10 22l2-3 2 3"/>
           </svg>
         </div>
         <div class="step-name">4. Создавайте</div>
@@ -667,14 +770,23 @@
   </div>
 </section>
 
-<!-- ===== ОТЗЫВЫ ===== -->
+<!-- ===== ОТЗЫВЫ — с SVG фото-силуэтами ===== -->
 <section id="reviews">
   <div class="container">
     <h2 class="section-title reveal">Отзывы учеников</h2>
     <div class="reviews-grid">
       <a href="https://www.instagram.com/" target="_blank" rel="noopener" class="review reveal">
         <div class="review-head">
-          <div class="review-avatar">АП</div>
+          <div class="review-photo">
+            <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="ava1" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#3a5a8e"/><stop offset="100%" stop-color="#1f2944"/>
+              </linearGradient></defs>
+              <rect width="56" height="56" fill="url(#ava1)"/>
+              <circle cx="28" cy="22" r="9" fill="#e8c4a8"/>
+              <path d="M10 56 Q10 38 28 38 Q46 38 46 56 Z" fill="#2a3a5e"/>
+            </svg>
+          </div>
           <div>
             <div class="review-name">Александр П.</div>
             <div class="review-stars">★★★★★</div>
@@ -689,9 +801,25 @@
           <span class="review-link">Открыть →</span>
         </div>
       </a>
+
       <a href="https://www.tiktok.com/" target="_blank" rel="noopener" class="review reveal">
         <div class="review-head">
-          <div class="review-avatar">МК</div>
+          <div class="review-photo">
+            <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="ava2" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#c08eb0"/><stop offset="100%" stop-color="#704a60"/>
+              </linearGradient></defs>
+              <rect width="56" height="56" fill="url(#ava2)"/>
+              <!-- Волосы сзади -->
+              <ellipse cx="28" cy="26" rx="14" ry="16" fill="#5a3a30"/>
+              <!-- Лицо -->
+              <circle cx="28" cy="24" r="10" fill="#f0c8a8"/>
+              <!-- Чёлка -->
+              <path d="M18 19 Q22 14 28 14 Q34 14 38 19 Q34 17 28 17 Q22 17 18 19 Z" fill="#3a2418"/>
+              <!-- Плечи -->
+              <path d="M10 56 Q10 38 28 38 Q46 38 46 56 Z" fill="#c41e36"/>
+            </svg>
+          </div>
           <div>
             <div class="review-name">Мария К.</div>
             <div class="review-stars">★★★★★</div>
@@ -706,9 +834,21 @@
           <span class="review-link">Открыть →</span>
         </div>
       </a>
+
       <a href="https://www.youtube.com/" target="_blank" rel="noopener" class="review reveal">
         <div class="review-head">
-          <div class="review-avatar">ДС</div>
+          <div class="review-photo">
+            <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="ava3" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#4a6e5e"/><stop offset="100%" stop-color="#2a3a30"/>
+              </linearGradient></defs>
+              <rect width="56" height="56" fill="url(#ava3)"/>
+              <circle cx="28" cy="22" r="9" fill="#e0b890"/>
+              <!-- Короткая стрижка -->
+              <path d="M19 17 Q21 11 28 11 Q35 11 37 17 Q35 15 28 15 Q21 15 19 17 Z" fill="#1a1008"/>
+              <path d="M10 56 Q10 38 28 38 Q46 38 46 56 Z" fill="#3a3a45"/>
+            </svg>
+          </div>
           <div>
             <div class="review-name">Дмитрий С.</div>
             <div class="review-stars">★★★★★</div>
@@ -723,6 +863,9 @@
           <span class="review-link">Открыть →</span>
         </div>
       </a>
+    </div>
+    <div class="reviews-dots" aria-hidden="true">
+      <span class="active"></span><span></span><span></span><span></span>
     </div>
   </div>
 </section>
