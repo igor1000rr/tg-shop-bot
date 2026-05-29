@@ -131,14 +131,20 @@
   }
   .btn-secondary:hover{border-color:rgba(255,255,255,0.2);transform:translateY(-2px)}
 
+  /* HERO perks — используем IMG_8587 (3 готовые иконки клиента) через background-position */
   .hero-perks{display:flex;gap:28px;flex-wrap:wrap}
-  .perk{display:flex;align-items:center;gap:10px;color:var(--text-dim);font-size:13px;font-weight:500}
+  .perk{display:flex;align-items:center;gap:12px;color:var(--text-dim);font-size:13px;font-weight:500}
   .perk-icon{
-    width:42px;height:42px;border-radius:50%;
-    background:var(--bg-card);border:1px solid var(--border);
-    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    width:48px;height:48px;
+    background-image:url('/assets/IMG_8587.webp');
+    background-size:300% 100%;
+    background-repeat:no-repeat;
+    flex-shrink:0;
+    filter:drop-shadow(0 4px 8px rgba(0,0,0,0.5));
   }
-  .perk-icon svg{width:20px;height:20px;color:#fff}
+  .perk-icon.p1{background-position:0% center}      /* диплом */
+  .perk-icon.p2{background-position:50% center}     /* хлопушка */
+  .perk-icon.p3{background-position:100% center}    /* чат */
 
   .hero-stage{
     position:relative;
@@ -191,7 +197,6 @@
   .spotlight.l2{left:35%}
   .spotlight.l3{right:18%}
 
-  /* Заглушка для марионеток — будет заменена картинкой клиента */
   .stage-placeholder{
     position:absolute;inset:0;z-index:3;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -210,6 +215,14 @@
   }
   @media(max-width:600px){
     .stage-placeholder .masks{font-size:72px}
+  }
+
+  /* Видео на сцене (если клиент пришлёт hero-video.mp4) */
+  .stage-video{
+    position:absolute;inset:0;z-index:3;
+    width:100%;height:100%;
+    object-fit:cover;
+    pointer-events:none;
   }
 
   section{padding:100px 0;position:relative;z-index:5}
@@ -242,35 +255,17 @@
   }
   .skill-text{font-size:12.5px;color:var(--text-dim);line-height:1.5;padding:0 6px}
 
-  .steps-wrap{display:grid;grid-template-columns:repeat(5, 1fr);gap:24px;position:relative}
-  .steps-wrap::before{
-    content:'';position:absolute;top:44px;left:8%;right:8%;height:1px;
-    background-image:linear-gradient(90deg, var(--border) 50%, transparent 50%);
-    background-size:14px 1px;z-index:0;
-  }
+  /* Шаги — теперь готовая панорама от клиента + текстовые подписи */
+  .steps-image{margin-bottom:32px}
+  .steps-image img{width:100%;height:auto;display:block}
+  .steps-labels{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+  .step-label{text-align:center;padding:0 8px}
+  .step-name{font-family:'Manrope',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:8px}
+  .step-text{font-size:13px;color:var(--text-dim);line-height:1.5}
   @media(max-width:900px){
-    .steps-wrap{grid-template-columns:repeat(2, 1fr);gap:36px 16px}
-    .steps-wrap::before{display:none}
+    .steps-labels{grid-template-columns:repeat(2,1fr);gap:24px 12px}
+    .step-label:last-child{grid-column:1/-1;max-width:280px;margin:0 auto}
   }
-  .step{text-align:center;position:relative;z-index:1}
-  .step-circle{
-    width:88px;height:88px;border-radius:50%;
-    background:linear-gradient(135deg, #1f1f28 0%, #14141c 100%);
-    border:1.5px solid rgba(255,255,255,0.12);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.05),
-      0 8px 24px rgba(0,0,0,0.5),
-      0 0 0 1px rgba(255,255,255,0.04);
-    display:flex;align-items:center;justify-content:center;
-    margin:0 auto 22px;position:relative;transition:all 0.3s;
-  }
-  .step-circle svg{width:38px;height:38px;color:#fff}
-  .step-circle.icon-red{box-shadow:inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 24px rgba(0,0,0,0.5), 0 0 32px rgba(230,57,70,0.2)}
-  .step-circle.icon-red svg{color:var(--accent)}
-  .step-circle.icon-gold svg{color:var(--star)}
-  .step-circle.icon-gold{box-shadow:inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 24px rgba(0,0,0,0.5), 0 0 32px rgba(255,213,74,0.2)}
-  .step-name{font-family:'Manrope',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:10px}
-  .step-text{font-size:13px;color:var(--text-dim);line-height:1.5;padding:0 6px}
 
   .reviews-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:20px}
   @media(max-width:900px){.reviews-grid{grid-template-columns:1fr}}
@@ -384,13 +379,13 @@
     .hero{padding:100px 0 48px}
     .cta-group{flex-direction:column;align-items:stretch}
     .btn{width:100%;padding:16px 20px}
-    .hero-perks{flex-direction:column;align-items:flex-start;gap:16px}
+    .hero-perks{flex-direction:row;align-items:center;justify-content:space-between;gap:8px}
+    .perk{flex-direction:column;text-align:center;gap:8px;font-size:11.5px;flex:1}
+    .perk-icon{width:40px;height:40px}
     .hero-stage{max-width:100%;aspect-ratio:1.3/1}
     .skills-grid{gap:12px}
     .skill-title{font-size:13.5px}
     .skill-text{font-size:11.5px}
-    .step-circle{width:72px;height:72px}
-    .step-circle svg{width:32px;height:32px}
     .step-name{font-size:14px}
     .step-text{font-size:12px}
     .big-cta-content{padding:32px 20px}
@@ -442,27 +437,15 @@
         </div>
         <div class="hero-perks">
           <div class="perk">
-            <div class="perk-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
-              </svg>
-            </div>
+            <div class="perk-icon p1"></div>
             <span>Пошаговое<br>обучение</span>
           </div>
           <div class="perk">
-            <div class="perk-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="6" width="20" height="14" rx="2"/><path d="M22 9l-5 3 5 3M2 8h6M2 16h6"/>
-              </svg>
-            </div>
+            <div class="perk-icon p2"></div>
             <span>Практические<br>уроки</span>
           </div>
           <div class="perk">
-            <div class="perk-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-              </svg>
-            </div>
+            <div class="perk-icon p3"></div>
             <span>Поддержка<br>автора</span>
           </div>
         </div>
@@ -478,7 +461,7 @@
 
         <div class="stage-placeholder">
           <div class="masks">🎭</div>
-          <div class="hint">Иллюстрация скоро</div>
+          <div class="hint">Ролик скоро будет</div>
         </div>
       </div>
     </div>
@@ -521,59 +504,27 @@
 <section id="process">
   <div class="container">
     <h2 class="section-title reveal">Как проходит обучение</h2>
-    <div class="steps-wrap">
-      <div class="step reveal">
-        <div class="step-circle">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="14" rx="2"/>
-            <circle cx="12" cy="11" r="2.5"/>
-            <path d="M7 17c1-2.5 3-3.5 5-3.5s4 1 5 3.5"/>
-          </svg>
-        </div>
+    <div class="steps-image reveal">
+      <img src="/assets/IMG_8581.webp" alt="Шаги обучения" loading="lazy">
+    </div>
+    <div class="steps-labels">
+      <div class="step-label reveal">
         <div class="step-name">1. Регистрация</div>
         <div class="step-text">Зарегистрируйтесь на платформе и получите доступ к курсу</div>
       </div>
-      <div class="step reveal">
-        <div class="step-circle icon-red">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M10 8.5v7l6-3.5z" fill="currentColor"/>
-          </svg>
-        </div>
+      <div class="step-label reveal">
         <div class="step-name">2. Смотрите уроки</div>
         <div class="step-text">Пошаговые видео-уроки от простого к сложному</div>
       </div>
-      <div class="step reveal">
-        <div class="step-circle">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 8h18v12H3z"/>
-            <path d="M3 8l3-4h14l-3 4M9 4l-3 4M14 4l-3 4M19 4l-3 4"/>
-          </svg>
-        </div>
+      <div class="step-label reveal">
         <div class="step-name">3. Практика</div>
         <div class="step-text">Выполняйте задания и применяйте знания на практике</div>
       </div>
-      <div class="step reveal">
-        <div class="step-circle">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2c3 2 5 5 5 9v6l-2 2h-6l-2-2v-6c0-4 2-7 5-9z"/>
-            <circle cx="12" cy="10" r="2"/>
-            <path d="M7 14l-3 2 1 4 3-2M17 14l3 2-1 4-3-2"/>
-            <path d="M10 22l2-3 2 3"/>
-          </svg>
-        </div>
+      <div class="step-label reveal">
         <div class="step-name">4. Создавайте</div>
         <div class="step-text">Создавайте свои AI-мультфильмы и вирусные видео</div>
       </div>
-      <div class="step reveal">
-        <div class="step-circle icon-gold">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M7 4h10v3a5 5 0 0 1-10 0V4z"/>
-            <path d="M17 5h3a2 2 0 0 1-2 4M7 5H4a2 2 0 0 0 2 4"/>
-            <path d="M10 13h4l-1 4h-2zM8 19h8v2H8z"/>
-            <path d="M12 6.5l0.6 1.4 1.5 0.2-1.1 1 0.3 1.5L12 9.9l-1.3 0.7 0.3-1.5-1.1-1 1.5-0.2z" fill="currentColor"/>
-          </svg>
-        </div>
+      <div class="step-label reveal">
         <div class="step-name">5. Результат</div>
         <div class="step-text">Получайте просмотры, подписчиков и монетизацию</div>
       </div>
@@ -749,7 +700,7 @@
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e, i) => {
         if (e.isIntersecting) {
-          const delay = e.target.closest('.skills-grid, .steps-wrap, .reviews-grid') ? i * 70 : 0;
+          const delay = e.target.closest('.skills-grid, .steps-labels, .reviews-grid') ? i * 70 : 0;
           setTimeout(() => e.target.classList.add('visible'), delay);
           io.unobserve(e.target);
         }
