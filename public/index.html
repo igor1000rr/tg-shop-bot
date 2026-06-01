@@ -148,22 +148,15 @@
 
   .hero-stage{
     position:relative;
-    aspect-ratio:1.1/1;
+    aspect-ratio:4/5;
     width:100%;
-    max-width:640px;
+    max-width:520px;
     margin:0 auto;
     border-radius:20px;
     overflow:hidden;
-    background:
-      radial-gradient(ellipse at 50% 110%, rgba(230,57,70,0.4) 0%, transparent 60%),
-      linear-gradient(180deg, #1a0508 0%, #2a0a14 60%, #1a0508 100%);
-    border:1px solid rgba(230,57,70,0.2);
+    background:#140509;
+    border:1px solid rgba(230,57,70,0.25);
     box-shadow:0 20px 60px rgba(0,0,0,0.5), inset 0 0 80px rgba(230,57,70,0.1);
-  }
-  .hero-stage::before{
-    content:'';position:absolute;top:0;left:0;right:0;height:5%;
-    background:linear-gradient(180deg, #d12a40 0%, #8a1024 60%, #4a0810 100%);
-    box-shadow:0 4px 12px rgba(0,0,0,0.5);z-index:5;
   }
   .curtain-left,.curtain-right{
     position:absolute;top:0;bottom:0;width:18%;z-index:4;
@@ -217,11 +210,13 @@
     .stage-placeholder .masks{font-size:72px}
   }
 
-  /* Видео на сцене (если клиент пришлёт hero-video.mp4) */
+  /* Видео на сцене */
   .stage-video{
     position:absolute;inset:0;z-index:3;
     width:100%;height:100%;
     object-fit:cover;
+    object-position:center 25%;
+    background:#140509;
     pointer-events:none;
   }
 
@@ -369,7 +364,7 @@
   @media(max-width:900px){
     .hero{padding:120px 0 60px}
     .hero-grid{grid-template-columns:1fr;gap:32px;text-align:left}
-    .hero-stage{max-width:480px;order:-1;aspect-ratio:1.2/1}
+    .hero-stage{max-width:420px;order:-1;aspect-ratio:5/7}
     .hero-perks{justify-content:flex-start;gap:24px}
     section{padding:72px 0}
     .section-title{margin-bottom:40px}
@@ -382,7 +377,7 @@
     .hero-perks{flex-direction:row;align-items:center;justify-content:space-between;gap:8px}
     .perk{flex-direction:column;text-align:center;gap:8px;font-size:11.5px;flex:1}
     .perk-icon{width:40px;height:40px}
-    .hero-stage{max-width:100%;aspect-ratio:1.3/1}
+    .hero-stage{max-width:340px;aspect-ratio:5/7}
     .skills-grid{gap:12px}
     .skill-title{font-size:13.5px}
     .skill-text{font-size:11.5px}
@@ -452,17 +447,9 @@
       </div>
 
       <div class="hero-stage">
-        <div class="curtain-left"></div>
-        <div class="curtain-right"></div>
-        <div class="stage-floor"></div>
-        <div class="spotlight l1"></div>
-        <div class="spotlight l2"></div>
-        <div class="spotlight l3"></div>
-
-        <div class="stage-placeholder">
-          <div class="masks">🎭</div>
-          <div class="hint">Ролик скоро будет</div>
-        </div>
+        <video class="stage-video" autoplay loop muted playsinline preload="metadata" poster="/assets/hero-poster.jpg">
+          <source src="/assets/hero-video.mp4" type="video/mp4">
+        </video>
       </div>
     </div>
   </div>
