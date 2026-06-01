@@ -74,7 +74,36 @@
     transition:all 0.25s;flex-shrink:0;
   }
   .nav-cta:hover{background:var(--accent-bright);transform:translateY(-1px);box-shadow:0 8px 24px var(--accent-glow)}
-  @media(max-width:1024px){.nav-links{display:none}}
+  .nav-toggle{
+    display:none;flex-direction:column;justify-content:center;gap:5px;
+    width:44px;height:44px;padding:10px;background:none;border:none;cursor:pointer;flex-shrink:0;z-index:101;
+  }
+  .nav-toggle span{display:block;width:100%;height:2px;background:#fff;border-radius:2px;transition:transform 0.3s, opacity 0.3s}
+  .nav-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .nav-toggle.open span:nth-child(2){opacity:0}
+  .nav-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  .nav-backdrop{
+    position:fixed;inset:0;z-index:99;background:rgba(0,0,0,0.6);
+    opacity:0;visibility:hidden;transition:opacity 0.3s, visibility 0.3s;
+  }
+  .nav-backdrop.open{opacity:1;visibility:visible}
+  body.menu-open{overflow:hidden}
+  @media(max-width:1024px){
+    .nav{gap:12px}
+    .nav-toggle{display:flex}
+    .nav-cta{margin-left:auto}
+    .nav-links{
+      position:fixed;top:0;right:0;width:min(80vw,300px);height:100vh;
+      flex-direction:column;gap:0;align-items:stretch;
+      background:var(--bg-soft);border-left:1px solid var(--border);
+      padding:96px 24px 32px;
+      transform:translateX(100%);transition:transform 0.34s cubic-bezier(0.4,0,0.2,1);
+      z-index:100;overflow-y:auto;
+    }
+    .nav-links.open{transform:translateX(0)}
+    .nav-links li{width:100%}
+    .nav-links a{display:block;padding:16px 4px;font-size:16px;color:var(--text);border-bottom:1px solid var(--border)}
+  }
   @media(max-width:600px){
     .logo-sub{display:none}.logo-img{width:40px;height:40px}.logo-title{font-size:15px}
     .nav-cta{padding:10px 16px;font-size:11px}
@@ -353,7 +382,7 @@
           <span class="logo-sub">by Evgenii Golik</span>
         </div>
       </a>
-      <ul class="nav-links">
+      <ul class="nav-links" id="nav-links">
         <li><a href="#hero">Главная</a></li>
         <li><a href="#skills">Чему научитесь</a></li>
         <li><a href="#process">Как обучение</a></li>
@@ -361,9 +390,14 @@
         <li><a href="#contact">Контакты</a></li>
       </ul>
       <a href="https://t.me/AiCartoons_bot" class="nav-cta">Начать обучение</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
     </nav>
   </div>
 </header>
+
+<div class="nav-backdrop" id="nav-backdrop"></div>
 
 <section class="hero" id="hero">
   <video class="hero-video" autoplay loop muted playsinline preload="metadata" poster="/assets/hero-poster.jpg">
@@ -625,6 +659,30 @@
   window.addEventListener('scroll', () => {
     header.classList.toggle('scrolled', window.scrollY > 30);
   }, { passive: true });
+
+  // Бургер-меню
+  const navToggle = document.getElementById('nav-toggle');
+  const navLinks = document.getElementById('nav-links');
+  const navBackdrop = document.getElementById('nav-backdrop');
+  function closeMenu(){
+    navToggle.classList.remove('open');
+    navLinks.classList.remove('open');
+    navBackdrop.classList.remove('open');
+    document.body.classList.remove('menu-open');
+    navToggle.setAttribute('aria-expanded', 'false');
+  }
+  if (navToggle && navLinks && navBackdrop) {
+    navToggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      navToggle.classList.toggle('open', open);
+      navBackdrop.classList.toggle('open', open);
+      document.body.classList.toggle('menu-open', open);
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    navBackdrop.addEventListener('click', closeMenu);
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+  }
 
   const reveals = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window) {
