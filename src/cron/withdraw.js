@@ -1,10 +1,11 @@
-// Cron был для CryptoBot (он не умеет автовывод, присылал уведомления в лог-чат).
-// С Cryptomus автовывод настраивается в ЛК, никаких крон-уведомлений не нужно.
-// Функции оставляю как no-op чтобы не ломать импорты в index.js.
+// Раньше здесь был cron для крипто-провайдеров (уведомления/автовывод).
+// Теперь приём идёт через Platega (карты) и Telegram Stars — внешний вывод
+// настраивается на стороне провайдера/Telegram, периодический cron не нужен.
+// Оставляю функции как no-op, чтобы не трогать импорты в index.js.
 const logger = require('../utils/logger');
 
 function startWithdrawCron() {
-  logger.info('Withdraw cron: автовывод у Cryptomus настраивается в ЛК, cron не требуется');
+  logger.info('Withdraw cron: не требуется (Platega + Telegram Stars)');
 }
 function reloadWithdrawCron() {}
 
