@@ -40,11 +40,15 @@
                 <td class="px-4 py-3">
                   <% if (r.provider==='platega') { %>
                     <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded">💳 Platega</span>
+                  <% } else if (r.provider==='stars') { %>
+                    <span class="inline-flex items-center gap-1 text-xs bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded">⭐ Telegram Stars</span>
                   <% } else { %>
-                    <span class="inline-flex items-center gap-1 text-xs bg-purple-50 text-purple-700 px-2 py-0.5 rounded">🪙 CryptoBot</span>
+                    <span class="inline-flex items-center gap-1 text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded"><%= r.provider %></span>
                   <% } %>
                 </td>
-                <td class="px-4 py-3 text-right font-medium"><%= r.amount %> <span class="text-slate-400"><%= r.currency %></span></td>
+                <td class="px-4 py-3 text-right font-medium">
+                  <%= r.amount %> <span class="text-slate-400"><%= r.currency === 'XTR' ? '⭐' : r.currency %></span>
+                </td>
                 <td class="px-4 py-3">
                   <span class="inline-flex items-center text-xs px-2 py-0.5 rounded border <%= badge %>"><%= r.status %></span>
                 </td>
