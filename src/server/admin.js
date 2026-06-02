@@ -145,9 +145,19 @@ async function applyConfigChanges(changed) {
 
 function computeStats() {
   const db = getDb();
-  const today = db.prepare(`SELECT COUNT(*) c, COALESCE(SUM(CAST(amount AS REAL)),0) s FROM payments WHERE status='paid' AND date(paid_at)=date('now')`).get();
-  const week  = db.prepare(`SELECT COUNT(*) c, COALESCE(SUM(CAST(amount AS REAL)),0) s FROM payments WHERE status='paid' AND paid_at >= datetime('now','-7 days')`).get();
-  const month = db.prepare(`SELECT COUNT(*) c, COALESCE(SUM(CAST(amount AS REAL)),0) s FROM payments WHERE status='paid' AND paid_at >= datetime('now','-30 days')`).get();
+  // Суммы разнесены по валютам: RUB (Platega) и XTR (Telegram Stars),
+  // чтобы не складывать рубли со звёздами в одну цифру.
+  const sums = (cond) => db.prepare(`
+    SELECT
+      COUNT(*) AS c,
+      COALESCE(SUM(CASE WHEN currency='RUB' THEN CAST(amount AS REAL) ELSE 0 END), 0) AS rub,
+      COALESCE(SUM(CASE WHEN currency='XTR' THEN CAST(amount AS REAL) ELSE 0 END), 0) AS stars
+    FROM payments WHERE status='paid' AND ${cond}
+  `).get();
+
+  const today = sums(`date(paid_at)=date('now')`);
+  const week  = sums(`paid_at >= datetime('now','-7 days')`);
+  const month = sums(`paid_at >= datetime('now','-30 days')`);
   const users = db.prepare(`SELECT COUNT(*) c FROM users`).get();
   const pending = db.prepare(`SELECT COUNT(*) c FROM payments WHERE status='pending'`).get();
   return { today, week, month, totalUsers: users.c, pending: pending.c };
