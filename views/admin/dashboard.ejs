@@ -24,29 +24,28 @@
   </div>
 
   <!-- KPI cards -->
+  <%
+    function money(s){
+      var out = [];
+      if (s.rub   > 0) out.push(s.rub.toFixed(0) + ' ₽');
+      if (s.stars > 0) out.push(s.stars.toFixed(0) + ' ⭐');
+      return out.length ? out.join(' · ') : '0 ₽';
+    }
+  %>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
       <div class="text-sm text-slate-500">Сегодня</div>
-      <div class="flex items-baseline gap-2 mt-2">
-        <div class="text-3xl font-bold text-slate-900"><%= stats.today.s.toFixed(2) %></div>
-        <div class="text-sm text-slate-500">₽</div>
-      </div>
+      <div class="text-2xl font-bold text-slate-900 mt-2"><%= money(stats.today) %></div>
       <div class="text-xs text-slate-400 mt-1"><%= stats.today.c %> оплат</div>
     </div>
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
       <div class="text-sm text-slate-500">За 7 дней</div>
-      <div class="flex items-baseline gap-2 mt-2">
-        <div class="text-3xl font-bold text-slate-900"><%= stats.week.s.toFixed(2) %></div>
-        <div class="text-sm text-slate-500">₽</div>
-      </div>
+      <div class="text-2xl font-bold text-slate-900 mt-2"><%= money(stats.week) %></div>
       <div class="text-xs text-slate-400 mt-1"><%= stats.week.c %> оплат</div>
     </div>
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
       <div class="text-sm text-slate-500">За 30 дней</div>
-      <div class="flex items-baseline gap-2 mt-2">
-        <div class="text-3xl font-bold text-slate-900"><%= stats.month.s.toFixed(2) %></div>
-        <div class="text-sm text-slate-500">₽</div>
-      </div>
+      <div class="text-2xl font-bold text-slate-900 mt-2"><%= money(stats.month) %></div>
       <div class="text-xs text-slate-400 mt-1"><%= stats.month.c %> оплат</div>
     </div>
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
@@ -61,8 +60,8 @@
   <!-- Webhooks card -->
   <div class="bg-white rounded-xl shadow-sm border border-slate-200 mb-6">
     <div class="px-6 py-4 border-b border-slate-200">
-      <h2 class="text-lg font-semibold text-slate-900">🔗 Webhook URLs</h2>
-      <p class="text-sm text-slate-500 mt-0.5">Скопируйте эти URL в ЛК платёжных сервисов</p>
+      <h2 class="text-lg font-semibold text-slate-900">🔗 Webhook URL</h2>
+      <p class="text-sm text-slate-500 mt-0.5">Скопируйте в ЛК Platega. Telegram Stars вебхук не требуют.</p>
     </div>
     <div class="divide-y divide-slate-200">
       <div class="px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
@@ -75,32 +74,22 @@
           <button onclick="copy('wh-platega', this)" class="text-xs text-brand-600 hover:text-brand-700 font-medium">Копия</button>
         </div>
       </div>
-      <div class="px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <div class="font-medium text-slate-900">Cryptomus</div>
-          <div class="text-xs text-slate-500">cryptomus.com → Merchants → магазин → Merchant API Settings → Webhook URL</div>
-        </div>
-        <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
-          <code class="text-sm text-slate-700" id="wh-crypto"><%= publicUrl %>/webhook/cryptomus</code>
-          <button onclick="copy('wh-crypto', this)" class="text-xs text-brand-600 hover:text-brand-700 font-medium">Копия</button>
-        </div>
-      </div>
     </div>
   </div>
 
-  <!-- Auto-payout info card -->
+  <!-- Telegram Stars info card -->
   <div class="bg-white rounded-xl shadow-sm border border-slate-200">
     <div class="px-6 py-4 border-b border-slate-200">
-      <h2 class="text-lg font-semibold text-slate-900">💸 Автовывод крипты</h2>
+      <h2 class="text-lg font-semibold text-slate-900">⭐ Telegram Stars</h2>
     </div>
     <div class="px-6 py-4 text-sm text-slate-600 space-y-2">
-      <p>Автовывод настраивается не здесь, а в личном кабинете Cryptomus:</p>
-      <ol class="list-decimal list-inside space-y-1 ml-2">
-        <li>cryptomus.com → Payouts → <b>Auto-Payouts</b></li>
-        <li>Добавьте правило: «выводить 100% с каждой оплаты»</li>
-        <li>Укажите валюту (USDT), сеть (TRC20) и адрес кошелька</li>
-      </ol>
-      <p class="text-slate-500 pt-2">После этого каждый принятый платёж будет автоматически отправлен на ваш кошелёк (минус комиссия сети и 1% Cryptomus).</p>
+      <p>Оплата звёздами проходит внутри Telegram — провайдер и вебхук не нужны. Цена задаётся в <a href="/admin/settings?tab=offer" class="text-brand-600 hover:underline">Оффер и цены → Цена в Telegram Stars</a>.</p>
+      <ul class="list-disc list-inside space-y-1 ml-2">
+        <li>Принятые звёзды копятся на балансе бота.</li>
+        <li>Вывод — через <b>@BotFather → Bot Settings → Payments</b> (в TON через Fragment, по правилам Telegram доступно через 21 день после зачисления).</li>
+        <li>Возврат — командой <code>/refund &lt;tg_id&gt; &lt;charge_id&gt;</code> в боте (доступна только администратору, ID указывается в настройках бота). <code>charge_id</code> виден в разделе «Платежи» и в лог-чате.</li>
+      </ul>
+      <p class="text-slate-500 pt-2">Важно: возврат звёзд не убирает пользователя из канала — при необходимости удалите его вручную.</p>
     </div>
   </div>
 
