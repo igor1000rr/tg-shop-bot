@@ -25,6 +25,8 @@ const SETTINGS_META = [
     hint: 'Формат: -100xxxxxxxxxx. Бот должен быть админом канала с правом «Пригласительные ссылки».' },
   { key: 'log_chat_id',         group: 'bot',      label: 'ID чата для логов',                                           type: 'text',     default: '',
     hint: 'Необязательно. Бот будет присылать сюда уведомления об оплатах и ошибках. Свой ID можно узнать через @userinfobot.' },
+  { key: 'admin_tg_id',         group: 'bot',      label: 'Telegram ID администратора',                                  type: 'text',     default: '',
+    hint: 'Ваш числовой Telegram ID (узнать через @userinfobot). Только этому пользователю доступна команда /refund для возврата Telegram Stars.' },
 
   // Оффер
   { key: 'offer_title',         group: 'offer',    label: 'Заголовок',                                                  type: 'text',     default: 'Доступ к закрытому каналу' },
@@ -32,9 +34,10 @@ const SETTINGS_META = [
   { key: 'offer_image_url',     group: 'offer',    label: 'URL картинки',                                                type: 'text',     default: '',
     hint: 'Необязательно. Прямая ссылка на jpg/png.' },
   { key: 'price_rub',           group: 'offer',    label: 'Цена в ₽',                                                     type: 'text',     default: '5000' },
-  { key: 'price_usdt',          group: 'offer',    label: 'Цена в USDT',                                                  type: 'text',     default: '50' },
-  { key: 'enable_card',         group: 'offer',    label: 'Показывать кнопку оплаты картой',                            type: 'checkbox', default: '1' },
-  { key: 'enable_crypto',       group: 'offer',    label: 'Показывать кнопку оплаты криптой',                           type: 'checkbox', default: '1' },
+  { key: 'price_stars',         group: 'offer',    label: 'Цена в Telegram Stars (⭐)',                                   type: 'text',     default: '500',
+    hint: 'Целое число звёзд (XTR). Минимум 1. Ориентир: 1 Star ≈ 0.013$ при выплате, но цену задаёте сами.' },
+  { key: 'enable_card',         group: 'offer',    label: 'Показывать кнопку оплаты картой (Platega)',                  type: 'checkbox', default: '1' },
+  { key: 'enable_stars',        group: 'offer',    label: 'Показывать кнопку оплаты Telegram Stars',                    type: 'checkbox', default: '1' },
   { key: 'success_text',        group: 'offer',    label: 'Сообщение после оплаты',                                       type: 'textarea', default: 'Оплата принята. Ваша ссылка: {invite_link}',
     hint: 'Плейсхолдер {invite_link} будет заменён на реальную ссылку доступа.' },
 
@@ -44,12 +47,6 @@ const SETTINGS_META = [
   { key: 'platega_secret',      group: 'platega',  label: 'Secret Key (API ключ)',                                          type: 'password', secret: true, default: '' },
   { key: 'platega_payment_method', group: 'platega', label: 'Фиксированный метод оплаты',                                  type: 'text', default: '',
     hint: 'Пусто = выбор всех методов (рекомендуется).' },
-
-  // Cryptomus (крипта с автовыводом)
-  { key: 'cryptomus_merchant',  group: 'crypto',   label: 'Merchant UUID',                                                    type: 'password', secret: true, default: '',
-    hint: 'cryptomus.com → ЛК → Merchants → выберите магазин → Merchant API Settings. Наверху страницы — UUID вида 8b03432e-385b-4670-8d06-...' },
-  { key: 'cryptomus_api_key',   group: 'crypto',   label: 'Payment API Key',                                                  type: 'password', secret: true, default: '',
-    hint: 'Там же в Merchant API Settings → Payment API key. Не путать с Payout API key (это другой, он не нужен если автовывод настроен в ЛК).' },
 
   // Документы и поддержка (в боте)
   { key: 'doc_privacy',         group: 'docs',     label: 'Политика конфиденциальности', type: 'textarea', default: '',
@@ -62,10 +59,9 @@ const SETTINGS_META = [
 ];
 
 const GROUPS = [
-  { id: 'bot',      label: 'Telegram-бот',          icon: '🤖', hint: 'Основные параметры: токен, канал, чат для логов.' },
-  { id: 'offer',    label: 'Оффер и цены',         icon: '🛍', hint: 'Что и почем продаётся.' },
+  { id: 'bot',      label: 'Telegram-бот',          icon: '🤖', hint: 'Основные параметры: токен, канал, чат для логов, ID администратора.' },
+  { id: 'offer',    label: 'Оффер и цены',         icon: '🛍', hint: 'Что и почем продаётся. Цена в ₽ — для Platega, в ⭐ — для Telegram Stars.' },
   { id: 'platega',  label: 'Platega · карты',         icon: '💳', hint: 'Приём оплаты банковскими картами.' },
-  { id: 'crypto',   label: 'Cryptomus · крипта',      icon: '🪙', hint: 'Приём крипты с автовыводом на ваш кошелёк. Автовывод настраивается в ЛК Cryptomus.' },
   { id: 'docs',     label: 'Документы и поддержка', icon: '📝', hint: 'Политика, соглашение и контакты поддержки — показываются в боте.' },
 ];
 
