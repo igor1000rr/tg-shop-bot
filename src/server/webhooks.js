@@ -1,7 +1,6 @@
 const { getDb } = require('../db');
 const { getSetting } = require('../config');
 const { verifyPlategaCallback } = require('../payments/platega');
-const { verifyCryptomusSignature } = require('../payments/cryptomus');
 const { issueAccess } = require('../utils/invite');
 const { getBot } = require('../bot');
 const logger = require('../utils/logger');
@@ -32,26 +31,7 @@ async function registerWebhooks(app) {
     return reply.send({ ok: true });
   });
 
-  // Cryptomus webhook: сигнатура в самом боди (body.sign), проверяем через md5(base64(JSON) + apiKey)
-  app.post('/webhook/cryptomus', async (req, reply) => {
-    if (!verifyCryptomusSignature(req.body)) {
-      logger.warn('Cryptomus: неверная подпись');
-      return reply.code(401).send({ error: 'bad signature' });
-    }
-    const { order_id, status } = req.body || {};
-    if (!order_id) return reply.code(400).send({ error: 'no order_id' });
-
-    // Статусы Cryptomus: paid, paid_over, fail, cancel, system_fail, expired, wrong_amount, ...
-    if (status === 'paid' || status === 'paid_over') {
-      await markPaidAndIssue({ provider: 'cryptomus', externalId: String(order_id) });
-    } else if (['fail', 'cancel', 'system_fail', 'expired', 'wrong_amount'].includes(status)) {
-      getDb().prepare(`UPDATE payments SET status='failed' WHERE provider='cryptomus' AND external_id=?`).run(String(order_id));
-    }
-    return reply.send({ ok: true });
-  });
-
-  app.get('/webhook/platega',   async (_, reply) => reply.code(405).send({ method: 'POST only' }));
-  app.get('/webhook/cryptomus', async (_, reply) => reply.code(405).send({ method: 'POST only' }));
+  app.get('/webhook/platega', async (_, reply) => reply.code(405).send({ method: 'POST only' }));
 }
 
 async function notifyLog(text) {
