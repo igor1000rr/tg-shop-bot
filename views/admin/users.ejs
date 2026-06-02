@@ -68,7 +68,7 @@
               var paid = Number(r.paid_count) || 0;
               var pending = Number(r.pending_count) || 0;
               var rub = Number(r.paid_rub) || 0;
-              var usdt = Number(r.paid_usdt) || 0;
+              var stars = Number(r.paid_stars) || 0;
             %>
               <tr class="hover:bg-slate-50">
                 <td class="px-4 py-3">
@@ -91,8 +91,8 @@
                 </td>
                 <td class="px-4 py-3 text-right text-sm">
                   <% if (rub > 0) { %><div><%= rub.toFixed(0) %> <span class="text-slate-400 text-xs">₽</span></div><% } %>
-                  <% if (usdt > 0) { %><div><%= usdt.toFixed(2) %> <span class="text-slate-400 text-xs">USDT</span></div><% } %>
-                  <% if (rub === 0 && usdt === 0) { %><span class="text-slate-300">—</span><% } %>
+                  <% if (stars > 0) { %><div><%= stars.toFixed(0) %> <span class="text-slate-400 text-xs">⭐</span></div><% } %>
+                  <% if (rub === 0 && stars === 0) { %><span class="text-slate-300">—</span><% } %>
                 </td>
                 <td class="px-4 py-3 text-xs text-slate-500"><%= r.last_paid || '—' %></td>
                 <td class="px-4 py-3">
