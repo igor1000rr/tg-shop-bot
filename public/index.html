@@ -206,24 +206,31 @@
     margin-bottom:56px;letter-spacing:-0.5px;text-transform:uppercase;
   }
 
-  .skills-grid{display:grid;grid-template-columns:repeat(5, 1fr);gap:18px}
-  @media(max-width:1100px){.skills-grid{grid-template-columns:repeat(3, 1fr)}}
-  @media(max-width:640px){.skills-grid{grid-template-columns:repeat(2, 1fr);gap:14px}}
-  .skill{display:flex;flex-direction:column;text-align:center;transition:transform 0.3s}
-  .skill-tile{
-    margin-bottom:14px;
-    transition:transform 0.3s;
+  .skills-grid{display:grid;grid-template-columns:repeat(5, 1fr);gap:24px}
+  @media(max-width:1100px){.skills-grid{grid-template-columns:repeat(3, 1fr);gap:28px}}
+  @media(max-width:640px){.skills-grid{grid-template-columns:repeat(2, 1fr);gap:24px 16px}}
+  .skill{display:flex;flex-direction:column;align-items:center;text-align:center;transition:transform 0.3s}
+  .skill-icon{
+    position:relative;width:128px;height:128px;margin-bottom:20px;
+    display:flex;align-items:center;justify-content:center;
   }
-  .skill-tile img{
-    width:100%;height:auto;display:block;
+  .skill-icon::before{
+    content:'';position:absolute;width:80%;height:80%;border-radius:50%;
+    background:radial-gradient(circle, rgba(230,57,70,0.22) 0%, rgba(230,57,70,0.06) 45%, transparent 72%);
+    filter:blur(7px);z-index:0;
   }
-  .skill:hover .skill-tile{transform:translateY(-4px)}
+  .skill-icon img{
+    position:relative;z-index:1;width:100%;height:100%;object-fit:contain;
+    filter:drop-shadow(0 10px 22px rgba(0,0,0,0.55));
+    transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  }
+  .skill:hover .skill-icon img{transform:translateY(-8px) scale(1.05)}
   .skill-title{
     font-family:'Manrope',sans-serif;
-    font-size:15px;font-weight:700;color:#fff;
+    font-size:16px;font-weight:700;color:#fff;
     margin-bottom:8px;line-height:1.3;padding:0 4px;
   }
-  .skill-text{font-size:12.5px;color:var(--text-dim);line-height:1.5;padding:0 6px}
+  .skill-text{font-size:13px;color:var(--text-dim);line-height:1.55;padding:0 6px;max-width:240px}
 
   /* Шаги — теперь готовая панорама от клиента + текстовые подписи */
   .steps-image{margin-bottom:32px}
@@ -365,7 +372,7 @@
     .perk{flex-direction:column;text-align:center;gap:8px;font-size:11.5px;flex:1}
     .perk-icon{width:40px;height:40px}
     .hero-video{max-width:300px}
-    .skills-grid{gap:12px}
+    .skill-icon{width:96px;height:96px;margin-bottom:14px}
     .skill-title{font-size:13.5px}
     .skill-text{font-size:11.5px}
     .step-name{font-size:14px}
@@ -448,27 +455,27 @@
     <h2 class="section-title reveal">Чему вы научитесь</h2>
     <div class="skills-grid">
       <div class="skill reveal">
-        <div class="skill-tile"><img src="/assets/IMG_8570.webp" alt="Kling AI" loading="lazy"></div>
+        <div class="skill-icon"><img src="/assets/icon-kling.png" alt="Kling AI" loading="lazy"></div>
         <div class="skill-title">Kling AI</div>
         <div class="skill-text">Освойте нейросеть Kling AI для создания уникальных AI-видео и сцен</div>
       </div>
       <div class="skill reveal">
-        <div class="skill-tile"><img src="/assets/IMG_8572.webp" alt="Промпты" loading="lazy"></div>
+        <div class="skill-icon"><img src="/assets/icon-prompt.png" alt="Промпты" loading="lazy"></div>
         <div class="skill-title">Мощные промпты</div>
         <div class="skill-text">Пишите эффективные промпты и получайте максимально точный результат</div>
       </div>
       <div class="skill reveal">
-        <div class="skill-tile"><img src="/assets/IMG_8574.webp" alt="Реалистичные персонажи" loading="lazy"></div>
+        <div class="skill-icon"><img src="/assets/icon-character.png" alt="Реалистичные персонажи" loading="lazy"></div>
         <div class="skill-title">Реалистичные персонажи</div>
         <div class="skill-text">Создавайте живых и реалистичных персонажей с помощью AI</div>
       </div>
       <div class="skill reveal">
-        <div class="skill-tile"><img src="/assets/IMG_8576.webp" alt="CapCut" loading="lazy"></div>
+        <div class="skill-icon"><img src="/assets/icon-capcut.png" alt="CapCut" loading="lazy"></div>
         <div class="skill-title">Монтаж и озвучка в CapCut</div>
         <div class="skill-text">Профессиональный монтаж, озвучка и эффекты в CapCut</div>
       </div>
       <div class="skill reveal">
-        <div class="skill-tile"><img src="/assets/IMG_8578.webp" alt="Вирусный контент" loading="lazy"></div>
+        <div class="skill-icon"><img src="/assets/icon-viral.png" alt="Вирусный контент" loading="lazy"></div>
         <div class="skill-title">Вирусный контент</div>
         <div class="skill-text">Создавайте контент, который набирает миллионы просмотров</div>
       </div>
@@ -597,7 +604,7 @@
       </a>
     </div>
     <div class="reviews-dots" aria-hidden="true">
-      <span class="active"></span><span></span><span></span><span></span>
+      <span class="active"></span><span></span><span></span>
     </div>
   </div>
 </section>
