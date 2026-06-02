@@ -104,8 +104,8 @@ async function registerAdmin(app) {
         u.created_at,
         COALESCE(SUM(CASE WHEN p.status='paid'    THEN 1 ELSE 0 END), 0) AS paid_count,
         COALESCE(SUM(CASE WHEN p.status='pending' THEN 1 ELSE 0 END), 0) AS pending_count,
-        COALESCE(SUM(CASE WHEN p.status='paid' AND p.currency='RUB'  THEN CAST(p.amount AS REAL) ELSE 0 END), 0) AS paid_rub,
-        COALESCE(SUM(CASE WHEN p.status='paid' AND p.currency='USDT' THEN CAST(p.amount AS REAL) ELSE 0 END), 0) AS paid_usdt,
+        COALESCE(SUM(CASE WHEN p.status='paid' AND p.currency='RUB' THEN CAST(p.amount AS REAL) ELSE 0 END), 0) AS paid_rub,
+        COALESCE(SUM(CASE WHEN p.status='paid' AND p.currency='XTR' THEN CAST(p.amount AS REAL) ELSE 0 END), 0) AS paid_stars,
         MAX(p.paid_at) AS last_paid
       FROM users u
       LEFT JOIN payments p ON p.tg_id = u.tg_id
