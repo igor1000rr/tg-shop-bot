@@ -8,8 +8,8 @@ function publicUrl() {
 
 function mainKeyboard() {
   const kb = new InlineKeyboard();
-  if (getSetting('enable_card')   === '1') kb.text('💳 Оплатить картой',  'pay_card').row();
-  if (getSetting('enable_crypto') === '1') kb.text('🪙 Оплатить криптой', 'pay_crypto').row();
+  if (getSetting('enable_card')  === '1') kb.text('💳 Оплатить картой',  'pay_card').row();
+  if (getSetting('enable_stars') === '1') kb.text('⭐ Оплатить Telegram Stars', 'pay_stars').row();
   kb.text('ℹ️ Информация', 'info_menu');
   return kb;
 }
