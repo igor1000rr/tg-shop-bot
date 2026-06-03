@@ -236,14 +236,17 @@
   .skill-text{font-size:13px;color:var(--text-dim);line-height:1.55;padding:0 6px;max-width:240px}
 
   /* Шаги — режем готовую полосу steps-icons.png (5 кружков в ряд) на 5 ячеек через
-     background-position. Каждый шаг = своя колонка: текст строго над своим кружком.
-     Полоса: 5 кружков по горизонтали → background-size 500% auto, позиции 0/25/50/75/100%. */
-  .steps-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px}
+     background-position. Каждый шаг = своя колонка: текст вплотную НАД своим кружком.
+     Под текст зарезервирована одинаковая высота (min-height), чтобы кружки стояли в один ряд. */
+  .steps-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;align-items:start}
   .step{display:flex;flex-direction:column;align-items:center;text-align:center}
-  .step-name{font-family:'Manrope',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:6px}
-  .step-text{font-size:13px;color:var(--text-dim);line-height:1.5;margin-bottom:18px;max-width:200px}
+  .step-name{
+    font-family:'Manrope',sans-serif;font-size:16px;font-weight:700;color:#fff;
+    margin-bottom:6px;min-height:44px;display:flex;align-items:flex-end;justify-content:center;
+  }
+  .step-text{font-size:13px;color:var(--text-dim);line-height:1.5;margin-bottom:16px;max-width:200px;min-height:58px}
   .step-circle{
-    width:130px;height:130px;margin-top:auto;
+    width:130px;height:130px;
     background-image:url('/assets/steps-icons.png');
     background-size:500% auto;
     background-position-y:center;
@@ -256,8 +259,10 @@
   .step-circle.c4{background-position-x:75%}    /* ракета */
   .step-circle.c5{background-position-x:100%}   /* кубок */
   @media(max-width:900px){
-    .steps-grid{grid-template-columns:repeat(2,1fr);gap:36px 16px}
+    .steps-grid{grid-template-columns:repeat(2,1fr);gap:32px 16px}
     .steps-grid .step:last-child{grid-column:1 / -1}
+    .step-name{min-height:0}
+    .step-text{min-height:0}
     .step-circle{width:116px;height:116px}
   }
   @media(max-width:420px){
