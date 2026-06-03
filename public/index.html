@@ -209,8 +209,9 @@
   }
 
   /* Навыки — прозрачные иконки (icon-*.png) на чистом фоне, с мягким свечением и ховер-подъёмом.
-     Высота рисунка иконки зафиксирована (одинаковый «калибр»), а под заголовок и текст
-     зарезервирована равная высота (min-height) — карточки одной высоты, ряды симметричны. */
+     Высота рисунка зафиксирована (height:84%), плюс у каждой иконки свой масштаб --sc
+     (компенсирует разные прозрачные поля внутри PNG, чтобы визуально были одного размера).
+     Под заголовок и текст зарезервирована равная высота — карточки одной высоты, ряды симметричны. */
   .skills-grid{display:grid;grid-template-columns:repeat(5, 1fr);gap:24px;align-items:start}
   @media(max-width:1100px){.skills-grid{grid-template-columns:repeat(3, 1fr);gap:32px 24px}}
   @media(max-width:640px){.skills-grid{grid-template-columns:repeat(2, 1fr);gap:28px 16px}.skills-grid .skill:last-child{grid-column:1 / -1}}
@@ -227,9 +228,15 @@
   .skill-icon img{
     position:relative;z-index:1;width:auto;height:84%;max-width:100%;object-fit:contain;
     filter:drop-shadow(0 12px 26px rgba(0,0,0,0.55));
+    transform:scale(var(--sc,1));
     transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
   }
-  .skill:hover .skill-icon img{transform:translateY(-8px) scale(1.05)}
+  .skill-icon.i-kling{--sc:1}
+  .skill-icon.i-prompt{--sc:1.07}
+  .skill-icon.i-character{--sc:1}
+  .skill-icon.i-capcut{--sc:1.18}
+  .skill-icon.i-viral{--sc:1.06}
+  .skill:hover .skill-icon img{transform:translateY(-8px) scale(calc(var(--sc,1) * 1.05))}
   .skill-title{
     font-family:'Manrope',sans-serif;
     font-size:16px;font-weight:700;color:#fff;
@@ -479,27 +486,27 @@
     <h2 class="section-title reveal">Чему вы научитесь</h2>
     <div class="skills-grid">
       <div class="skill reveal">
-        <div class="skill-icon"><img src="/assets/icon-kling.png" alt="Kling AI" loading="lazy"></div>
+        <div class="skill-icon i-kling"><img src="/assets/icon-kling.png" alt="Kling AI" loading="lazy"></div>
         <div class="skill-title">Kling AI</div>
         <div class="skill-text">Освойте нейросеть Kling AI для создания уникальных AI-видео и сцен</div>
       </div>
       <div class="skill reveal">
-        <div class="skill-icon"><img src="/assets/icon-prompt.png" alt="Промпты" loading="lazy"></div>
+        <div class="skill-icon i-prompt"><img src="/assets/icon-prompt.png" alt="Промпты" loading="lazy"></div>
         <div class="skill-title">Мощные промпты</div>
         <div class="skill-text">Пишите эффективные промпты и получайте максимально точный результат</div>
       </div>
       <div class="skill reveal">
-        <div class="skill-icon"><img src="/assets/icon-character.png" alt="Реалистичные персонажи" loading="lazy"></div>
+        <div class="skill-icon i-character"><img src="/assets/icon-character.png" alt="Реалистичные персонажи" loading="lazy"></div>
         <div class="skill-title">Реалистичные персонажи</div>
         <div class="skill-text">Создавайте живых и реалистичных персонажей с помощью AI</div>
       </div>
       <div class="skill reveal">
-        <div class="skill-icon"><img src="/assets/icon-capcut.png" alt="CapCut" loading="lazy"></div>
+        <div class="skill-icon i-capcut"><img src="/assets/icon-capcut.png" alt="CapCut" loading="lazy"></div>
         <div class="skill-title">Монтаж и озвучка в CapCut</div>
         <div class="skill-text">Профессиональный монтаж, озвучка и эффекты в CapCut</div>
       </div>
       <div class="skill reveal">
-        <div class="skill-icon"><img src="/assets/icon-viral.png" alt="Вирусный контент" loading="lazy"></div>
+        <div class="skill-icon i-viral"><img src="/assets/icon-viral.png" alt="Вирусный контент" loading="lazy"></div>
         <div class="skill-title">Вирусный контент</div>
         <div class="skill-text">Создавайте контент, который набирает миллионы просмотров</div>
       </div>
