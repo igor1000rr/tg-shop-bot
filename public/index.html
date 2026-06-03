@@ -208,8 +208,10 @@
     margin-bottom:56px;letter-spacing:-0.5px;text-transform:uppercase;
   }
 
-  /* Навыки — прозрачные иконки (icon-*.png) на чистом фоне, с мягким свечением и ховер-подъёмом */
-  .skills-grid{display:grid;grid-template-columns:repeat(5, 1fr);gap:24px}
+  /* Навыки — прозрачные иконки (icon-*.png) на чистом фоне, с мягким свечением и ховер-подъёмом.
+     Высота рисунка иконки зафиксирована (одинаковый «калибр»), а под заголовок и текст
+     зарезервирована равная высота (min-height) — карточки одной высоты, ряды симметричны. */
+  .skills-grid{display:grid;grid-template-columns:repeat(5, 1fr);gap:24px;align-items:start}
   @media(max-width:1100px){.skills-grid{grid-template-columns:repeat(3, 1fr);gap:32px 24px}}
   @media(max-width:640px){.skills-grid{grid-template-columns:repeat(2, 1fr);gap:28px 16px}.skills-grid .skill:last-child{grid-column:1 / -1}}
   .skill{display:flex;flex-direction:column;align-items:center;text-align:center;transition:transform 0.3s}
@@ -223,7 +225,7 @@
     filter:blur(9px);z-index:0;
   }
   .skill-icon img{
-    position:relative;z-index:1;width:100%;height:100%;object-fit:contain;
+    position:relative;z-index:1;width:auto;height:84%;max-width:100%;object-fit:contain;
     filter:drop-shadow(0 12px 26px rgba(0,0,0,0.55));
     transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
   }
@@ -232,8 +234,9 @@
     font-family:'Manrope',sans-serif;
     font-size:16px;font-weight:700;color:#fff;
     margin-bottom:8px;line-height:1.3;padding:0 4px;
+    min-height:44px;display:flex;align-items:flex-end;justify-content:center;
   }
-  .skill-text{font-size:13px;color:var(--text-dim);line-height:1.55;padding:0 6px;max-width:240px}
+  .skill-text{font-size:13px;color:var(--text-dim);line-height:1.55;padding:0 6px;max-width:240px;min-height:60px}
 
   /* Шаги — режем готовую полосу steps-icons.png (5 кружков в ряд) на 5 ячеек через
      background-position. Каждый шаг = своя колонка: иконка СВЕРХУ, текст ровно под ней.
@@ -394,8 +397,8 @@
     .hero-video{max-width:300px}
     .skills-grid{gap:24px 12px}
     .skill-icon{width:112px;height:112px;margin-bottom:14px}
-    .skill-title{font-size:13.5px}
-    .skill-text{font-size:11.5px}
+    .skill-title{font-size:13.5px;min-height:38px}
+    .skill-text{font-size:11.5px;min-height:50px}
     .step-name{font-size:14px}
     .step-text{font-size:12px}
     .big-cta-content{padding:32px 20px}
