@@ -245,13 +245,12 @@
   .skill-title{font-family:'Manrope',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:5px;line-height:1.25}
   .skill-text{font-size:14px;color:var(--text-dim);line-height:1.5}
 
-  /* Шаги — режем готовую полосу steps-icons.png (5 кружков в ряд) на 5 ячеек через
-     background-position. Каждый шаг = своя колонка: иконка СВЕРХУ, текст ровно под ней.
-     Полоса: 5 кружков по горизонтали → background-size 500% auto, позиции 0/25/50/75/100%. */
-  .steps-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;align-items:start}
-  .step{display:flex;flex-direction:column;align-items:center;text-align:center}
+  /* Шаги — иконки отдельной лентой (5 кружков в ряд с пунктиром, режем steps-icons.png),
+     описания — ниже отдельной сеткой. На десктопе текст под своим кружком (5 колонок),
+     на мобиле кружки остаются в ряд, а текст в 2 колонки (5-й по центру). */
+  .steps-icons{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;align-items:center;margin-bottom:36px}
   .step-circle{
-    width:130px;height:130px;margin-bottom:20px;
+    width:100%;max-width:130px;aspect-ratio:1;justify-self:center;
     background-image:url('/assets/steps-icons.png');
     background-size:500% auto;
     background-position-y:center;
@@ -263,15 +262,16 @@
   .step-circle.c3{background-position-x:50%}    /* хлопушка */
   .step-circle.c4{background-position-x:75%}    /* ракета */
   .step-circle.c5{background-position-x:100%}   /* кубок */
+  .steps-text{display:grid;grid-template-columns:repeat(5,1fr);gap:24px 16px}
+  .step-info{text-align:center}
   .step-name{font-family:'Manrope',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:8px}
-  .step-text{font-size:13px;color:var(--text-dim);line-height:1.5;max-width:200px}
-  @media(max-width:900px){
-    .steps-grid{grid-template-columns:repeat(2,1fr);gap:40px 16px}
-    .steps-grid .step:last-child{grid-column:1 / -1}
-    .step-circle{width:116px;height:116px}
+  .step-text{font-size:13px;color:var(--text-dim);line-height:1.5}
+  @media(max-width:760px){
+    .steps-text{grid-template-columns:repeat(2,1fr);gap:28px 20px}
+    .steps-text .step-info:last-child{grid-column:1 / -1}
   }
-  @media(max-width:420px){
-    .step-circle{width:96px;height:96px}
+  @media(max-width:600px){
+    .steps-icons{gap:6px}
   }
 
   .reviews-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:20px}
@@ -528,29 +528,31 @@
 <section id="process">
   <div class="container">
     <h2 class="section-title reveal">Как проходит обучение</h2>
-    <div class="steps-grid">
-      <div class="step reveal">
-        <div class="step-circle c1"></div>
+    <div class="steps-icons reveal">
+      <div class="step-circle c1"></div>
+      <div class="step-circle c2"></div>
+      <div class="step-circle c3"></div>
+      <div class="step-circle c4"></div>
+      <div class="step-circle c5"></div>
+    </div>
+    <div class="steps-text">
+      <div class="step-info reveal">
         <div class="step-name">1. Регистрация</div>
         <div class="step-text">Зарегистрируйтесь на платформе и получите доступ к курсу</div>
       </div>
-      <div class="step reveal">
-        <div class="step-circle c2"></div>
+      <div class="step-info reveal">
         <div class="step-name">2. Смотрите уроки</div>
         <div class="step-text">Пошаговые видео-уроки от простого к сложному</div>
       </div>
-      <div class="step reveal">
-        <div class="step-circle c3"></div>
+      <div class="step-info reveal">
         <div class="step-name">3. Практика</div>
         <div class="step-text">Выполняйте задания и применяйте знания на практике</div>
       </div>
-      <div class="step reveal">
-        <div class="step-circle c4"></div>
+      <div class="step-info reveal">
         <div class="step-name">4. Создавайте</div>
         <div class="step-text">Создавайте свои AI-мультфильмы и вирусные видео</div>
       </div>
-      <div class="step reveal">
-        <div class="step-circle c5"></div>
+      <div class="step-info reveal">
         <div class="step-name">5. Результат</div>
         <div class="step-text">Получайте просмотры, подписчиков и монетизацию</div>
       </div>
@@ -750,7 +752,7 @@
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e, i) => {
         if (e.isIntersecting) {
-          const delay = e.target.closest('.skills-list, .steps-grid, .reviews-grid') ? i * 70 : 0;
+          const delay = e.target.closest('.skills-list, .steps-text, .reviews-grid') ? i * 70 : 0;
           setTimeout(() => e.target.classList.add('visible'), delay);
           io.unobserve(e.target);
         }
