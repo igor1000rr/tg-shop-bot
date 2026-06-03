@@ -208,42 +208,42 @@
     margin-bottom:56px;letter-spacing:-0.5px;text-transform:uppercase;
   }
 
-  /* Навыки — прозрачные иконки (icon-*.png) на чистом фоне, с мягким свечением и ховер-подъёмом.
-     Высота рисунка зафиксирована (height:84%), плюс у каждой иконки свой масштаб --sc
-     (компенсирует разные прозрачные поля внутри PNG, чтобы визуально были одного размера).
-     Под заголовок и текст зарезервирована равная высота — карточки одной высоты, ряды симметричны. */
-  .skills-grid{display:grid;grid-template-columns:repeat(5, 1fr);gap:24px;align-items:start}
-  @media(max-width:1100px){.skills-grid{grid-template-columns:repeat(3, 1fr);gap:32px 24px}}
-  @media(max-width:640px){.skills-grid{grid-template-columns:repeat(2, 1fr);gap:28px 16px}.skills-grid .skill:last-child{grid-column:1 / -1}}
-  .skill{display:flex;flex-direction:column;align-items:center;text-align:center;transition:transform 0.3s}
+  /* Навыки — вертикальный список: иконка слева в фиксированном слоте, текст справа.
+     При таком раскладе разница в размере иконок не бросается в глаза и центровать ничего не нужно. */
+  .skills-list{display:flex;flex-direction:column;gap:16px;max-width:720px;margin:0 auto}
+  .skill{
+    display:flex;align-items:center;gap:20px;text-align:left;
+    background:linear-gradient(180deg, #1a1a22 0%, #15151c 100%);
+    border:1px solid var(--border);border-radius:16px;
+    padding:18px 22px;
+    transition:border-color 0.3s, transform 0.3s, background 0.3s;
+  }
+  .skill:hover{
+    border-color:var(--border-bright);transform:translateY(-2px);
+    background:linear-gradient(180deg, #20202a 0%, #18181f 100%);
+  }
   .skill-icon{
-    position:relative;width:160px;height:160px;margin-bottom:18px;
+    position:relative;flex-shrink:0;width:72px;height:72px;
     display:flex;align-items:center;justify-content:center;
   }
   .skill-icon::before{
-    content:'';position:absolute;width:84%;height:84%;border-radius:50%;
-    background:radial-gradient(circle, rgba(230,57,70,0.24) 0%, rgba(230,57,70,0.07) 45%, transparent 72%);
-    filter:blur(9px);z-index:0;
+    content:'';position:absolute;width:96%;height:96%;border-radius:50%;
+    background:radial-gradient(circle, rgba(230,57,70,0.22) 0%, rgba(230,57,70,0.06) 48%, transparent 72%);
+    filter:blur(8px);z-index:0;
   }
   .skill-icon img{
-    position:relative;z-index:1;width:auto;height:84%;max-width:100%;object-fit:contain;
-    filter:drop-shadow(0 12px 26px rgba(0,0,0,0.55));
+    position:relative;z-index:1;width:auto;height:72px;max-width:100%;object-fit:contain;
+    filter:drop-shadow(0 6px 14px rgba(0,0,0,0.5));
     transform:scale(var(--sc,1));
-    transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
   }
   .skill-icon.i-kling{--sc:1}
   .skill-icon.i-prompt{--sc:1.07}
   .skill-icon.i-character{--sc:1}
   .skill-icon.i-capcut{--sc:1.18}
   .skill-icon.i-viral{--sc:1.06}
-  .skill:hover .skill-icon img{transform:translateY(-8px) scale(calc(var(--sc,1) * 1.05))}
-  .skill-title{
-    font-family:'Manrope',sans-serif;
-    font-size:16px;font-weight:700;color:#fff;
-    margin-bottom:8px;line-height:1.3;padding:0 4px;
-    min-height:44px;display:flex;align-items:flex-end;justify-content:center;
-  }
-  .skill-text{font-size:13px;color:var(--text-dim);line-height:1.55;padding:0 6px;max-width:240px;min-height:60px}
+  .skill-body{flex:1;min-width:0}
+  .skill-title{font-family:'Manrope',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:5px;line-height:1.25}
+  .skill-text{font-size:14px;color:var(--text-dim);line-height:1.5}
 
   /* Шаги — режем готовую полосу steps-icons.png (5 кружков в ряд) на 5 ячеек через
      background-position. Каждый шаг = своя колонка: иконка СВЕРХУ, текст ровно под ней.
@@ -402,10 +402,11 @@
     .perk{flex-direction:column;text-align:center;gap:8px;font-size:11.5px;flex:1}
     .perk-icon{width:40px;height:40px}
     .hero-video{max-width:300px}
-    .skills-grid{gap:24px 12px}
-    .skill-icon{width:112px;height:112px;margin-bottom:14px}
-    .skill-title{font-size:13.5px;min-height:38px}
-    .skill-text{font-size:11.5px;min-height:50px}
+    .skill{gap:16px;padding:16px}
+    .skill-icon{width:60px;height:60px}
+    .skill-icon img{height:60px}
+    .skill-title{font-size:15.5px}
+    .skill-text{font-size:13px}
     .step-name{font-size:14px}
     .step-text{font-size:12px}
     .big-cta-content{padding:32px 20px}
@@ -484,31 +485,41 @@
 <section id="skills">
   <div class="container">
     <h2 class="section-title reveal">Чему вы научитесь</h2>
-    <div class="skills-grid">
+    <div class="skills-list">
       <div class="skill reveal">
         <div class="skill-icon i-kling"><img src="/assets/icon-kling.png" alt="Kling AI" loading="lazy"></div>
-        <div class="skill-title">Kling AI</div>
-        <div class="skill-text">Освойте нейросеть Kling AI для создания уникальных AI-видео и сцен</div>
+        <div class="skill-body">
+          <div class="skill-title">Kling AI</div>
+          <div class="skill-text">Освойте нейросеть Kling AI для создания уникальных AI-видео и сцен</div>
+        </div>
       </div>
       <div class="skill reveal">
         <div class="skill-icon i-prompt"><img src="/assets/icon-prompt.png" alt="Промпты" loading="lazy"></div>
-        <div class="skill-title">Мощные промпты</div>
-        <div class="skill-text">Пишите эффективные промпты и получайте максимально точный результат</div>
+        <div class="skill-body">
+          <div class="skill-title">Мощные промпты</div>
+          <div class="skill-text">Пишите эффективные промпты и получайте максимально точный результат</div>
+        </div>
       </div>
       <div class="skill reveal">
         <div class="skill-icon i-character"><img src="/assets/icon-character.png" alt="Реалистичные персонажи" loading="lazy"></div>
-        <div class="skill-title">Реалистичные персонажи</div>
-        <div class="skill-text">Создавайте живых и реалистичных персонажей с помощью AI</div>
+        <div class="skill-body">
+          <div class="skill-title">Реалистичные персонажи</div>
+          <div class="skill-text">Создавайте живых и реалистичных персонажей с помощью AI</div>
+        </div>
       </div>
       <div class="skill reveal">
         <div class="skill-icon i-capcut"><img src="/assets/icon-capcut.png" alt="CapCut" loading="lazy"></div>
-        <div class="skill-title">Монтаж и озвучка в CapCut</div>
-        <div class="skill-text">Профессиональный монтаж, озвучка и эффекты в CapCut</div>
+        <div class="skill-body">
+          <div class="skill-title">Монтаж и озвучка в CapCut</div>
+          <div class="skill-text">Профессиональный монтаж, озвучка и эффекты в CapCut</div>
+        </div>
       </div>
       <div class="skill reveal">
         <div class="skill-icon i-viral"><img src="/assets/icon-viral.png" alt="Вирусный контент" loading="lazy"></div>
-        <div class="skill-title">Вирусный контент</div>
-        <div class="skill-text">Создавайте контент, который набирает миллионы просмотров</div>
+        <div class="skill-body">
+          <div class="skill-title">Вирусный контент</div>
+          <div class="skill-text">Создавайте контент, который набирает миллионы просмотров</div>
+        </div>
       </div>
     </div>
   </div>
@@ -739,7 +750,7 @@
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e, i) => {
         if (e.isIntersecting) {
-          const delay = e.target.closest('.skills-grid, .steps-grid, .reviews-grid') ? i * 70 : 0;
+          const delay = e.target.closest('.skills-list, .steps-grid, .reviews-grid') ? i * 70 : 0;
           setTimeout(() => e.target.classList.add('visible'), delay);
           io.unobserve(e.target);
         }
