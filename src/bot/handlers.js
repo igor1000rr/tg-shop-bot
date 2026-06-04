@@ -26,6 +26,43 @@ async function editOrSend(ctx, text, keyboard) {
   }
 }
 
+// Telegram ограничивает текст одного сообщения 4096 символами —
+// длинные документы (соглашение, политика) режем на части по границам абзацев
+function splitLongText(text, limit = 3800) {
+  const parts = [];
+  let rest = text;
+  while (rest.length > limit) {
+    let cut = rest.lastIndexOf('\n\n', limit);
+    if (cut < limit * 0.5) cut = rest.lastIndexOf('\n', limit);
+    if (cut < limit * 0.5) cut = rest.lastIndexOf(' ', limit);
+    if (cut < limit * 0.5) cut = limit;
+    parts.push(rest.slice(0, cut));
+    rest = rest.slice(cut).replace(/^\s+/, '');
+  }
+  if (rest.length) parts.push(rest);
+  return parts;
+}
+
+// Документ из настроек: первая часть редактирует меню, остальные — отдельными
+// сообщениями, кнопка «Назад» на последнем
+async function sendDocumentChunks(ctx, header, rawBody, keyboard) {
+  const parts = splitLongText(escapeHtml(rawBody));
+  const first = `${header}\n\n${parts[0]}${parts.length > 1 ? '\n\n<i>(продолжение ниже)</i>' : ''}`;
+  await editOrSend(ctx, first, parts.length === 1 ? keyboard : undefined);
+  for (let i = 1; i < parts.length; i++) {
+    const isLast = i === parts.length - 1;
+    try {
+      await ctx.reply(parts[i], {
+        parse_mode: 'HTML',
+        disable_web_page_preview: true,
+        reply_markup: isLast ? keyboard : undefined
+      });
+    } catch (e) {
+      logger.warn('sendDocumentChunks part:', e?.message);
+    }
+  }
+}
+
 function isAdmin(ctx) {
   const admin = String(getSetting('admin_tg_id') || '').trim();
   return admin && String(ctx.from?.id) === admin;
@@ -144,19 +181,19 @@ function registerHandlers(bot) {
   bot.callbackQuery('info_terms', async (ctx) => {
     await ctx.answerCallbackQuery();
     const body = getSetting('doc_terms') || 'Документ пока не заполнен.';
-    await editOrSend(ctx, `📜 <b>Пользовательское соглашение</b>\n\n${escapeHtml(body)}`, backToInfoKeyboard());
+    await sendDocumentChunks(ctx, '📜 <b>Пользовательское соглашение</b>', body, backToInfoKeyboard());
   });
 
   bot.callbackQuery('info_privacy', async (ctx) => {
     await ctx.answerCallbackQuery();
     const body = getSetting('doc_privacy') || 'Документ пока не заполнен.';
-    await editOrSend(ctx, `🔒 <b>Политика конфиденциальности</b>\n\n${escapeHtml(body)}`, backToInfoKeyboard());
+    await sendDocumentChunks(ctx, '🔒 <b>Политика конфиденциальности</b>', body, backToInfoKeyboard());
   });
 
   bot.callbackQuery('info_support', async (ctx) => {
     await ctx.answerCallbackQuery();
     const body = getSetting('doc_support_text') || 'Контакты поддержки пока не заполнены.';
-    await editOrSend(ctx, `💬 <b>Поддержка</b>\n\n${escapeHtml(body)}`, backToInfoKeyboard());
+    await sendDocumentChunks(ctx, '💬 <b>Поддержка</b>', body, backToInfoKeyboard());
   });
 
   bot.callbackQuery('pay_card', async (ctx) => {
