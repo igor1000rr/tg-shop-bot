@@ -41,7 +41,7 @@ function registerHandlers(bot) {
     const image       = getSetting('offer_image_url');
 
     const lines = [];
-    if (getSetting('enable_card')  === '1') lines.push(`💳 Карта: ${priceRub} ₽`);
+    if (getSetting('enable_card')  === '1') lines.push(`💳 Для граждан РФ: ${priceRub} ₽`);
     if (getSetting('enable_stars') === '1') lines.push(`⭐ Telegram Stars: ${priceStars}`);
     const priceBlock = lines.length ? lines.join('\n') + '\n\n' : '';
 
@@ -161,7 +161,7 @@ function registerHandlers(bot) {
 
   bot.callbackQuery('pay_card', async (ctx) => {
     if (getSetting('enable_card') !== '1') {
-      return ctx.answerCallbackQuery({ text: 'Оплата картой временно недоступна', show_alert: true });
+      return ctx.answerCallbackQuery({ text: 'Оплата для граждан РФ временно недоступна', show_alert: true });
     }
     const rl = checkRateLimit(`pay:${ctx.from.id}`, 20000);
     if (!rl.ok) {
