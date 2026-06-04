@@ -245,23 +245,20 @@
   .skill-title{font-family:'Manrope',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:5px;line-height:1.25}
   .skill-text{font-size:14px;color:var(--text-dim);line-height:1.5}
 
-  /* Шаги — иконки отдельной лентой (5 кружков в ряд с пунктиром, режем steps-icons.png),
-     описания — ниже отдельной сеткой. На десктопе текст под своим кружком (5 колонок),
-     на мобиле кружки остаются в ряд, а текст в 2 колонки (5-й по центру). */
-  .steps-icons{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;align-items:center;margin-bottom:36px}
-  .step-circle{
-    width:100%;max-width:130px;aspect-ratio:1;justify-self:center;
+  /* Шаги — цельная лента иконок: показываем steps-icons.png ОДНИМ куском, без нарезки,
+     поэтому пунктирные соединители непрерывные. Кружки в картинке стоят не по равным
+     пятым долям (центры ~12.3/29.5/49.5/70.1/88%), нарезка их рвала. Полоса с кружками
+     в оригинале 1536x1024 занимает строки ~361–593 (центр ~470) → показываем срез
+     высотой 320px: aspect-ratio 1536/320, background-position-y 44%. */
+  .steps-strip{
+    width:100%;max-width:950px;margin:0 auto 36px;
+    aspect-ratio:1536/320;
     background-image:url('/assets/steps-icons.png');
-    background-size:500% auto;
-    background-position-y:center;
+    background-size:100% auto;
+    background-position:center 44%;
     background-repeat:no-repeat;
     filter:drop-shadow(0 8px 20px rgba(0,0,0,0.5));
   }
-  .step-circle.c1{background-position-x:0%}     /* монитор */
-  .step-circle.c2{background-position-x:25%}    /* youtube */
-  .step-circle.c3{background-position-x:50%}    /* хлопушка */
-  .step-circle.c4{background-position-x:75%}    /* ракета */
-  .step-circle.c5{background-position-x:100%}   /* кубок */
   .steps-text{display:grid;grid-template-columns:repeat(5,1fr);gap:24px 16px}
   .step-info{text-align:center}
   .step-name{font-family:'Manrope',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:8px}
@@ -271,7 +268,7 @@
     .steps-text .step-info:last-child{grid-column:1 / -1}
   }
   @media(max-width:600px){
-    .steps-icons{gap:6px}
+    .steps-strip{width:calc(100% + 36px);margin-left:-18px;max-width:none;margin-bottom:28px}
   }
 
   .reviews-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:20px}
@@ -528,13 +525,7 @@
 <section id="process">
   <div class="container">
     <h2 class="section-title reveal">Как проходит обучение</h2>
-    <div class="steps-icons reveal">
-      <div class="step-circle c1"></div>
-      <div class="step-circle c2"></div>
-      <div class="step-circle c3"></div>
-      <div class="step-circle c4"></div>
-      <div class="step-circle c5"></div>
-    </div>
+    <div class="steps-strip reveal" role="img" aria-label="Этапы обучения: от регистрации до результата"></div>
     <div class="steps-text">
       <div class="step-info reveal">
         <div class="step-name">1. Регистрация</div>
