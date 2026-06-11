@@ -33,8 +33,11 @@ async function createPlategaInvoice({ tgId, amountRub, description }) {
     failedUrl: `${cleanBase}/return/fail`,
     payload:   `tg_${tgId}`
   };
-  const pm = getSetting('platega_payment_method');
-  if (pm && !Number.isNaN(Number(pm))) body.paymentMethod = Number(pm);
+  // Метод оплаты отправляем только если задан валидный положительный код.
+  // Пусто / 0 / мусор → поле не шлём вовсе = у Platega выбор всех методов.
+  // (Platega отклоняет paymentMethod:0 с ошибкой VAL_0001 «Wrong input parameters».)
+  const pm = Number(getSetting('platega_payment_method'));
+  if (Number.isInteger(pm) && pm > 0) body.paymentMethod = pm;
 
   const { data } = await client().post('/transaction/process', body);
   if (!data?.transactionId || !data?.redirect) {
